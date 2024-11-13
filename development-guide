@@ -1,0 +1,1638 @@
+Source: https://slims.web.id/docs/development-guide/about
+
+Title: Preambul | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/about
+
+Markdown Content:
+### Pengantar[​](http://slims.web.id/docs/development-guide/about#pengantar "Direct link to heading")
+
+Halaman ini berisi dokumentasi untuk membangun SLiMS anda menjadi seperti apa yang anda inginkan, seperti membuat datagrid, reportgrid, grid yang dapat di cetak dan formulr melalui sistem plugin secara native atau berbasis composer
+
+### Memulai[​](http://slims.web.id/docs/development-guide/about#memulai "Direct link to heading")
+
+Prasyarat:
+
+*   XAMPP/LAMPP/MAMPP/etc.
+*   PHP 8.1 atau lebih tinggi
+*   MySQL 5.7 atau lebih tinggi | MariaDB 10.3 atau lebih tinggi
+*   Code Editor : VSCode | VSCodium | Sublime | dll
+*   [SLiMS](https://github.com/slims/slims9_bulian/releases) terbaru atau menggunakan versi [SLiMS Develop](https://github.com/slims/slims9_bulian/tree/develop) (jika anda ingin fitur terbaru sembari mengetes fitur tersebut anda disarankan menggunakan versi develop).
+
+### Mengubah _Environment_ / lingkungan[​](http://slims.web.id/docs/development-guide/about#mengubah-environment--lingkungan "Direct link to heading")
+
+Tahap ini penting karena tanpa merubah _environment_ dari _prodcution_ ke _development_ maka kita tidak tahu pesan _error_ yang terjadi ketika melakukan _development_ pada SLiMS kita. Berikut langkahnya:
+
+1.  Buka modul `system` lalu pilih menu `System Environment Setting` / Setelan Lingkungan Sistem
+2.  Maka akan muncul sebagai berikut: ![Image 1: contoh](https://slims.web.id/docs/assets/images/plugin-01-env-change-32551a464b722697ff3ef9443db22ac5.png)
+3.  Ubah nilai `production` ke `development` lalu klik **Save Settings** / Simpan Pengaturan.
+4.  Jika langkah ke 3 berhasil maka muncul seperti berikut: ![Image 2: dev_criteria](https://slims.web.id/docs/assets/images/plugin-01-intro-env-save-criteria-8201eaed62c4ac9ab63720cd2f5ed406.png) setiap modul di SLiMS jika menggunakan _datagrid/form maker_ maka akan muncul kotak yang ditandai merah seperti diatas. Kegunaan dari box tersebut yaitu untuk melihat proses/error apa yang terjadi karena secara bawaan proses penyimpanan dilemparkan ke elemen `<iframe></iframe>`
+
+Title: Struktur Direktori | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/directorystructure
+
+Markdown Content:
+```
+/your-slims-path/│ # Admin Area├── admin # Admin Area│   # Web Template│   ├── admin_template # Web Template│   # SLiMS default bootstrap file│   ├── default│   # All automation component │   # store in this folder│   └── modules│ # Web Service├── api│   └── v1│ # SLiMS configuration │ # store into this folder├── config├── css├── files│   ├── backup│   ├── cache│   ├── chat│   ├── membercard│   ├── reports│   └── swfs├── help│   ├── en_US│   ├── es_ES│   └── id_ID├── images│   ├── barcodes│   ├── cache│   ├── default│   ├── docs│   ├── labels│   └── persons├── indexing_engine├── install├── js│   ├── chartjs│   ├── chosen│   ├── ckeditor5│   ├── colorbox│   ├── datepicker│   ├── flowplayer│   ├── ion.rangeSlider│   ├── jquery.imgareaselect│   ├── pdfjs│   ├── plyr│   ├── quaggaJS│   └── toastr├── lib│   ├── Cache│   ├── collection│   ├── contents│   ├── csrf│   ├── ezyang│   ├── flex│   ├── guzzlehttp│   ├── Http│   ├── lang│   ├── maennchen│   ├── Mail│   ├── marc│   ├── markbaker│   ├── math│   ├── Migration│   ├── minigalnano│   ├── myclabs│   ├── mysqldump-php│   ├── nesbot│   ├── oaipmh│   ├── parsedown│   ├── phpbarcode│   ├── phplot│   ├── PHPMailer│   ├── phpoffice│   ├── psr│   ├── ralouphie│   ├── recaptcha│   ├── SearchEngine│   ├── Session│   ├── sphinx│   ├── symfony│   ├── Table│   ├── uuid│   └── Zend├── m├── plugins│   ├── label_barcode│   ├── read_counter├── repository├── sample├── simbio2│   ├── simbio_DB│   ├── simbio_FILE│   ├── simbio_GUI│   └── simbio_UTILS├── src│   └── Slims├── template│   ├── akasia│   ├── akasia-dz│   ├── default│   ├── libdikbud│   └── lightweight└── upgrade    └── old_sql
+```
+
+Title: OPAC | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Alur/OPAC
+
+Markdown Content:
+OPAC | A page for SLiMS User, and Developer
+===============   
+
+[Skip to main content](http://slims.web.id/docs/development-guide/Alur/OPAC#docusaurus_skipToContent_fallback)
+
+[![Image 1: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png)![Image 2: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png) **SLiMS**](http://slims.web.id/docs/)[User Guide](http://slims.web.id/docs/user-guide/about)[Development Guide](http://slims.web.id/docs/development-guide/about)[APi](https://slims.web.id/api/)
+
+[GitHub](https://github.com/slims/)
+
+*   [Preambul](http://slims.web.id/docs/development-guide/about)
+*   [Struktur Direktori](http://slims.web.id/docs/development-guide/directorystructure)
+*   [Alur](http://slims.web.id/docs/development-guide/Alur/OPAC)
+    
+    *   [OPAC](http://slims.web.id/docs/development-guide/Alur/OPAC)
+    *   [Plugin](http://slims.web.id/docs/development-guide/Alur/Plugin)
+*   [Plugin](http://slims.web.id/docs/development-guide/Plugin/Intro)
+    
+*   [Database](http://slims.web.id/docs/development-guide/Database/Intro)
+    
+*   [Console](http://slims.web.id/docs/development-guide/Console/Intro)
+    
+*   [Http](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+    
+*   [Cache](http://slims.web.id/docs/development-guide/Cache/Penggunaan)
+    
+*   [Helpers](http://slims.web.id/docs/development-guide/Helpers)
+
+*   [](http://slims.web.id/docs/)
+*   Alur
+*   OPAC
+
+OPAC
+====
+
+Berikut alur kerja OPAC SLiMS.
+Here’s a textual explanation of the flowchart:
+
+    Access OPAC: The process begins with accessing the OPAC (Online Public Access Catalog).
+
+    Check Request: A check is performed to determine the type of request.
+
+    Access Main Page?
+        If "Yes," the user is directed to the Main Page.
+        If "No," proceed to check if the request is Plugin-Based.
+
+    Plugin-Based?
+        If "Yes," the request is directed to the Plugin Page.
+        If "No," check if the request is for a Static File.
+
+    Static File?
+        If "Yes," display the file from the directory /lib/contents/.
+        If "No," check if the request is for News Content.
+
+    News Content?
+        If "Yes," display news content from the Database (DB).
+        If "No," display a message indicating "Content Not Found".
+
+    Finish: The process concludes here, regardless of which path is taken.
+
+This flow ensures that the user is directed to the appropriate content based on the type of request, such as main page, plugin content, static files, or news content. If none of these criteria are met, an error message is displayed, indicating that the requested content is unavailable.
+
+-----
+
+Berikut alur kerja Plugin SLiMS.
+Here’s a textual explanation of the flowchart:
+
+    SLiMS Accessed: The process starts when the SLiMS (Senayan Library Management System) is accessed.
+
+    Plugin System Active: The system activates the plugin management function.
+
+    Is There an Active Plugin?
+        If "Yes," the process moves to load the Active Plugin.
+        If "No," the process proceeds directly to Finish.
+
+    Load Active Plugin: The system attempts to load the active plugin.
+
+    Is the Plugin Called in OPAC/Admin?
+        If "Yes," the system Displays the Process Result.
+        If "No," the process goes directly to Finish.
+
+    Finish: The process concludes here, with or without displaying the result, depending on whether the plugin was called in OPAC/Admin.
+
+This flow ensures that only active plugins are loaded and processed. If the plugin is relevant to OPAC/Admin, the result is displayed; otherwise, the process ends.
+
+Title: Pengantar | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Plugin/Intro
+
+Markdown Content:
+### Permulaan[​](http://slims.web.id/docs/development-guide/Plugin/Intro#permulaan "Direct link to heading")
+
+Sistem plugin merupakan inovasi yang dihadirkan sejak versi SLiMS Bulian 9.3.0 oleh Mas [Ido Alit](https://github.com/idoalit/). Tujuan dari inovasi ini yaitu untuk mempermudah kerja dari pengembang SLiMS (dari sisi pengguna atau pihak yang membantu pengguna) dalam melakukan proses upgrade SLiMS dari versi sekarang ke versi yang lebih mutakhir.
+
+### Persiapan[​](http://slims.web.id/docs/development-guide/Plugin/Intro#persiapan "Direct link to heading")
+
+Hal yang perlu disiapkan (minimal) untuk membuat sebuah plugi n seperti:
+
+*   Pengetahuan mengenai bahasa pemrograman **HTML (termasuk CSS), PHP, JS, dan SQL**
+*   Pemahaman mengenai penggunaan library dan tool seperti **composer (opsional)**
+
+### Sistematika plugin[​](http://slims.web.id/docs/development-guide/Plugin/Intro#sistematika-plugin "Direct link to heading")
+
+Semua plugin SLiMS secara _default_ diletakan di folder `plugins/`, yang ditandai dengan ekstensi file `.plugin.php`. Seluruh plugin akan dipindai oleh SLiMS dengan kedalaman tingkat folder hingga 3 tinggkat.
+
+```
+# Contoh tingkat kedalaman folder yang dipindaiplugins/ # tingkat 0--- biblio_adv_log.plugin.php # plugin tingkat 1--- label_barcode/ # folder tingkat 1------ label.plugin.php # plugin tingkat 2--- contoh_plugin/ # folder tingkat 1------ folder_didalam_contoh_plugin/ # folder tingkat 2--------- plugin_didalam_contoh_plugin.plugin.php # plugin tingkat 3
+```
+
+dengan ini anda dapat membuat plugin dengan sistem hirarki.
+
+### Format isi plugin[​](http://slims.web.id/docs/development-guide/Plugin/Intro#format-isi-plugin "Direct link to heading")
+
+format isi digunakan untuk menginformasikan SLiMS mengenai informasi terkait pembuat plugin, versi plugin, deskrpsi plugin, dll.
+
+```
+<?php/** * Plugin Name: <nama plugin> * Plugin URI: <url untuk mengunduh plugin ini> * Description: <deskripsi plugin> * Version: <versi plugin dalam format Pemversian Semantic> * Author: <Nama Pembuat Plugin> * Author URI: <Alamat Media Sosial Pembuat Plugin> */
+```
+
+Isi informasi yang ada dengan menganti contoh isi yang ada, contoh: <nama\_plugin\> `menjadi nama anda`. Setelah itu, kita perlu mencantumpkan kelas pustaka SLiMS yaitu `SLiMS\Plugins` seperti berikut setalah informasi plugin sebelumnya:
+
+lalu membuat variable plugin:
+
+```
+$plugins = Plugins::getInstance();
+```
+
+Maka format isi plugin selengkapnya seperti ini:
+
+```
+<?php/** * Plugin Name: <nama plugin> * Plugin URI: <url untuk mengunduh plugin ini> * Description: <deskripsi plugin> * Version: <versi plugin dalam format Pemversian Semantic> * Author: <Nama Pembuat Plugin> * Author URI: <Alamat Media Sosial Pembuat Plugin> */use SLiMS\Plugins;$plugins = Plugins::getInstance();
+```
+
+### Tipe operasi plugin[​](http://slims.web.id/docs/development-guide/Plugin/Intro#tipe-operasi-plugin "Direct link to heading")
+
+Setelah anda paham mengenai format isi plugin, maka anda harus mencantumkan operasi apa yang akan dilakukan oleh plugin tersebut. Sistem plugin SLiMS berjalan dalam beberapa tipe, seperti [hook](http://slims.web.id/docs/development-guide/Plugin/Intro#hook), [path](http://slims.web.id/docs/development-guide/Plugin/Intro#path), dan [menu](http://slims.web.id/docs/development-guide/Plugin/Intro#menu).
+
+#### **Hook**[​](http://slims.web.id/docs/development-guide/Plugin/Intro#hook "Direct link to heading")
+
+merupakan metoda yang digunakan oleh SLiMS untuk mengoperasikan beberapa perintah untuk melakukan modifikasi atau menambah atau menginterupsi operasi yang sudah/akan berjalan sesuai nama hook yang tersedia. Berikut daftar operasi hook yang tersedia di SLiMS:
+
+```
+const ADMIN_SESSION_AFTER_START = 'admin_session_after_start';const CONTENT_BEFORE_LOAD = 'before_content_load';const CONTENT_AFTER_LOAD = 'after_content_load';const BIBLIOGRAPHY_INIT = 'bibliography_init';const BIBLIOGRAPHY_BEFORE_UPDATE = 'bibliography_before_update';const BIBLIOGRAPHY_AFTER_UPDATE = 'bibliography_after_update';const BIBLIOGRAPHY_BEFORE_SAVE = 'bibliography_before_save';const BIBLIOGRAPHY_AFTER_SAVE = 'bibliography_after_save';const BIBLIOGRAPHY_BEFORE_DELETE = 'bibliography_before_delete';const BIBLIOGRAPHY_AFTER_DELETE = 'bibliography_after_delete';const BIBLIOGRAPHY_CUSTOM_FIELD_DATA = 'advance_custom_field_data';const BIBLIOGRAPHY_CUSTOM_FIELD_FORM = 'advance_custom_field_form';const BIBLIOGRAPHY_BEFORE_DATAGRID_OUTPUT = 'bibliography_before_datagrid_output';const CIRCULATION_AFTER_SUCCESSFUL_TRANSACTION = 'circulation_after_successful_transaction';const MEMBERSHIP_INIT = 'membership_init';const MEMBERSHIP_BEFORE_UPDATE = 'membership_before_update';const MEMBERSHIP_AFTER_UPDATE = 'membership_after_update';const MEMBERSHIP_BEFORE_SAVE = 'membership_before_save';const MEMBERSHIP_AFTER_SAVE = 'membership_after_save';const OVERDUE_NOTICE_INIT = 'overduenotice_init';const DUEDATE_NOTICE_INIT = 'duedate_init';const MODULE_MAIN_MENU_INIT = 'module_main_menu_init';const OAI2_INIT = 'oai2_init';
+```
+
+Daftar diatas merupakan operasi hook yang terdaftar secara default di sistem plugin SLiMS. Namun ada beberapa yang tidak terdaftar namun tetap dapat bekerja dengan baik, berikut penjelasannya:
+
+1.  `ADMIN_SESSION_AFTER_START` : hook akan bekerja ketika sesi login admin dimulaui.
+2.  `CONTENT_BEFORE_LOAD` : hook ini berjalan di OPAC, dimana prosesnya akan bekerja sebelum konten OPAC dimuat.
+3.  `CONTENT_AFTER_LOAD` : ini kebalikan dari hook kedua, yaitu setelah konten pada OPAC dimuat.
+4.  `BIBLIOGRAPHY_INIT` : hook ini berada pada halaman utama pada modul **bibliografi**.
+5.  `BIBLIOGRAPHY_BEFORE_UPDATE` : hook ini beroperasi sebelum proses pembaharuan data bibliografi dimulai.
+6.  `BIBLIOGRAPHY_BEFORE_SAVE` : hook ini beroperasi sebelum proses penyimpanan data bibliografi dimulai.
+7.  `BIBLIOGRAPHY_AFTER_UPDATE` : hook ini beroperasi setelah proses pembaharuan data bibliografi dimulai.
+8.  `BIBLIOGRAPHY_AFTER_SAVE` : hook ini beroperasi setelah proses penyimpanan data bibliografi dimulai.
+9.  `BIBLIOGRAPHY_CUSTOM_FIELD_DATA` : hook ini merupakan operasi yang digunakan untuk mendaftarkan data ruas tambahan secara mahir.
+10.  `BIBLIOGRAPHY_CUSTOM_FIELD_FORM` : hook ini merupakan operasi yang digunakan untuk mendaftarkan ruas tambahan secara mahir.
+11.  `MEMBERSHIP_INIT` : tidak berbeda jauh dengan `BIBLIOGRAPHY_INIT` hanya saja ini berjalan di modul **membership**
+12.  `MEMBERSHIP_BEFORE_UPDATE` : hook ini mirip seperti `BIBLIOGRAPHY_BEFORE_UPDATE`. Namun hanya pada modul **membership**.
+13.  `MEMBERSHIP_BEFORE_SAVE` : hook ini mirip seperti `BIBLIOGRAPHY_BEFORE_SAVE`. Namun hanya pada modul **membership**.
+14.  `MEMBERSHIP_AFTER_UPDATE` : hook ini mirip seperti `BIBLIOGRAPHY_AFTER_UPDATE`. Namun hanya pada modul **membership**.
+15.  `MEMBERSHIP_AFTER_SAVE` : hook ini mirip seperti `BIBLIOGRAPHY_AFTER_SAVE`. Namun hanya pada modul **membership**.
+16.  `OAI2_INIT` : hook ini berjalan pada file oai2.php pada halaman utama, dapat digunakan untuk memodifikasi process pertukaran data melalui protokol oai-pmh
+
+Berikut ini cara penggunaan hook yang tersedia pada daftar diatas:
+
+```
+<?php # Contoh$plugins->register('<nama_hook>', function(){    // lakukan suatu hal didalam block fungsi ini});// atau jika dipraktikan akan seperti ini$plugins->register(Plugins::MEMBERSHIP_INIT, function(){    // lakukan suatu hal didalam block fungsi ini});// atau jika anda tidak nyaman dengan penulisan Class::konstanta bisa// juga seperti ini.// sesuaikan saja dengan daftar hook yang tersedia$plugins->register('membership_init', function(){    // lakukan suatu hal didalam block fungsi ini});// atau bisa juga dengan gaya seperti iniPlugins::hook(Plugins::MEMBERSHIP_INIT, function(){    // lakukan suatu hal didalam block fungsi ini});
+```
+
+#### **Path**[​](http://slims.web.id/docs/development-guide/Plugin/Intro#path "Direct link to heading")
+
+Operasi ini merupakan cara yang digunakan untuk memodifikas tampilan halaman OPAC yang sudah ada tanpa merubah source code asli SLiMS. Misal path halaman member jika dicontohkan dalam bentuk URL secara penuh `http://localhost/slims/index.php?p=member`. Tampilan dalam halaman itu dapat anda ganti dengan menggunakan metoda ini. Berikut cara nya:
+
+```
+// atau jika dipraktikan akan seperti ini$plugins->registerMenu('opac', 'member', __DIR__ . '/member.inc.php');// atauPlugins::menu('opac', 'member', __DIR__ . '/member.inc.php');// atauPlugins::opac('member', __DIR__ . '/member.inc.php');
+```
+
+Penjelasan paramter pada fungsi `registerMenu()`:
+
+1.  `opac` : ini menandakan bahwa anda mendaftarkan menu/path baru pada OPAC.
+2.  `member` : nama path yang dipanggil melalui `?p=` seperti yang ada dicontoh URL di atas.
+3.  `__DIR__ . '/member.inc.php'` : merupakan lokasi file yang akan mengganti tampilan sebenarnya pada halaman `?p=member`.
+
+Anda juga dapat mendaftarkan path lain nya yang tidak ada di SLiMS. Contoh sebagai berikut:
+
+```
+// halaman custom, bebas pustaka$plugins->registerMenu('opac', 'bebas pustaka', __DIR__ . '/sayabebas.inc.php');
+```
+
+Pada paramter ke **2** setiap spasi akan dikonversi menjadi `_` atau **underscore**. Contoh 'bebas pustaka' menjadi 'bebas\_pustaka', maka ketika anda memanggil path itu dibrowser menjadi ✅ `http://localhost/slims/index.php?p=bebas_pustaka` bukan 🚫 `http://localhost/slims/index.php?p=bebas pustaka`.
+
+Tak berbeda dengan sebelumnya, bagian ini merupakan penjelasan bagaimana menambah/merubah menu yang ada di setiap module saat login sebagai pustakawan. Ini mempermudah anda sebagai pengembang SLiMS dalam mendaftarkan menu pada modul tertentu tanpa harus merubah file `submenu.php` pada setiap module. Berikut cara nya:
+
+```
+// atau jika dipraktikan akan seperti ini$plugins->registerMenu('membership', 'Bebas Pustaka', __DIR__ . '/sayabebas.inc.php');// atauPlugins::menu('membership', 'Bebas Pustaka', __DIR__ . '/sayabebas.inc.php');// atauPlugins::membership('Bebas Pustaka', __DIR__ . '/sayabebas.inc.php');
+```
+
+Penjelasan paramter pada fungsi `registerMenu()`:
+
+1.  `membership` : ini menandakan bahwa anda mendaftarkan/merubah menu baru pada modul membership. Anda dapat mendaftarkan pada modul yang lain selama modul itu tersedia dan aktif.
+2.  `Bebas Pustaka` : nama menu yang akan muncul di daftar menu pada modul yang dituliskan pada parameter ke 1.
+3.  `__DIR__ . '/sayabebas.inc.php'` : merupakan lokasi file yang akan muncul ketika menu diklik.
+
+note
+
+Perbedaan fungsi `registerMenu()` pada operasi path dan operasi menu adalah penempatannya. Jika OPAC berada di halaman opac SLiMS, maka selain itu akan ditampilkan pada halaman admin jika memang modul nya tersedia.
+
+Title: Membuat Plugin Sederhana | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-sederhana
+
+Markdown Content:
+Membuat Plugin Sederhana | A page for SLiMS User, and Developer
+===============   
+
+[Skip to main content](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-sederhana#docusaurus_skipToContent_fallback)
+
+[![Image 1: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png)![Image 2: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png) **SLiMS**](http://slims.web.id/docs/)[User Guide](http://slims.web.id/docs/user-guide/about)[Development Guide](http://slims.web.id/docs/development-guide/about)[APi](https://slims.web.id/api/)
+
+[GitHub](https://github.com/slims/)
+
+*   [Preambul](http://slims.web.id/docs/development-guide/about)
+*   [Struktur Direktori](http://slims.web.id/docs/development-guide/directorystructure)
+*   [Alur](http://slims.web.id/docs/development-guide/Alur/OPAC)
+    
+*   [Plugin](http://slims.web.id/docs/development-guide/Plugin/Intro)
+    
+    *   [Pengantar](http://slims.web.id/docs/development-guide/Plugin/Intro)
+    *   [Membuat Plugin Sederhana](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-sederhana)
+    *   [Membuat plugin modifikasi halaman tertentu di OPAC](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC)
+    *   [Cara membuat plugin diarea admin](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-pada-area-admin)
+    *   [Migration](http://slims.web.id/docs/development-guide/Plugin/Migration)
+*   [Database](http://slims.web.id/docs/development-guide/Database/Intro)
+    
+*   [Console](http://slims.web.id/docs/development-guide/Console/Intro)
+    
+*   [Http](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+    
+*   [Cache](http://slims.web.id/docs/development-guide/Cache/Penggunaan)
+    
+*   [Helpers](http://slims.web.id/docs/development-guide/Helpers)
+
+*   [](http://slims.web.id/docs/)
+*   Plugin
+*   Membuat Plugin Sederhana
+
+Membuat plugin "Hello World"
+============================
+
+Kita mulai dengan hal yang mudah terlebih dahulu. Berikut langkahnya
+
+1.  Buatlah sebuah file bernama `hello_world.plugin.php` pada folder `plugins/` yang ada di folder utama SLiMS anda.
+2.  Isi file tersebut dengan persyaratan minimal yang ada pada [Laman ini](http://slims.web.id/docs/development-guide/Plugin/Intro#format-isi-plugin)
+
+Jika sudah maka kita akan coba untuk menggunakan operasi [Hook](http://slims.web.id/docs/development-guide/Plugin/Intro#hook) pada halaman OPAC, seperti berikut:
+
+```
+$plugins->register(Plugins::CONTENT_BEFORE_LOAD, function(){    exit('<h1>Hello World</h1>')});
+```
+
+Berikut contohny lenghkap nya
+
+```
+<?php/** * Plugin Name: Hello World * Plugin URI: - * Description: Belajar membuat plugin sederhana * Version: 1.0.0 * Author: Foo * Author URI: https://foo.who */use SLiMS\Plugins;$plugins = Plugins::getInstance();$plugins->register(Plugins::CONTENT_BEFORE_LOAD, function(){    exit('<h1>Hello World</h1>')});
+```
+
+Setelah itu aktifkan plugin itu pada modul `System > Plugin`. Lalu buka halaman OPAC anda, dan lihat apa yang terjadi 😁. Bagaimana? sudah melihat hasilnya? nah dengan ini anda sudah membuat sebuah plugin sederhana.
+
+[Previous Pengantar](http://slims.web.id/docs/development-guide/Plugin/Intro)[Next Membuat plugin modifikasi halaman tertentu di OPAC](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC)
+
+Contents
+
+*   [User Guide](http://slims.web.id/docs/user-guid/about)
+*   [Development Guide](http://slims.web.id/docs/development-guide)
+
+Community
+
+*   [Facebook](https://www.facebook.com/groups/senayan.slims)
+
+More
+
+*   [Download SLiMS](https://github.com/slims/slims9_bulian/releases)
+*   [GitHub](https://github.com/slims/)
+
+Copyright © 2024 SLiMS. Built with Docusaurus.
+
+Title: Membuat plugin modifikasi halaman tertentu di OPAC | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC
+
+Markdown Content:
+### Pengantar[​](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC#pengantar "Direct link to heading")
+
+Kadang kala kita membutuhkan fitur yang tidak tersedia secara bawaan di SLiMS seperti bebas pustaka dll. Beruntung nya SLiMS terkini sudah mendukung hal tersebut dimana anda dimudahkan untuk proses pembuatannya yaitu dengan sistem plugin. Berdasarkan artikel sebelumnya sistem plugin SLiMS **mendukung manipulasi/membuat** halaman yang **sudah/belum** ada di SLiMS menjadi halaman kustom yang kita inginkan tanpa perlu repot mengutak-utik file aslinya.
+
+### Contoh plugin modifikasi halaman yang sudah ada[​](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC#contoh-plugin-modifikasi-halaman-yang-sudah-ada "Direct link to heading")
+
+Kita tahu url `<url-slims-anda>/?p=member` merupakan halaman area anggota, dimana mereka dapat masuk dan melakukan transaksi seperti reservasi buku dll. Kasus yang akan dicontohkan bagaimana membuat halaman tersebut berisi pesan sederhana dari **Pustakawan** mengenai layanan yang ada. Berikut langkahnya:
+
+1.  Buat sebuah folder baru di dalam folder `plugins/` dengan nama **kustom\_member** lalu masuk ke dalam folder tadi.
+2.  Setelah itu buat file **kustom\_member.plugin.inc.php**
+3.  Isi file tersebut dengan skrip dibawah ini:
+
+```
+<?php/** * Plugin Name: Kustom Member * Plugin URI: - * Description: Belajar membuat plugin kustom page * Version: 1.0.0 * Author: Foo * Author URI: https://foo.who */use SLiMS\Plugins;$plugins = Plugins::getInstance();$plugins->registerMenu('opac', 'member', __DIR__ . '/member.inc.php');
+```
+
+4.  Salin file yang berada di `lib/contents/member.inc.php` kedalam folder `plugins/kustom_member/`
+5.  Lalu buka file **member.inc.php** yang ada di folder `plugins/kustom_member/`.
+6.  Kita coba untuk menambahkan sedikit informasi. Pada baris 978 atau cari skrip kurang lebih seperti ini:
+
+```
+<div>    <div class="tagline"><?php echo __('Library Member Login'); ?></div>
+```
+
+7.  Setelah itu tambahkan skrip seperti ini
+
+```
+<div>    <div class="alert alert-info">Telah tersedia menu bebas pustaka dalam area anggota</div>    <div class="tagline"><?php echo __('Library Member Login'); ?></div>
+```
+
+8.  Setelah itu aktifkan plugin itu pada modul `System > Plugin`. Lalu buka halaman OPAC anda pada laman `<slims-url>/?p=member`, dan lihat apa yang terjadi 😁. Bagaimana? sudah melihat hasilnya? nah dengan ini anda sudah membuat sebuah plugin yang memodifikasi halaman yang sudah ada di SLiMS tanpa merusak sumber aslinya.
+
+### Contoh plugin modifikasi halaman yang belum ada[​](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC#contoh-plugin-modifikasi-halaman-yang-belum-ada "Direct link to heading")
+
+Tak berbeda jauh dengan langkah sebelumnya. Berikut langkahnya:
+
+1.  Buat sebuah folder baru di dalam folder `plugins/` dengan nama **bebas\_pustaka** lalu masuk ke dalam folder tadi.
+2.  Setelah itu buat file **bebas\_pustaka.plugin.php**
+3.  Isi file tersebut dengan skrip dibawah ini:
+
+```
+<?php/** * Plugin Name: Bebas Pustaka * Plugin URI: - * Description: Belajar membuat plugin kustom page * Version: 1.0.0 * Author: Foo * Author URI: https://foo.who */use SLiMS\Plugins;$plugins = Plugins::getInstance();$plugins->registerMenu('opac', 'bebas_pustaka', __DIR__ . '/bebas_pustaka.php');
+```
+
+5.  Buat file **bebas\_pustaka.php** pada folder yang sebelumnya dibuat.
+6.  Lalu isi file tersebut dengan skrip dibawah berikut:
+
+```
+<?phpecho "Bebas Pustaka";
+```
+
+7.  Setelah itu aktifkan plugin itu pada modul `System > Plugin`. Lalu buka halaman OPAC anda pada laman `<slims-url>/?p=bebas_pustaka`, dan lihat apa yang terjadi 😁. Bagaimana? sudah melihat hasilnya? nah dengan ini anda sudah membuat sebuah plugin yang memodifikasi halaman yang sudah ada di SLiMS tanpa merusak sumber aslinya.
+
+### Keterangan[​](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC#keterangan "Direct link to heading")
+
+pada skrip diatas terdapat
+
+```
+$plugins->registerMenu('opac', 'member', __DIR__ . '/member.inc.php'); 
+```
+
+berikut penjelasannya:
+
+1.  `opac` : Merupakan lokasi dimana plugin tersebut akan muncul yaitu OPAC.
+2.  `member` : Merupakan nama path yang akan diakses via `?p=<path>` misal `?p=member`.
+3.  `__DIR__ . '/member.inc.php'` : Merupakan lokasi file hasil modifikasi yang kita buat
+
+Title: Cara membuat plugin diarea admin | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-pada-area-admin
+
+Markdown Content:
+Membuat Plugin Modifikasi Pada Area Admin
+-----------------------------------------
+
+### Pengantar[​](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-pada-area-admin#pengantar "Direct link to heading")
+
+Pada [materi sebelumnya](https://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC) sudah dibahas mengenai langkah-langkah memodifikasi halaman yang ada di OPAC. Pada bagian ini kita akan belajar untuk membuat/memodifikasi halaman yang ada di area admin. Langkah yang akan digunakan tak berbeda jauh, seperti yang ada dibawah ini:
+
+### Memanfaatkan operasi hook[​](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-pada-area-admin#memanfaatkan-operasi-hook "Direct link to heading")
+
+Pada materi [hook](https://slims.web.id/docs/development-guide/Plugin/Intro#hook) dijelaskan bagaimana kita melakukan manipulasi proses yang akan/belum terjadi di SLiMS, misalnya kita akan menginterupsi proses penyimpanan data sebelum data itu tersimpan. Lalu apa kegunaannya? kita dapat memberikan fitur-fitur yang kita inginkan dalam proses penyimpanan data, misalnya membuat percabangan penyimpnan dimana kita ingin sebelum data itu disimpan kita akan mengambil beberapa data yang ada lalu menyimpannya ditempat lain. Studi kasusnya yaitu menyimpan data yang ada di SLiMS ke database lain, seperti ElasticSearch, MeiliSearch dll yang akan digunakan sebagai basis data untuk pencarian. Kita akan buat contoh sederhana seperti berikut:
+
+1.  Buat folder di `plugins/` dengan nama **hooking**.
+2.  Pada folder yang dibuat pada langkah pertama, buat sebuah file dengan nama **hooking.plugin.php**.
+3.  Isi dari file yang dibuat pada langkah ketika seperti skrip dibawah ini
+
+```
+<?php/** * Plugin Name: Hooking * Plugin URI: - * Description: Memanipulasi proses data di SLiMS * Version: 1.0.0 * Author: Foo * Author URI: https://foo.who */use SLiMS\Plugins;$plugins = Plugins::getInstance();$plugins->register('bibliography_before_save', function($data){    toastr('Test hooking')->native();});
+```
+
+4.  Setelah itu aktifkan plugin itu pada modul `System > Plugin` dengan nama **hooking**. ![Image 1: Example](https://slims.web.id/docs/assets/images/plugin-04-hooking-plugin-0fcd53566186a87348e3f2631f01c640.png)
+5.  Jika sudah anda buka menu `tambah bibliografi baru` modul bibliography dan buat sebuah data baru (anda bisa isi sembarang data misal saja dengan judul `test`).
+6.  Apabila plugin berjalan dengan baik maka akan muncul seperti berikut (setelah anda menekan tombol simpan) ![Image 2: proof](https://slims.web.id/docs/assets/images/plugin-04-hooking-test-447aee22eb43ad5f2bf5a9dd2c055cea.png)
+
+#### Penjelasan[​](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-pada-area-admin#penjelasan "Direct link to heading")
+
+lihat komentar pada skrip dibawah berikut:
+
+```
+$plugins->register('bibliography_before_save', function($data){    // disini anda dapat melakukan berbagai macam proses manipulasi data    // bahkan sampai menginterupsi pun anda bisa. Lakukan apa yang    // anda butuhkan di bagian ini.    toastr('Test hooking')->native(); // ini sebagai contoh saja bisa diganti kok.});
+```
+
+Masih banyak lagi contoh penggunaan hook, anda dapat mengganti proses hook `bibliography_before_save` dengan [proses yang lain](https://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC).
+
+Pada [materi sebelumnya](https://slims.web.id/docs/development-guide/Plugin/Intro#menu) mengenai modifikasi menu. Kali ini kita akan mempraktikan terkait menambahkan kustom menu kedalam submenu pada modul bibliography tanpa merubah isi dari file submenu.php yang ada di dalam modul tersebut. Berikut langkahnya:
+
+1.  Buat folder di `plugins/` dengan nama **custom\_menu**.
+2.  Pada folder yang dibuat pada langkah pertama, buat sebuah file dengan nama **custom\_menu.plugin.php**.
+3.  Isi dari file yang dibuat pada langkah ketika seperti skrip dibawah ini
+
+```
+<?php/** * Plugin Name: Custom Menu * Plugin URI: - * Description: Menambah kustom menu * Version: 1.0.0 * Author: Foo * Author URI: https://foo.who */use SLiMS\Plugins;$plugins = Plugins::getInstance();$plugins->registerMenu('bibliography', 'Kustom Menu', __DIR__ . '/custom_menu.php');
+```
+
+4.  Buat sebuah file dengan nama `custom_menu.php` didirektori yang sama dengan **custom\_menu.plugin.php**
+5.  Isi file pada langkah ke 4 dengan skrip dibawha ini:
+
+```
+<?phpecho "<h1>Hai ini isi dari custom_menu.php</h1>";
+```
+
+6.  Setelah itu aktifkan plugin itu pada modul `System > Plugin` dengan nama **Custom Menu**. ![Image 3: custom_menu](https://slims.web.id/docs/assets/images/plugin-04-custom-menu-6433fed5a143257d11257f5804e6d94c.png)
+7.  Maka akan muncul menu baru diujung paling bawah seperti berikut: ![Image 4: custom_menu](https://slims.web.id/docs/assets/images/plugin-04-custom-menu-on-biblio-5420d810bba60e268bf86520f5011115.png)
+8.  Jika diklik maka muncul seperti gambar dibawah berikut: ![Image 5: custom_menu](https://slims.web.id/docs/assets/images/plugin-04-content-of-custom_menu-e66348589ae8ece33b99ba3b079f4e71.png)
+
+Pada materi diatas dijelaskan bahwa kita dapat menambah menu kustom pada submenu. Tak jauh berbeda dengan materi diatas, kali kita akan memanipulasi isi dari sebuah menu yang sudah ada. Langkah yaitu melanjutkan dari langkah sebelumnya:
+
+1.  Pada folder `plugins/custom_menu` buat sebuah file bernama custom\_index.php
+2.  Buka file submenu.php pada folder `admin/modules/bibliography/submenu.php`, salin skrip yang ada didalam kotak merah seperti dibawah berikut: ![Image 6: submenu](https://slims.web.id/docs/assets/images/plugin-04-custom_index_submenu-2c2147e0d2e2e81ad13e86b30caa3b46.png)
+3.  Buka file custom\_menu.plugin.php pada folder `plugins/custom_menu` lalu tambah skrip dibawah berikut:
+
+```
+$plugins->registerMenu('bibliography', __('Bibliographic List'), __DIR__ . '/custom_index.php');
+```
+
+4.  Maka skrip lengkapnya sebagai berikut:
+
+```
+<?php/** * Plugin Name: Custom Menu * Plugin URI: - * Description: Menambah kustom menu * Version: 1.0.0 * Author: Foo * Author URI: https://foo.who */use SLiMS\Plugins;$plugins = Plugins::getInstance();$plugins->registerMenu('bibliography', 'Kustom Menu', __DIR__ . '/custom_menu.php');$plugins->registerMenu('bibliography', __('Bibliographic List'), __DIR__ . '/custom_index.php');
+```
+
+5.  Isi file yang sudah dibuat pada langkah ke 1 dengan skrip berikut:
+
+```
+<?phpecho "<h1>Hai ini isi dari custom_index.php</h1><p>yang menggantikan isi dari admin/modules/bibliography/index.php</p>";
+```
+
+6.  Refresh halaman saat ini masuk ke modul `biblography`. Jika langkah 5 berhasil maka muncul sebagai berikut: ![Image 7: proof](https://slims.web.id/docs/assets/images/plugin-04-custom_index_proof-56a6067b9d7dc7be037fb4bb91e3ba48.png)
+
+#### Penjelasan[​](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-pada-area-admin#penjelasan-1 "Direct link to heading")
+
+```
+$plugins->registerMenu('bibliography', __('Bibliographic List'), __DIR__ . '/custom_index.php');
+```
+
+1.  `bibliography` : adalah nama modul yang dituju, anda dapat menganti modul tersebut dengan modul yang tersedia seperti `bibliography, membership, master_file, circulation, stock_take, system, reporting, dan serial_control  ` setiap pendaftaran menu akan muncul disetiap modul yang disebutkan. Namun, apabila modul yang disebutkan tidak tersedia/aktif di SLiMS maka menu tidak akan pernah muncul.
+2.  `__('Bibliographic List')` : Adalah nama menu yang tersedia di modul **_Bibliography_**. Kenapa harus diawali dengan `__(` dan akhiri `)` karena metoda tersebut digunakan untuk menterjemahkan setiap kata yang diletekan dikeduanya. Jadi plugin anda dapat dibaca diberbagai macam bahasa.
+3.  `__DIR__ . '/custom_index.php'` : Nama file yang akan digunakan untuk menggantikan file sebenarnya pada modul bibliography.
+
+Title: Migration | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Plugin/Migration
+
+Markdown Content:
+Migration | A page for SLiMS User, and Developer
+===============   
+
+[Skip to main content](http://slims.web.id/docs/development-guide/Plugin/Migration#docusaurus_skipToContent_fallback)
+
+[![Image 1: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png)![Image 2: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png) **SLiMS**](http://slims.web.id/docs/)[User Guide](http://slims.web.id/docs/user-guide/about)[Development Guide](http://slims.web.id/docs/development-guide/about)[APi](https://slims.web.id/api/)
+
+[GitHub](https://github.com/slims/)
+
+*   [Preambul](http://slims.web.id/docs/development-guide/about)
+*   [Struktur Direktori](http://slims.web.id/docs/development-guide/directorystructure)
+*   [Alur](http://slims.web.id/docs/development-guide/Alur/OPAC)
+    
+*   [Plugin](http://slims.web.id/docs/development-guide/Plugin/Intro)
+    
+    *   [Pengantar](http://slims.web.id/docs/development-guide/Plugin/Intro)
+    *   [Membuat Plugin Sederhana](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-sederhana)
+    *   [Membuat plugin modifikasi halaman tertentu di OPAC](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-halaman-pada-OPAC)
+    *   [Cara membuat plugin diarea admin](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-pada-area-admin)
+    *   [Migration](http://slims.web.id/docs/development-guide/Plugin/Migration)
+*   [Database](http://slims.web.id/docs/development-guide/Database/Intro)
+    
+*   [Console](http://slims.web.id/docs/development-guide/Console/Intro)
+    
+*   [Http](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+    
+*   [Cache](http://slims.web.id/docs/development-guide/Cache/Penggunaan)
+    
+*   [Helpers](http://slims.web.id/docs/development-guide/Helpers)
+
+*   [](http://slims.web.id/docs/)
+*   Plugin
+*   Migration
+
+On this page
+
+Migration
+=========
+
+Ini merupakan bagian dari fitur `Plugin` yang digunakan untuk melakukan proses migrasi basis data atau akrab dikenal sebagai Database Migration. Sebuah proses dimana anda sebagai pengembang/_developer_ plugin dapat dengan leluasa memindahkan struktur tabel yang anda buat khusus untuk plugin anda tanpa perlu repot memindahkan manual dengan mengekspor file .sql dll kedalam database anda.
+
+### Langkah-Langkah[​](http://slims.web.id/docs/development-guide/Plugin/Migration#langkah-langkah "Direct link to heading")
+
+1.  Buat sebuah folder bernama `migration` didalam folder anda
+    
+2.  Buat sebuah file dengan nama `1_CreateBase.php` (nama bisa desuaikan). Setiap nama yang dibuat wajib diawali dengan angka dan dipisahkan dengan "\_" (garis bawah) misalnya `2_ModifyColumn.php` dst. Pemberi nomor bertujuan untuk mengurutkan proses migrasi dari awal hingga akhir dan nama setelah nomor tidak boleh ada yang sama.
+    
+3.  Buka file yang sudah anda buat lalu isinya sebagai berikut:
+    
+    ```
+    <?phpuse SLiMS\Migration\Migration;class CreateBase extends Migration{    function up() {        // tulis disini    }    function down() {        // tulis disini    }}
+    ```
+    
+    #### Penjelasan[​](http://slims.web.id/docs/development-guide/Plugin/Migration#penjelasan "Direct link to heading")
+    
+    ##### Up[​](http://slims.web.id/docs/development-guide/Plugin/Migration#up "Direct link to heading")
+    
+    ```
+    function up()
+    ```
+    
+    Metoda/method ini akan dijalan ketika plugin diaktifkan. Anda dapat meletakan proses pembuatan tabel,kolom dll yang berkaitan dengan struktur basis data SLiMS yang hendak anda ubah.
+    
+    ##### Down[​](http://slims.web.id/docs/development-guide/Plugin/Migration#down "Direct link to heading")
+    
+    ```
+    function down()
+    ```
+    
+    Kebalikan dari metoda seblumnya. Proses yang bisa anda lakukab seperti menghapus struktur tabel, tabel, kolom dll.
+    
+
+### Simpulan[​](http://slims.web.id/docs/development-guide/Plugin/Migration#simpulan "Direct link to heading")
+
+Anda dapat menulis _query_ untuk melakukan proses migrasi dengan pustaka yang sudah disedikan oleh SLiMS seperti [`SLiMS\DB`](http://slims.web.id/docs/development-guide/Database/Penggunaan) contoh:
+
+```
+function up() {    \SLiMS\DB::getInstance()->query(<<<SQL    CREATE TABLE IF NOT EXISTS `test` {        id int,        nama varchar(255),        nama_akhir varchar(255)    }    SQL);}
+```
+
+[Previous Cara membuat plugin diarea admin](http://slims.web.id/docs/development-guide/Plugin/Membuat-plugin-modifikasi-pada-area-admin)[Next Pengantar](http://slims.web.id/docs/development-guide/Database/Intro)
+
+*   [Langkah-Langkah](http://slims.web.id/docs/development-guide/Plugin/Migration#langkah-langkah)
+*   [Simpulan](http://slims.web.id/docs/development-guide/Plugin/Migration#simpulan)
+
+Contents
+
+*   [User Guide](http://slims.web.id/docs/user-guid/about)
+*   [Development Guide](http://slims.web.id/docs/development-guide)
+
+Community
+
+*   [Facebook](https://www.facebook.com/groups/senayan.slims)
+
+More
+
+*   [Download SLiMS](https://github.com/slims/slims9_bulian/releases)
+*   [GitHub](https://github.com/slims/)
+
+Copyright © 2024 SLiMS. Built with Docusaurus.
+
+Title: Pengantar | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Database/Intro
+
+Markdown Content:
+SLiMS menggunakan MySQL/MariaDB sebagai default RDMS (_Relational Database Management System_) untuk menyimpan data. Adapun ini tidak menutup bahwa SLiMS tidak dapat menggunakan _database_ selain RDBMS. Pada kasus tertentu SLiMS dapat diintegrasikan dengan _database_ No-SQL seperti Redis, ElasticSearch, SOLR, dan MeiliSearch dll bergantung kepada kebutuhan masing-masing pengguna.
+
+Konfigurasi mengenai _database_ di SLiMS tersimpan di **config/database.php**. File tersebut terbentuk secara otomatis ketika anda pertama kali menginstall SLiMS melalui _installer_ bawaan dari SLiMS. Namun, anda dapat mengubahnya secara manual jika memang memungkinkan. Berikut isi dari file tersebut:
+
+```
+<?phpreturn [    /**     * Default database node profile     */    'default_profile' => 'SLiMS',    /**     * SLiMS as Service, One SLiMS for many library     * ----------------------------------------------------     *      * Switching database node access based on rule,     * such as domain, ip, port etc     *      * How to :     * 1. make file with name database_proxy.php in config/     * 2. make your own rule in that file.     * 3. change this value to true     */    'proxy' => false,    /**     * Nodes profile     */    'nodes' => [        'SLiMS' => [            'host' => '_DB_HOST_',            'database' => '_DB_NAME_',            'port' => '_DB_PORT_',            'username' => '_DB_USER_',            'password' => '_DB_PASSWORD_',            'options' => [                'storage_engine' => '_STORAGE_ENGINE_'            ]        ]    ]];
+```
+
+Terkait `_STORAGE_ENGINE_` bersifat opsional yang berisi nama _[storage engine](https://dev.mysql.com/doc/refman/8.0/en/storage-engines.html)_ yang digunakan oleh SLiMS pada MySQL/MariaDB.
+
+```
+    ....    'nodes' => [        'SLiMS' => [            'host' => '_DB_HOST_',            'database' => '_DB_NAME_',            'port' => '_DB_PORT_',            'username' => '_DB_USER_',            'password' => '_DB_PASSWORD_',            'options' => [                'storage_engine' => '_STORAGE_ENGINE_'            ]        ],        'non-default' => [            'host' => '_DB_HOST_',            'database' => '_DB_NAME_',            'port' => '_DB_PORT_',            'username' => '_DB_USER_',            'password' => '_DB_PASSWORD_',            'options' => [                'storage_engine' => '_STORAGE_ENGINE_'            ]        ],        // tambahkan yang lain    ]
+```
+
+Title: Penggunaan Database | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Database/Penggunaan
+
+Markdown Content:
+Sejak versi 9 (Bulian), SLiMS hadir dengan dua cara untuk berkomunikasi dengan database yaitu MySQLi dan PDO. Adapun kedua nya sama-sama berfungsi untuk mengambil data dari MySQL/MariaDB via PHP dengan penulisan sintak yang berbeda. Berikut contohnya:
+
+#### MySQLi[​](http://slims.web.id/docs/development-guide/Database/Penggunaan#mysqli "Direct link to heading")
+
+```
+<?php// Mengambil data tunggal$query = $dbs->query('select * from `biblio` where `biblio_id` = 1');$data = $query->fetch_assoc(); // alternative lain $query->fetch_array(), $query->fetch_row(), $query->fetch_object()// Mengambil data jamak// selalu gunakan metoda escape_string // ketika hendak memasukan input user kedalam query anda// untuk menghindari SQL Injection$title = $dbs->escape_string($_GET['title']); $query = $dbs->query("select * from `biblio` where `title` like '%$title%'");$result = [];while($data = $query->fetch_assoc()) {    $result[] = $data;}// lakukan sesuatu dibawah ini berdasarkan data yang anda ambil
+```
+
+#### PDO[​](http://slims.web.id/docs/development-guide/Database/Penggunaan#pdo "Direct link to heading")
+
+```
+<?phpuse SLiMS\DB;// Mengambil data tunggal$query = DB::getInstance()->query('select * from `biblio` where `biblio_id` = 1');$data = $query->fetch(PDO::FETCH_ASSOC); // alternative lain $query->fetch(PDO::FETCH_NUM), $query->fetch(PDO::FETCH_OBJ), $query->fetchObject() dll// Mengambil data jamak// selalu gunakan prepare statement // ketika hendak memasukan input user kedalam query anda// untuk menghindari SQL Injection$query = DB::getInstance()->prepare("select * from `biblio` where `title` like ?");$query->execute(['%'.$_GET['title'].'%']);// atau$query = DB::getInstance()->prepare("select * from `biblio` where `title` like :title");$query->execute(['title' => '%'.$_GET['title'].'%']);$result = [];while($data = $query->fetch(PDO::FETCH_ASSOC)) {    $result[] = $data;}// lakukan sesuatu dibawah ini berdasarkan data yang anda ambil
+```
+
+Selengkapnya anda dapat membaca dokumentasi resmi dari [PHP mengenai penggunaan PDO](https://www.php.net/manual/en/book.pdo.php).
+
+### Perbedaan penggunaan MySQLi dan PDO[​](http://slims.web.id/docs/development-guide/Database/Penggunaan#perbedaan-penggunaan-mysqli-dan-pdo "Direct link to heading")
+
+#### Global scope[​](http://slims.web.id/docs/development-guide/Database/Penggunaan#global-scope "Direct link to heading")
+
+Ketika anda menggunakan MySQLi atau $dbs didalam sebuah `function()` maka anda tidak bisa menulis seperti ini
+
+```
+function ambilData() {    $query = $dbs->query('select * from biblio');    // skrip selanjutnya}
+```
+
+ketika anda menulis seperti skrip diatas maka PHP akan menampilkan **error** mengenai variabel `$dbs` tidak tersedia. Solusinya yaitu:
+
+```
+function ambilData($dbs) {    $query = $dbs->query('select * from biblio');    // skrip selanjutnya}// atau function ambilData() {    global $dbs;    $query = $dbs->query('select * from biblio');    // skrip selanjutnya}
+```
+
+Namun apabila anda menggunakan PDO atau `DB::class` maka anda tidak perlu menggunakan **global scope** apabia ingin memanggil nya dalam `function`. Contoh nya sebagai berikut:
+
+```
+function ambilData() {    $query = \SLiMS\DB::getInstance()->query('select * from biblio');    // skrip selanjutnya}
+```
+
+atau bisa seperti ini:
+
+```
+<?phpuse \SLiMS\DB; // unuk skrip harus dibawah <?phpfunction ambilData() {    $query = DB::getInstance()->query('select * from biblio');    // skrip selanjutnya}
+```
+
+#### Simpulan[​](http://slims.web.id/docs/development-guide/Database/Penggunaan#simpulan "Direct link to heading")
+
+Jadi kesimpulannya adalah ada dicara pemanggilannya. Jika anda menggunakan MySQLi anda harus memanfaatkan variabel $dbs, tetapi di PDO anda tidak perlu untuk menggunakan variabel untuk menggunakannya.
+
+### Menggunakan MySQLi via `DB::class`[​](http://slims.web.id/docs/development-guide/Database/Penggunaan#menggunakan-mysqli-via-dbclass "Direct link to heading")
+
+Jika anda ingin menggunakan MySQLi namun tidak bergantung pada variabel `$dbs` maka anda dapat memanggil seperti berikut:
+
+```
+$query = \SLiMS\DB::getInstance('mysqli')->query('select * from biblio');
+```
+
+atau
+
+```
+use \SLiMS\DB;$query = DB::getInstance('mysqli')->query('select * from biblio');
+```
+
+walaupun menggunakan `DB::class` anda tetap bisa menggunakan `API` dari MySQLi seperti `fetch_assoc` dll seperti berikut:
+
+```
+$result = [];while($data = $query->fetch_assoc()){    $result[] = $data;}
+```
+
+### Menganti koneksi[​](http://slims.web.id/docs/development-guide/Database/Penggunaan#menganti-koneksi "Direct link to heading")
+
+Jika anda menggunakan `\SLiMS\DB` untuk mengambil data dari _database_ maka anda dapat menggunakan lebih dari satu koneksi database. Secara bawaan pustaka tersebut menggunakan profil [nodes SLiMS](https://slims.web.id/docs/development-guide/Database/Intro#konfigurasi) untuk mengganti sebagai berikut:
+
+#### Sementara[​](http://slims.web.id/docs/development-guide/Database/Penggunaan#sementara "Direct link to heading")
+
+```
+$db1 = DB::getInstance(); // akan menggunakan profil koneksi SLiMS$db2 = DB::connection('non-default'); // akan menggunakan profil koneksi non-default (nama bisa anda sesuaikan)
+```
+
+untuk menambahkan koneksi yang lain dapat membaca pada [referensi sebelumnya](https://slims.web.id/docs/development-guide/Database/Intro#menambahkan-koneksi-lain)
+
+note
+
+Sebelum anda menggunakan MySQLi via `$dbs` atau `DB::class` dan PDO pastikan pada file yang sedang anda gunakan sudah menempatkan `require '<slims-root-path>/sysconfig.inc.php'` pada posisi paling atas setelah skrip `use SLiMS\DB;` dll;
+
+Title: Ekstensi Database | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Database/Ekstensi
+
+Markdown Content:
+Fitur ini merupakan bagian dari pustaka `SLiMS\DB` yang membantu anda dalam mengelola data yang hendak diambil dari _database_, anda dapat menggunakan ekstensi bawaan dari SLiMS yaitu `SLiMS\Query` untuk mengambil data berdasarkan kueri yang anda tulis.
+
+Query[​](http://slims.web.id/docs/development-guide/Database/Ekstensi#query "Direct link to heading")
+-----------------------------------------------------------------------------------------------------
+
+Ekstensi ini memanfaatkan **PDO** sebagai media untuk berinteraksi dengan _database_.
+
+### Penggunaan[​](http://slims.web.id/docs/development-guide/Database/Ekstensi#penggunaan "Direct link to heading")
+
+```
+use SLiMS\DB;// penulisan dasar$biblio = DB::query('select * from biblio');foreach($biblio as $data) {    echo $data['biblio_id'] . ' : ' . $data['title'] . PHP_EOL;}
+```
+
+atau jika anda hendak mengimplementasikan beberapa masukan seperti $\_POST|$\_GET.
+
+```
+$biblio = DB::query('select * from biblio where biblio_id = ?', [$_POST['id']]);
+```
+
+skrip diatas menerapkan `PDOStatement` sebelum data diproses.
+
+### Opsi[​](http://slims.web.id/docs/development-guide/Database/Ekstensi#opsi "Direct link to heading")
+
+Beberapa opsi yang dapat digunakan yaitu:
+
+1.  `setConnection` : mengatur profil koneksi yang akan digunakan
+2.  `setDefaultOutput` : mengatur tipe data yang di olah seperti PDO::FETCH\_OBJ dll (bawaan : PDO::FETCH\_ASSOC);
+3.  `first` : mengambil data pertama
+4.  `last` : mengambil data terakhir
+
+#### Mengatur koneksi[​](http://slims.web.id/docs/development-guide/Database/Ekstensi#mengatur-koneksi "Direct link to heading")
+
+lihat pada [referensi sebelumnya](https://slims.web.id/docs/development-guide/Database/Penggunaan#menganti-koneksi) mengenai manajemen koneksi
+
+```
+$biblio->setConnection('non-default');
+```
+
+#### Mengatur keluaran sebagai objek[​](http://slims.web.id/docs/development-guide/Database/Ekstensi#mengatur-keluaran-sebagai-objek "Direct link to heading")
+
+```
+$biblio->setDefaultOutput(PDO::FETCH_OBJ);
+```
+
+Title: Membuat Ekstensi Database Anda Sendiri | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi
+
+Markdown Content:
+Apabila anda memiliki ide atau gagasan lain mengenai cara mengambil data dari _database_ dengan menggunakan pustaka `SLiMS\DB` sesuai gaya anda, SLiMS memfasilitasi hal tersebut dengan fitur ini sebagai contoh mengintegrasikan dengan [Laravel Database Query Builder](https://laravel.com/docs/queries).
+
+### Langkah-langkah[​](http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi#langkah-langkah "Direct link to heading")
+
+Perihal modifikasi, SLiMS hadir dengan [sistem plugin](https://slims.web.id/docs/development-guide/Plugin/Intro), maka ekstensi yang akan anda buat juga tidak akan lepas dari sistem tersebut agar perubahan yang dibuat tersenteralisasi di satu tempat yaitu direktori `plugins/` maka anda perlu belajar membuat plugin dulu, setelah anda paham bagaimana membuat plugin di SLiMS berikut langkah nya membuat ekstensi:
+
+#### 1\. Pasang/_install_ pustaka illuminate/database menggunakan composer.[​](http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi#1-pasanginstall-pustaka-illuminatedatabase-menggunakan-composer "Direct link to heading")
+
+Buat plugin anda seperti yang sudah dijelaskan pada [materi sebelumnya](https://slims.web.id/docs/development-guide/Plugin/Intro).
+
+#### 2\. Pasang/_install_ pustaka illuminate/database menggunakan composer.[​](http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi#2-pasanginstall-pustaka-illuminatedatabase-menggunakan-composer "Direct link to heading")
+
+```
+composer require illuminate/database 
+```
+
+#### 3\. Membuat file ekstensi database.[​](http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi#3-membuat-file-ekstensi-database "Direct link to heading")
+
+buat file Builder.php pada folder plugin yang sudah anda buat.
+
+#### 4\. Isi dari file Builder.php[​](http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi#4-isi-dari-file-builderphp "Direct link to heading")
+
+```
+<?phpuse Illuminate\Database\Capsule\Manager;class Builder extends Manager{    public function __construct()    {        parent::__construct();        $database = config('database');        $defaultDatabase = $database['default_profile'];        foreach ($database['nodes'] as $name => $detail) {            if (!isset($detail['driver'])) $detail['driver'] = 'mysql';            unset($detail['options']);            $this->addConnection($detail, $name === $defaultDatabase ? 'default' : $name);        }        $this->setAsGlobal();    }}
+```
+
+#### 5\. Mendafarkan ekstensi[​](http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi#5-mendafarkan-ekstensi "Direct link to heading")
+
+Buka file `.plugin.php` pada folder plugin anda, lalu tambah skrip sebagai berikut:
+
+```
+require __DIR__ . '/vendor/autoload.php';require __DIR__ . '/Builder.php';\SLiMS\DB::registerExtension(name: 'builder', class: Builder::class);
+```
+
+#### 6\. Aktifkan Plugin pada modul sistem[​](http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi#6-aktifkan-plugin-pada-modul-sistem "Direct link to heading")
+
+### Cara menggunakan[​](http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi#cara-menggunakan "Direct link to heading")
+
+Petunjuk detail penggunaannya dapat anda lihat pada [dokumentasi resminya](https://laravel.com/docs/queries). Berikut cara menggunakan ekstensi yang anda buat:
+
+```
+<?phpuse SLiMS\DB;$builder = DB::builder();$biblio = $builder->table('biblio')->limit(10)->get();$item = $builder->table('item')->select('biblio_id','item_code')->where('biblio_id', 1)->get();
+```
+
+### Simpulan[​](http://slims.web.id/docs/development-guide/Database/Membuat%20Ekstensi#simpulan "Direct link to heading")
+
+dengan kemampuan ini anda dapat variasi-varias mengenai database secara global dapat diakses dari banyak file di SLiMS melalui `DB::class`
+
+Title: Schema | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Database/Schema
+
+Markdown Content:
+Fitur yang digunakan untuk mengelola struktur basis data SLiMS seperti menambah, menghapus, merubah dll. Fitur ini biasa digunakan pada proses migrasi di sistem plugin.
+
+Penggunaan[​](http://slims.web.id/docs/development-guide/Database/Schema#penggunaan "Direct link to heading")
+-------------------------------------------------------------------------------------------------------------
+
+### Membuat tabel[​](http://slims.web.id/docs/development-guide/Database/Schema#membuat-tabel "Direct link to heading")
+
+```
+<?phpuse SLiMS\Table\Schema;use SLiMS\Table\Blueprint;function up(){    // Membuat tabel    Schema::create('read_counter', function(Blueprint $table){        // Format : {object_blueprint} -> {tipe_kolom} -> {isi bawaan}        // storage engine        $table->engine = 'MyISAM';        // character set        $table->charset = 'utf8mb4';        // Collate        $table->collation = 'utf8mb4_unicode_ci';        // membuat kolom beranam id dengan fungsi ikrement        $table->autoIncrement('id');        // membuat kolom bernama item_code tipe varchar dengan        // lebar data 20 dan tidak nulll        $table->string('item_code', 20)->notNull();        $table->string('title', 255)->notNull();                // Membuat kolom dengan tipe datetime bernama created_at        $table->datetime('created_at')->notNull();        // pentunjuk selengkapnya ada di lib/Table/Blueprint.php    });}
+```
+
+### Menghapus tabel[​](http://slims.web.id/docs/development-guide/Database/Schema#menghapus-tabel "Direct link to heading")
+
+```
+<?phpuse SLiMS\Table\Schema;use SLiMS\Table\Blueprint;function down(){    // Membuat tabel    Schema::drop('read_counter');}
+```
+
+### Mengosongkan tabel[​](http://slims.web.id/docs/development-guide/Database/Schema#mengosongkan-tabel "Direct link to heading")
+
+```
+<?phpuse SLiMS\Table\Schema;use SLiMS\Table\Blueprint;function down(){    // Membuat tabel    Schema::truncate('read_counter');}
+```
+
+### Mengubah kolom pada tabel[​](http://slims.web.id/docs/development-guide/Database/Schema#mengubah-kolom-pada-tabel "Direct link to heading")
+
+```
+<?phpuse SLiMS\Table\Schema;use SLiMS\Table\Blueprint;function down(){    // Membuat tabel    Schema::table('read_counter', function(Blueprint $table){        // Format : {object_blueprint} -> {tipe_kolom} -> {isi bawaan} -> {pernyataan (drop,change, add)}        // Merubah lebar data        $table->string('item_code', 50)->notNull()->change();        // Menghapus kolom        $table->drop('kolom_test');        // Menambah kolom baru        $table->string('gmd', 5)->nullable()->after('title')->add();    });}
+```
+
+### Mendapatkan meta data dari subah Tabel dan Kolom[​](http://slims.web.id/docs/development-guide/Database/Schema#mendapatkan-meta-data-dari-subah-tabel-dan-kolom "Direct link to heading")
+
+```
+<?phpuse SLiMS\Table\Schema;use SLiMS\Table\Blueprint;function up(){    // Ketersediaan    Schema::table('biblio')->isExists(); // mengecek ketersediaan tabel    Schema::table('biblio')->isEmpty();    Schema::table('biblio')->column('title')->isExists(); // mengecek ketersediaan kolom title pada tabel biblio    // Tipe data    Schema::table('biblio')->column('title')->isNull(); // cek apakah isi bawaan mua itu null?    Schema::table('biblio')->column('title')->isPrimary(); // apakah kolom tersebut adalah primary?    Schema::table('biblio')->column('title')->isUnique(); // apakah kolom title memiliki key unique?    Schema::table('biblio')->column('title')->isFullText(); // apakah kolom teks menggunakan key full text    Schema::table('biblio')->column('title')->isAutoincrement(); // apakah nilai kolom title bertambah setiap ada databaru?    // mengambil informasi tabel    Schema::table('biblio')->getEngine(); // mendapat kan storage engine . Contoh : MyISAM,Aria,InnoDB    Schema::table('biblio')->getRowCount(); // medapatkan jumlah baris pada tabel    Schema::table('biblio')->getCollation(); // mendapatkan kolasi dari tabel    Schema::table('biblio')->getAutoincrement(); // mendapatkan nilai terakhir dari AutoIncrement    Schema::table('biblio')->getComment()); // mendapatkan komentar pada tabel    // mengambil informasi kolom    Schema::table('biblio')->column('title')->getType(); // mendapatkan tipe data. Contoh : varchar dll    Schema::table('biblio')->column('title')->getPosition(); // mendapatkan posisi lokasi kolom pada tabel tersebut    Schema::table('biblio')->column('title')->getCollation(); // medapatkan kolasinya    Schema::table('biblio')->column('title')->getAutoincrement(); // mendapatkan status apakah dia auto increment atau tidak    Schema::table('biblio')->column('title')->getComment(); // mendapatkan komentar    Schema::table('biblio')->column('title')->getMaxLength(); // mendapatkan panjang maksimal dari kolom tersebut.    Schema::table('biblio')->column('title')->getKey(); // mendapatkan key, seperti PrimaryKey, Unique, Index, Mul}
+```
+
+Title: Penjelasan | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Console/Intro
+
+Markdown Content:
+Penjelasan | A page for SLiMS User, and Developer
+===============   
+
+[Skip to main content](http://slims.web.id/docs/development-guide/Console/Intro#docusaurus_skipToContent_fallback)
+
+[![Image 1: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png)![Image 2: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png) **SLiMS**](http://slims.web.id/docs/)[User Guide](http://slims.web.id/docs/user-guide/about)[Development Guide](http://slims.web.id/docs/development-guide/about)[APi](https://slims.web.id/api/)
+
+[GitHub](https://github.com/slims/)
+
+*   [Preambul](http://slims.web.id/docs/development-guide/about)
+*   [Struktur Direktori](http://slims.web.id/docs/development-guide/directorystructure)
+*   [Alur](http://slims.web.id/docs/development-guide/Alur/OPAC)
+    
+*   [Plugin](http://slims.web.id/docs/development-guide/Plugin/Intro)
+    
+*   [Database](http://slims.web.id/docs/development-guide/Database/Intro)
+    
+*   [Console](http://slims.web.id/docs/development-guide/Console/Intro)
+    
+    *   [Penjelasan](http://slims.web.id/docs/development-guide/Console/Intro)
+    *   [Cara penggunaan](http://slims.web.id/docs/development-guide/Console/cara-penggunaan)
+    *   [Tarsius](http://slims.web.id/docs/development-guide/Console/Tarsius)
+    *   [Membuat Command Anda Sendiri](http://slims.web.id/docs/development-guide/Console/MembuatCommandSendiri)
+*   [Http](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+    
+*   [Cache](http://slims.web.id/docs/development-guide/Cache/Penggunaan)
+    
+*   [Helpers](http://slims.web.id/docs/development-guide/Helpers)
+
+*   [](http://slims.web.id/docs/)
+*   Console
+*   Penjelasan
+
+Penjelasan
+==========
+
+Console merupakan fitur SLiMS yang terinspirasi dari fitur Laravel Artisan yang digunakan untuk kebutuhan belakang layar seperti backup terjadwal, pengiriman surel keterlambatan peminjaman secara masal dll. Hadir sejak versi 9.6.0 memberikan anda keleluasaan dalam mengembangkan SLiMS sesuai kebutuhan anda.
+
+![Image 3: SLiMS Console](http://slims.web.id/docs/assets/images/console-meta-image-91aee65cb845803834b92cd7d270aa73.png)
+
+[Previous Schema](http://slims.web.id/docs/development-guide/Database/Schema)[Next Cara penggunaan](http://slims.web.id/docs/development-guide/Console/cara-penggunaan)
+
+Contents
+
+*   [User Guide](http://slims.web.id/docs/user-guid/about)
+*   [Development Guide](http://slims.web.id/docs/development-guide)
+
+Community
+
+*   [Facebook](https://www.facebook.com/groups/senayan.slims)
+
+More
+
+*   [Download SLiMS](https://github.com/slims/slims9_bulian/releases)
+*   [GitHub](https://github.com/slims/)
+
+Copyright © 2024 SLiMS. Built with Docusaurus.
+
+Title: Cara penggunaan | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Console/cara-penggunaan
+
+Markdown Content:
+### Pengantar[​](http://slims.web.id/docs/development-guide/Console/cara-penggunaan#pengantar "Direct link to heading")
+
+Fitur ini membutuhkan antarmuka berbasis perintah atau sering dikenal dengan CLi. Maka anda diwajibkan sudah paham terkait penggunaan aplikasi pendukung fitur ini seperti pada Micrsoft Windows: Command Prompt, Windows Terminal atau PowerShell, pada GNU Linux: Terminal, Konsol, dll.
+
+### Langkah memulai[​](http://slims.web.id/docs/development-guide/Console/cara-penggunaan#langkah-memulai "Direct link to heading")
+
+1.  Buka konsole anda (Command Prompt dll)
+2.  Masuk kedalam folder : `cd <slims-root>/`. Contoh nya `cd /var/www/html/slims9_bulian`
+3.  ketik : `php index.php`, maka akan muncul keluaran sebagai berikut:
+
+![Image 1: SLiMS Console](https://slims.web.id/docs/assets/images/console-meta-image-91aee65cb845803834b92cd7d270aa73.png)
+
+### Praktik Penggunaan[​](http://slims.web.id/docs/development-guide/Console/cara-penggunaan#praktik-penggunaan "Direct link to heading")
+
+Terdapat beberapa perintah yang tersedia seperti status, db dan plugins. Berikut ini contoh cara penggunaannya.
+
+#### Menampilkan status SLiMS[​](http://slims.web.id/docs/development-guide/Console/cara-penggunaan#menampilkan-status-slims "Direct link to heading")
+
+![Image 2: status](https://slims.web.id/docs/assets/images/console-06-status-07d4264f963e7f9b5b04964c027d8fa4.png)
+
+#### Menampilkan daftar plugin yang aktif[​](http://slims.web.id/docs/development-guide/Console/cara-penggunaan#menampilkan-daftar-plugin-yang-aktif "Direct link to heading")
+
+```
+php index.php plugin:list
+```
+
+![Image 3: daftar](https://slims.web.id/docs/assets/images/console-06-olugin-list-10da611260a45731bb08d9092f567f70.png)
+
+### Penjelasan[​](http://slims.web.id/docs/development-guide/Console/cara-penggunaan#penjelasan "Direct link to heading")
+
+format penulisan perintah pada SLiMS Console
+
+` php index.php [perintah] [opsi]`
+
+Contoh:
+
+`php index.php plugin:list --type=all`
+
+Keterangan
+
+*   **php** : perintah PHP pada konsole anda, php.exe pada sistem operasi windows
+*   **index.php** : file yang berisi skrip PHP yang mengelola perintah `plugin:list`
+*   **plugin:list** : merupakan nama perintah + sub perintah nya. Jadi anda dapat membuat variasi perintah yang saling berkaitan, semisal dalam perntah `plugin` anda dapat memecah nya menjadi beberapa sub perintah seperti `:list`,`:detail`, `:activate`, dan `:deactivate` yang berdiri sendiri namun memiliki nama awalan yang sama yaitu `plugin`. Namun pemecahan sebuah perintah menjadi sub-perintah tidak lah wajib. Apabila anda ingin perintah yang tunggal tidak perlu menambahkan akhiran seperti yang ada diatas. Contoh nya adalah perintah `status`.
+*   **\--type=all** : opsi yang tersedia pada perintah tersebut yang memberitahu bahwa anda meminta daftar plugin secara lengkap menggunakan kriteria plugin yang aktif dan tidak aktif. Karena opsional maka penulisan ini tidak wajib digunakan.
+
+Title: Tarsius | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Console/Tarsius
+
+Markdown Content:
+Tarsius | A page for SLiMS User, and Developer
+===============   
+
+[Skip to main content](http://slims.web.id/docs/development-guide/Console/Tarsius#docusaurus_skipToContent_fallback)
+
+[![Image 1: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png)![Image 2: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png) **SLiMS**](http://slims.web.id/docs/)[User Guide](http://slims.web.id/docs/user-guide/about)[Development Guide](http://slims.web.id/docs/development-guide/about)[APi](https://slims.web.id/api/)
+
+[GitHub](https://github.com/slims/)
+
+*   [Preambul](http://slims.web.id/docs/development-guide/about)
+*   [Struktur Direktori](http://slims.web.id/docs/development-guide/directorystructure)
+*   [Alur](http://slims.web.id/docs/development-guide/Alur/OPAC)
+    
+*   [Plugin](http://slims.web.id/docs/development-guide/Plugin/Intro)
+    
+*   [Database](http://slims.web.id/docs/development-guide/Database/Intro)
+    
+*   [Console](http://slims.web.id/docs/development-guide/Console/Intro)
+    
+    *   [Penjelasan](http://slims.web.id/docs/development-guide/Console/Intro)
+    *   [Cara penggunaan](http://slims.web.id/docs/development-guide/Console/cara-penggunaan)
+    *   [Tarsius](http://slims.web.id/docs/development-guide/Console/Tarsius)
+    *   [Membuat Command Anda Sendiri](http://slims.web.id/docs/development-guide/Console/MembuatCommandSendiri)
+*   [Http](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+    
+*   [Cache](http://slims.web.id/docs/development-guide/Cache/Penggunaan)
+    
+*   [Helpers](http://slims.web.id/docs/development-guide/Helpers)
+
+*   [](http://slims.web.id/docs/)
+*   Console
+*   Tarsius
+
+Tarsius
+=======
+
+Tarsius atau Krabuku merupakan nama hewan primata khas asia tenggara yang menjadi maskot dari SLiMS. Tak hanya menjadi maskot nama tarsius juga digunakan sebagai program baris perintah/_Command Line Interface_ untuk melakukab proses kerja di balik layar / _background process_ seperti menyalin basisdata / _backup database_, mengirim surel/ _E-Mail_ .
+
+Pada mulanya anda diperkenalkan fitur `Console` sebagai berikut pada terminal/konsol anda:
+
+```
+php index.php
+```
+
+Alternatif lainnya yaitu anda dapat menggunakan `tarsius`. Cara sebagai berikutL:
+
+```
+php index.php tarsius
+```
+
+Maka SLiMS akan membuat file baru di folder utama aplikasi ini yang bernama tarsius. Setelah itu anda dapat berinteraksi dengan SLiMS dengan format
+
+```
+php tarsius
+```
+
+Title: Membuat Command Anda Sendiri | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Console/Membuat%20Command%20Sendiri
+
+Markdown Content:
+_Command_ meruapakan bagian dari fitur `console` yang berbentuk program yang berisi perintah-perintah yang digunakan untuk menyelesaikan pekerjaan tertentu yang berjalan di lingkungan antarmuka baris perintah / _Command Line Interface_. Secara bawaan SLiMS sudah hadir dengan _Command_ seperti _backup database_,_Plugin Info_,_SLiMS Info_, dan _Command Maker_. Pada laman ini akan dibahas bagaimana membuat _Command_ anda sendiri.
+
+### Langkah-Langkah[​](http://slims.web.id/docs/development-guide/Console/Membuat%20Command%20Sendiri#langkah-langkah "Direct link to heading")
+
+1.  Siapkan terminal anda terlebih dahulu, lalu masuk ke dalam direktori SLiMS
+    
+2.  Lalu ketik perintah sebagai berikut:
+    
+    ```
+    php tarsius make:command MailOverdue
+    ```
+    
+    baris perintah diatas akan memberitahu SLiMS untuk membuat sebuah _Command_ yang bernama Mail.php yang nanti akan tersimpan di direktori `plugins/Commands/`.
+    
+3.  Buka file Mail.php pada folder `plugins/Commands`. Maka anda kan melihat skrip sebagai berikut:
+    
+    ```
+    <?phpnamespace Commands;use SLiMS\Cli\Command;class MailOverdue extends Command{    /**     * Signature is combination of command name     * argument and options     *     * @var string     */    protected string $signature = 'command:name';    /**     * Command description     *     * @var string     */    protected string $description = 'Command description';    /**     * Handle command process     *     * @return void     */    public function handle()    {        // write your code here    }} 
+    ```
+    
+    Penjelasan:
+    
+    #### Nama objek[​](http://slims.web.id/docs/development-guide/Console/Membuat%20Command%20Sendiri#nama-objek "Direct link to heading")
+    
+    ```
+    class MailOverdue extends Command
+    ```
+    
+    Kata `MailOverdue` berasal dari nama yang anda tulis pada langkah ke 2
+    
+    #### Signature[​](http://slims.web.id/docs/development-guide/Console/Membuat%20Command%20Sendiri#signature "Direct link to heading")
+    
+    ```
+    protected string $signature = 'command:name';
+    ```
+    
+    ini merupakan ciri khas dari _command_ yang anda buat. Maka anda bisa mengganti nya menjadi yang lain. Contohnya
+    
+    ```
+    protected string $signature = 'mail:overdue';
+    ```
+    
+    _signature_ dapat berbentuk kata tunggal atau lebih. Jika anda membuat signature dengan lebih dari satu maka anda perlu memisahkannya dengan tanda ":" (titik dua) seperti diatas. Penggunan karakter pemisah disini digunakan untuk memberitahu SLiMS bahwa anda membuat _Command_ yang topik nya sama namun tugas nya berbeda-beda contoh :
+    
+    ![Image 1: SLiMS Console](https://slims.web.id/docs/assets/images/console-command-group-0fe12a72688c931bc83663c2ba7a9082.png)
+    
+    Pada gambar diatas anda dapat melihat terdapat _Command_ yang sama yaitu `db` namun memiliki tugas yang berbeda.
+    
+    #### Description[​](http://slims.web.id/docs/development-guide/Console/Membuat%20Command%20Sendiri#description "Direct link to heading")
+    
+    ```
+    protected string $description = 'Command description';
+    ```
+    
+    Ini merupakan kalimat deskripsi untuk _Command_ anda yang bertujuan untuk menginformasikan ke pada anda/pengguna lain mengenai cara kerjanya. Dapat anda rubah misalkan seperti berikut:
+    
+    ```
+    protected string $description = 'Untuk mengirim email keterlambatan peminjaman anggota';
+    ```
+    
+    #### Handle[​](http://slims.web.id/docs/development-guide/Console/Membuat%20Command%20Sendiri#handle "Direct link to heading")
+    
+    ```
+    public function handle(){    // write your code here}
+    ```
+    
+    Bagian ini merupakan tempat dimana anda meletakan segala macam proses yang akan anda lakukan, karena pada contoh ini anda membuat _Command_ yang berkaitan dengan _E-Mail_ maka anda dapat memanfaatkan pustaka `\SLiMS\Mail` yang ada di SLiMS.
+    
+
+        Implementasi
+        php tarsius mail:overdue
+
+Title: Permulaan | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Http/Client/Permulaan
+
+Markdown Content:
+Permulaan | A page for SLiMS User, and Developer
+===============   
+
+[Skip to main content](http://slims.web.id/docs/development-guide/Http/Client/Permulaan#docusaurus_skipToContent_fallback)
+
+[![Image 1: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png)![Image 2: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png) **SLiMS**](http://slims.web.id/docs/)[User Guide](http://slims.web.id/docs/user-guide/about)[Development Guide](http://slims.web.id/docs/development-guide/about)[APi](https://slims.web.id/api/)
+
+[GitHub](https://github.com/slims/)
+
+*   [Preambul](http://slims.web.id/docs/development-guide/about)
+*   [Struktur Direktori](http://slims.web.id/docs/development-guide/directorystructure)
+*   [Alur](http://slims.web.id/docs/development-guide/Alur/OPAC)
+    
+*   [Plugin](http://slims.web.id/docs/development-guide/Plugin/Intro)
+    
+*   [Database](http://slims.web.id/docs/development-guide/Database/Intro)
+    
+*   [Console](http://slims.web.id/docs/development-guide/Console/Intro)
+    
+*   [Http](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+    
+    *   [Client](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+        
+        *   [Permulaan](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+        *   [Cara Penggunaan](http://slims.web.id/docs/development-guide/Http/Client/cara-penggunaan)
+        *   [Download File](http://slims.web.id/docs/development-guide/Http/Client/download-file)
+        *   [Stream File](http://slims.web.id/docs/development-guide/Http/Client/stream-file)
+*   [Cache](http://slims.web.id/docs/development-guide/Cache/Penggunaan)
+    
+*   [Helpers](http://slims.web.id/docs/development-guide/Helpers)
+
+*   [](http://slims.web.id/docs/)
+*   Http
+*   Client
+*   Permulaan
+
+On this page
+
+Permulaan
+=========
+
+HttpClient pada SLiMS merupakan pustaka yang digunakan untuk berkomunikasi dengan layanan lain melalui prokol http seperti Rest APi dll. Dibangun diatas pustaka `guzzlehttp/guzzle` dengan penulis skrip yang mudah untuk digunakan.
+
+Prasyarat[​](http://slims.web.id/docs/development-guide/Http/Client/Permulaan#prasyarat "Direct link to heading")
+-----------------------------------------------------------------------------------------------------------------
+
+Berikut beberapa prasyarat yang harus anda lengkapi sebelum memulai:
+
+1.  Dasar pengolahan data
+2.  Memahami basic _Http Request_
+3.  PHP OOP
+
+Title: Cara Penggunaan | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Http/Client/cara-penggunaan
+
+Markdown Content:
+Untuk menggunakan pustaka `HttpClient` anda menggunakan sintak sebagai berikut:
+
+#### Permintaan dengan metoda `GET`[​](http://slims.web.id/docs/development-guide/Http/Client/cara-penggunaan#permintaan-dengan-metoda-get "Direct link to heading")
+
+Jika anda hendak mengambil sumber data dari layanan luar maka anda perlu menggunakan metoda `GET`.
+
+```
+<?phpuse SLiMS\Http\Client;$request = Client::get('https://slims.web.id/kutipan/');
+```
+
+#### Permintaan dengan metoda `POST`[​](http://slims.web.id/docs/development-guide/Http/Client/cara-penggunaan#permintaan-dengan-metoda-post "Direct link to heading")
+
+Jika anda hendak mengirim data ke sumber lain maka anda perlu menggunakan metoda `POST`.
+
+```
+$request = Client::post('https://slims.web.id/kutipan/');
+```
+
+Berikut metoda yang dapat digunakan pada pustaka `SLiMS\Http\Client`:
+
+1.  get,
+2.  head,
+3.  post,
+4.  put,
+5.  delete,
+6.  options,
+7.  patch
+
+#### Menambahkan opsi[​](http://slims.web.id/docs/development-guide/Http/Client/cara-penggunaan#menambahkan-opsi "Direct link to heading")
+
+opsi disini merupakan opsi yang digunakan oleh pustaka `guzzlehttp/guzzle`.
+
+```
+$request = Client::withOption('allow_redirects', true)->get('https://slims.web.id/kutipan/');
+```
+
+#### Menambahkan banyak opsi[​](http://slims.web.id/docs/development-guide/Http/Client/cara-penggunaan#menambahkan-banyak-opsi "Direct link to heading")
+
+```
+$request = Client::withOption([    'max' => 5,    'strict' => false,    'referer' => false,    'protocols' => ['http', 'https'],    'track_redirects' => false])->get('https://slims.web.id/kutipan/');
+```
+
+`headers` merupakan opsi yang dikenali oleh pustaka `guzzlehttp/guzzle` sebagai data http header yang akan diikut sertakan dalam proses permintaan http atau _Http Request_ kepada layanan yang dituju. Namun anda dapat menulis headers tanpa perlu menulis dalam format `withOption`, cukup dengan sintak sebagai berikut:
+
+```
+$request = Client::withHeaders([    'Content-Type' => 'application/json',    'X-Authentication' => 'jka;sdljfaksjdflkoiopi'])->get('https://slims.web.id/kutipan/');
+```
+
+#### Menambahkan _body_[​](http://slims.web.id/docs/development-guide/Http/Client/cara-penggunaan#menambahkan-body "Direct link to heading")
+
+`body` merupakan opsi yang dikenali oleh pustaka `guzzlehttp/guzzle` sebagai data http body yang akan dibaca sebagai `$_POST` pada layanan yang dituju. Cara penulisnya tak berbeda jauh dengan `withHeaders`:
+
+```
+// Mengirim body sebagai teks$request = Client::withBody(json_encode([    'age' => 20]))->post('https://slims.web.id/kutipan/');// atau dalam bentuk form$request = Client::post('https://slims.web.id/kutipan/', [    'Age' => 20]);
+```
+
+#### Menggabungkan _options_, _headers_ dan _body_[​](http://slims.web.id/docs/development-guide/Http/Client/cara-penggunaan#menggabungkan-options-headers-dan-body "Direct link to heading")
+
+```
+// Mengirim body sebagai teks$request = Client::withOption('max', 20)                    ->withHeaders([                        'Content-Type' => 'application/json',                        'X-Authentication' => 'jka;sdljfaksjdflkoiopi'                    ])->withBody(json_encode([                        'age' => 20                    ]))->post('https://slims.web.id/kutipan/');
+```
+
+Title: Download File | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Http/Client/download-file
+
+Markdown Content:
+Download File | A page for SLiMS User, and Developer
+===============   
+
+[Skip to main content](http://slims.web.id/docs/development-guide/Http/Client/download-file#docusaurus_skipToContent_fallback)
+
+[![Image 1: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png)![Image 2: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png) **SLiMS**](http://slims.web.id/docs/)[User Guide](http://slims.web.id/docs/user-guide/about)[Development Guide](http://slims.web.id/docs/development-guide/about)[APi](https://slims.web.id/api/)
+
+[GitHub](https://github.com/slims/)
+
+*   [Preambul](http://slims.web.id/docs/development-guide/about)
+*   [Struktur Direktori](http://slims.web.id/docs/development-guide/directorystructure)
+*   [Alur](http://slims.web.id/docs/development-guide/Alur/OPAC)
+    
+*   [Plugin](http://slims.web.id/docs/development-guide/Plugin/Intro)
+    
+*   [Database](http://slims.web.id/docs/development-guide/Database/Intro)
+    
+*   [Console](http://slims.web.id/docs/development-guide/Console/Intro)
+    
+*   [Http](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+    
+    *   [Client](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+        
+        *   [Permulaan](http://slims.web.id/docs/development-guide/Http/Client/Permulaan)
+        *   [Cara Penggunaan](http://slims.web.id/docs/development-guide/Http/Client/cara-penggunaan)
+        *   [Download File](http://slims.web.id/docs/development-guide/Http/Client/download-file)
+        *   [Stream File](http://slims.web.id/docs/development-guide/Http/Client/stream-file)
+*   [Cache](http://slims.web.id/docs/development-guide/Cache/Penggunaan)
+    
+*   [Helpers](http://slims.web.id/docs/development-guide/Helpers)
+
+*   [](http://slims.web.id/docs/)
+*   Http
+*   Client
+*   Download File
+
+On this page
+
+Download File
+=============
+
+Dengan menggunakan pustaka `SLiMS\Http\Client` anda dapat dengan mudah mengunduh sebuah file dari layanan tertentu.
+
+### Penggunaan[​](http://slims.web.id/docs/development-guide/Http/Client/download-file#penggunaan "Direct link to heading")
+
+```
+$url = 'https://slims.web.id/web/site/templates/assets/images/logo.png';Client::download($url)->to(SB . 'images/dummy.png');// dengan opsiClient::download($url)->to(SB . 'images/dummy.png', [    'headers' => [        'X-Token' => 'aksdjflkajdfiuokljlkqweq'    ]]);
+```
+
+Title: Stream File | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Http/Client/stream-file
+
+Markdown Content:
+[Skip to main content](http://slims.web.id/docs/development-guide/Http/Client/stream-file#docusaurus_skipToContent_fallback)
+
+[![Image 1: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png)![Image 2: SLiMS Logo](https://slims.web.id/web/site/templates/assets/images/logo.png) **SLiMS**](https://slims.web.id/docs/)[User Guide](https://slims.web.id/docs/user-guide/about)[Development Guide](https://slims.web.id/docs/development-guide/about)[APi](https://slims.web.id/api/)
+
+[GitHub](https://github.com/slims/)
+
+*   [](https://slims.web.id/docs/)
+*   Http
+*   Client
+*   Stream File
+
+Mengambil sumber data dari layanan lain tanpa mengunduh nya
+
+### Penggunaan[​](http://slims.web.id/docs/development-guide/Http/Client/stream-file#penggunaan "Direct link to heading")
+
+```
+$url = 'https://slims.web.id/web/site/templates/assets/images/logo.png';Client::stream($url);// jika dengan opsi lainClient::stream($url, [    'headers' => [        'X-Token' => 'aksdjflkajdfiuokljlkqweq'    ]]);
+```
+
+Title: Penggunaan | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Cache/Penggunaan
+
+Markdown Content:
+Pustaka ini berkaitan dengan konfigurasi file pada config/cache.php, secara bawaan akan menggunakan salah satu "Provider" yang tercantum pada opsi "default". Provider yang tersedia yaitu **Files** dan **Database**. Berikut ringkasan penggunaannya :
+
+Metoda yang tersedia (Pada Provider Files dan Database)[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#metoda-yang-tersedia-pada-provider-files-dan-database "Direct link to heading")
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Membuat cache baru[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#membuat-cache-baru "Direct link to heading")
+
+```
+<?phpuse SLiMS\Cache;/** * cacheName @string * contents @string|integer|array|objek  * yang nanti akan disimpan dalam format JSON */Cache::set(cacheName: 'namacache', 'content');
+```
+
+### Mengambil cache yang sudah ada[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#mengambil-cache-yang-sudah-ada "Direct link to heading")
+
+```
+<?phpuse SLiMS\Cache;/** * cacheName @string * callBack @closure optional  */Cache::get(cacheName: 'namacache', callBack: 'fungsi_kustom_anda');
+```
+
+### Memperbaharui cache yang sudah ada[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#memperbaharui-cache-yang-sudah-ada "Direct link to heading")
+
+```
+<?phpuse SLiMS\Cache;/** * cacheName @string * contents @string|integer|array|objek  * yang nanti akan disimpan dalam format JSON */Cache::put(cacheName: 'namacache', contents: 'content');
+```
+
+### Menghapus cache yang sudah ada[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#menghapus-cache-yang-sudah-ada "Direct link to heading")
+
+```
+<?phpuse SLiMS\Cache;/** * cacheName @string */Cache::destroy(cacheName: 'namacache');
+```
+
+### Mengkosongkan|Menghapus semua cache[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#mengkosongkanmenghapus-semua-cache "Direct link to heading")
+
+```
+<?phpuse SLiMS\Cache;Cache::purge();
+```
+
+### Menampilkan semua cache yang tersimpan[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#menampilkan-semua-cache-yang-tersimpan "Direct link to heading")
+
+```
+<?phpuse SLiMS\Cache;Cache::getList();
+```
+
+### Mengecek eksistensi cache[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#mengecek-eksistensi-cache "Direct link to heading")
+
+```
+<?phpuse SLiMS\Cache;/** * cacheName @string */Cache::isExists(cacheName: 'namacache');
+```
+
+Metoda yang hanya tersedia di Provider Database[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#metoda-yang-hanya-tersedia-di-provider-database "Direct link to heading")
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Mengecek apakah cache sudah kedaluwarsa[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#mengecek-apakah-cache-sudah-kedaluwarsa "Direct link to heading")
+
+```
+<?phpuse SLiMS\Cache;/** * cacheName @string * terkait pengaturan/opsi kedaluwarsa nya anda * dapat melihat nya di config/cache.php pada  * providers database */Cache::isExpire(cacheName: 'namacache');
+```
+
+### Mengupdate cache jika sudah kedaluwarsa[​](http://slims.web.id/docs/development-guide/Cache/Penggunaan#mengupdate-cache-jika-sudah-kedaluwarsa "Direct link to heading")
+
+```
+<?phpuse SLiMS\Cache;/** * cacheName @string * contents @string|integer|array|objek  *  * sama dengan metoda Cache::put hanya saja ini * dikombinasikan dengan pengecak kedaluwarsa. */Cache::putIfExpire(cacheName: 'namacache', contents: 'content');
+```
+
+Title: Penggunaan | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Cache/membuat-provider
+
+Markdown Content:
+Contoh kita akan membuat provider terkait Cache yang disimpan pada Redis.
+
+```
+<?phpclass RedisCache extends \SLiMS\Cache\Contract{    private $options = null;    /**     * Register all options     *     * @param string $directory     */    public function __construct($optios)    {        $this->options = $options;    }    /**     * Create a new cache files/value     *     * @param string $cacheName     * @param mixed $contents     * @return void     */    public function set(string $cacheName, $contents)    {        // tulis disini kode anda    }    /**     * Get cache value     *     * @param string $cacheName     * @param string $callBack     * @return mixed     */    public function get(string $cacheName, $callBack = '')    {       // tulis disini kode anda    }    /**     * Update cache value     *     * @param string $cacheName     * @param mixed $contents     * @return bool     */    public function put(string $cacheName, $contents)    {        // tulis disini kode anda    }    /**     * Delete cache     *     * @param string $cacheName     * @return void     */    public function destroy(string $cacheName)    {        // tulis disini kode anda    }    /**     * Make cache clean as soon as posible     *     * @return void     */    public function purge()    {        // tulis disini kode anda    }    /**     * Get path or key of cache     *     * @return string     */    public function getPath()    {        // tulis disini kode anda    }    /**     * Get cache as list     *     * @return array     */    public function getList()    {        // tulis disini kode anda    }    /**     * @return boolean     */    public function isExists(string $cacheName)    {        // tulis disini kode anda    }}/** * Jika sudah membuat class seperti diatas, maka anda harus mendaftarkan provider anda * pada file config/cache.php pada opsi providers dengan format sebagai berikut *  *  'Redis' => [ *     'class' => <another-cache-provider-namespace> *     'options' => [ *         'prefix' => 'SLiMSCache:' *     ] *   ] */
+```
+
+Title: Helpers | A page for SLiMS User, and Developer
+
+URL Source: http://slims.web.id/docs/development-guide/Helpers
+
+Markdown Content:
+SLiMS hadir dengan berbagai macam fungsi PHP yang dapat digunakan untuk mempermudah anda dalam membangun sistem otomasi anda.
+
+Fungsi yang tersedia[​](http://slims.web.id/docs/development-guide/Helpers#fungsi-yang-tersedia "Direct link to heading")
+-------------------------------------------------------------------------------------------------------------------------
+
+### Sistem[​](http://slims.web.id/docs/development-guide/Helpers#sistem "Direct link to heading")
+
+*   [\_\_](http://slims.web.id/docs/development-guide/Helpers#__)
+*   [config](http://slims.web.id/docs/development-guide/Helpers#config)
+*   [debug](http://slims.web.id/docs/development-guide/Helpers#debug)
+*   [debugBox](http://slims.web.id/docs/development-guide/Helpers#debugbox)
+*   [dd](http://slims.web.id/docs/development-guide/Helpers#dd)
+*   [dump](http://slims.web.id/docs/development-guide/Helpers#dump)
+*   [getArrayData](http://slims.web.id/docs/development-guide/Helpers#getarraydata)
+*   [isCli](http://slims.web.id/docs/development-guide/Helpers#iscli)
+*   [isDev](http://slims.web.id/docs/development-guide/Helpers#isdev)
+*   [ip](http://slims.web.id/docs/development-guide/Helpers#ip)
+*   [writeLog](http://slims.web.id/docs/development-guide/Helpers#writelog)
+*   [xssFree](http://slims.web.id/docs/development-guide/Helpers#xssfree)
+
+### Angka dan Huruf[​](http://slims.web.id/docs/development-guide/Helpers#angka-dan-huruf "Direct link to heading")
+
+*   [currency](http://slims.web.id/docs/development-guide/Helpers#currency)
+*   [number](http://slims.web.id/docs/development-guide/Helpers#number)
+*   [v](http://slims.web.id/docs/development-guide/Helpers#v)
+
+### Tampilan[​](http://slims.web.id/docs/development-guide/Helpers#tampilan "Direct link to heading")
+
+*   [toastr](http://slims.web.id/docs/development-guide/Helpers#toastr)
+
+### Http[​](http://slims.web.id/docs/development-guide/Helpers#http "Direct link to heading")
+
+#### Pengalihan[​](http://slims.web.id/docs/development-guide/Helpers#pengalihan "Direct link to heading")
+
+*   [redirect](http://slims.web.id/docs/development-guide/Helpers#redirect)
+*   [flash](http://slims.web.id/docs/development-guide/Helpers#flash)
+
+#### Url[​](http://slims.web.id/docs/development-guide/Helpers#url "Direct link to heading")
+
+*   [pluginUrl](http://slims.web.id/docs/development-guide/Helpers#pluginurl)
+*   [pluginNavigateTo](http://slims.web.id/docs/development-guide/Helpers#pluginnavigateto)
+
+Sistem[​](http://slims.web.id/docs/development-guide/Helpers#sistem-1 "Direct link to heading")
+-----------------------------------------------------------------------------------------------
+
+##### `__()`[​](http://slims.web.id/docs/development-guide/Helpers#__ "Direct link to heading")
+
+fungsi `__()` digunakan untuk melakukan proses terjemahan bahasa pada SLiMS yang diproses oleh pustaka `SLiMS\Polyglot`
+
+```
+echo __('Home'); // keluaran dalam bahasa Indonesia menjadi "Beranda"
+```
+
+##### `config()`[​](http://slims.web.id/docs/development-guide/Helpers#config "Direct link to heading")
+
+fungsi `config()` digunakan untuk memuat dan mengambil isi berkas konfigurasi yang tersimpan di folder `config/` atau pengaturan sistem yang berada pada database di tabel `setting`. Fungsi ini berkaitan dengan pustaka `SLiMS\Config`
+
+```
+echo config('library_name'); // keluaran : <nama_perpustakaan> yang diatur pada modul sistem.// jika tidak tersedia maka makan mengembalikan dengan data kosong/* Apabila anda ingin alternatif keluaran lain jika konfigurasi yang dicari tidak ditemukan maka anda bisa menambahkan argument kedua setelah nama konfigurasi.*/echo config('library_name', 'SLiMS'); // Keluaran : SLiMS jika konfigurasi library_name tidak ada/* Hasil keluaran dari fungsi ini sangatlah bermacam-macam, bergantung pada data apa yang disimpan di folder ```config/``` maupun tabel ```setting``` */foreach(config('database.nodes', []) as $node) {        dump($node);}/* Penggunaan titik diantara "database" dan "node" merupakan pemformataan pemanggilan data yang diberlakukan oleh pustaka ```SLiMS\Config```. Dapat diartikan seperti ini isi file config/database.php*/return ['nodes' => [...]];/* maka database merupakan nama file/konfigurasi nya, serta nodesmerupakan data yang ada di dalam file/ruas tersebut */// jika ditulis dalam native script$database = require SB . 'config/database.php';foreach($database['nodes'] as $node) {        dump($node);}
+```
+
+danger
+
+`config()` tidak dapat dipanggil apabila dipanggil pada file yang memang dijalankan pada proses bootstraping seperti `lib/DB.php dll` atau proses sebelum file/helper.inc.php
+
+##### `debug()`[​](http://slims.web.id/docs/development-guide/Helpers#debug "Direct link to heading")
+
+fungsi ini digunakan untuk melakukan proses awakutu / **_debug_** dimana anda dapat menampilkan isi dari sebuah proses yang sedang terjadi.
+
+```
+debug('Judul debug', $_POST);
+```
+
+info
+
+fungsi ini akan bekerja ketika **_environment_**/lingkungan **_development_**/pengembangan dan memanfaatkan pustaka `symfony/var-dumper` dan berkaitan dengan fungsi [dd()](http://slims.web.id/docs/development-guide/Helpers#dd) dan [dump()](http://slims.web.id/docs/development-guide/Helpers#dump)
+
+##### `debugBox()`[​](http://slims.web.id/docs/development-guide/Helpers#debugbox "Direct link to heading")
+
+fungsi ini tidak berbeda jauh dengan `debug()`, perbedaannya terletak di **_output_**/keluaran nya, fungsi ini akan menghasilkan kelauran html yang terformat dan secara bawaan tidak menampilkan hasilnya jika tidak terdapat galat dan begitupun sebaliknya.
+
+##### `dump()`[​](http://slims.web.id/docs/development-guide/Helpers#dump "Direct link to heading")
+
+Fungsi ini memanfaatkan pustaka `symfony/var-dumper` yang memiliki tujuan seperti fungsi `debug()` namun dengan ciri khas dari `symfony` tanpa memberhentikan proses yang sedang berjalan.
+
+```
+dump($variabel1, $variabel2, $dst);
+```
+
+##### `dd()`[​](http://slims.web.id/docs/development-guide/Helpers#dd "Direct link to heading")
+
+fungsi ini sama dengan fungsi [dump()](http://slims.web.id/docs/development-guide/Helpers#dump), perbedaannya ada pada perilaku yang diberikan jika `dump()` tidak memberhentikan proses dan `dd()` sebalinya karena akronim dari fungsi tersebut yaitu `dump and die` .
+
+```
+dd($variabel1, $variabel2, $dst);
+```
+
+##### `getArrayData()`[​](http://slims.web.id/docs/development-guide/Helpers#getarraydata "Direct link to heading")
+
+fungsi ini digunakan untuk mengambil data pada level terdalam pada sebuah tipe data `array`. Pada dasarnya ketika anda memiliki data dengan tipe `array` seperti ini:
+
+```
+$array = [   'level_1' => [        'level_2' => [                'level_3' => [                        'isi1' => 'satu',                        'isi2' => 'dua',                        'isi3' => 'tiga',                        'isi4' => 'empat',                        'isi5' => 'lima',                ]        ]   ]];
+```
+
+untuk dapat mengakses konten yang berada pada indeks `isi1` maka kita perlu menulis seperti ini
+
+```
+echo $array['level_1']['level_2']['level_3']['isi1'];
+```
+
+cara pemanggilan diatas akan berdampak galat apabila kita salah memasukan indeks pada level tertentu. Maka dengan mengguna fungsi ini kita dapat menentukan `output` apa yang akan keluar jika apa yang kita cari tidak ditemukan. Misal saja kita salah memasukan indeks `array`.
+
+```
+echo $array['level_1']['level_20']['level_3']['isi1']; // akan muncul error undefined index level_20// jika anda ingin menghindarinya maka perlu membuat seperti ini:$default = '';if (isset($array['level_1'])) {        if (isset($array['level_1']['level_2'])) {                if (isset($array['level_1']['level_2']['level_3'])) {                        if (isset($array['level_1']['level_2']['level_3']['isi1'])) {                               $value = $array['level_1']['level_2']['level_3']['isi1'];                         }                         }                }}echo $value??$default;// atau dengan versi yang lainnya
+```
+
+Maka dengan fungsi ini anda dapat menghindari penulisan skrip seperti diatas dengan ini:
+
+```
+echo getArrayData($array, 'level_1.level_2.level_3.isi1'); // output satu jika tidak ditemukan maka akan kosong// atau jika anda ingin default output yang lain maka anda dapat menulis seperti iniecho getArrayData($array, 'level_1.level_20.level_3.isi1', 'output_lain'); // output satu jika tidak ditemukan maka akan kosong
+```
+
+##### `isCli()`[​](http://slims.web.id/docs/development-guide/Helpers#iscli "Direct link to heading")
+
+fungsi yang digunakan untuk mengetahui apakah lingkungan kerja yang sedang anda gunakan apakah berada di `Cli`(**_Command Line Interface_**) atau tidak.
+
+```
+if (isCli()) {  // tulis kode anda disini}
+```
+
+##### `isDev()`[​](http://slims.web.id/docs/development-guide/Helpers#isdev "Direct link to heading")
+
+fungsi ini digunakan untuk mengetahui kondisi `environment`/lingkungan SLiMS anda saat ini apakah ada dalam lingkungan `development`/pengembangan atau `production`/produksi.
+
+```
+if (isDev()) {   // kode yang ada didalam kondisi ini akan berjalan   // jika SLiMS dalam mode enviroment development}
+```
+
+##### `ip()`[​](http://slims.web.id/docs/development-guide/Helpers#ip "Direct link to heading")
+
+fungsi ini digunakan untuk mendapatkan alamat ip yang mengakses SLiMS anda dengan memanfaatkan pustaka `slims/ip`. Selain mengambil alamat ip fungsi ini juga dapat dikondisikan ketika SLiMS anda berada di balik `server proxy`.
+
+```
+// mendapatkan informasi alamat ip echo ip()->get();// atau cukupecho ip(); // contoh : 36.125.25.100// mendeteksi apakah SLiMS berada di balik server Proxy atau tidak.if (ip()->isBehindProxy()) {     // tulisak kode ingin anda terapkan     // jika berada di balik server proxy}// mendapatkan alamat ip server proxyecho ip()->getProxyIp();// menetapkan informasi mengenai bagaimana mendapat// alamat ip pengakses (secara bawaan: REMOTE_ADDR)ip()->setSourceRemoteIp('CF-Connecting-IP'); // contoh disini menggunakan Cloud Flare// menetapkan informasi bagaimana mengetahui apakah// berada di balik server proxy atau tidak (secara bawaan: HTTP_X_FORWARDED_FOR)ip()->setProxyKey('CF-Connecting-IP');
+```
+
+##### `writeLog()`[​](http://slims.web.id/docs/development-guide/Helpers#writelog "Direct link to heading")
+
+fungsi ini digunakan untuk membuat catatan sistem. Berikut penggunaannya:
+
+```
+writeLog('tipe log, contoh system|member|staff', 'id bisa merujuk ke user_id dll', 'lokasi dimana catatan dibuat. Contoh: bibliography|circulation', 'pesan yang ingin dicatat');
+```
+
+##### `xssFree()`[​](http://slims.web.id/docs/development-guide/Helpers#xssfree "Direct link to heading")
+
+fungsi ini berguna untuk memfilter karakter agar terbeas dari karakter html.
+
+```
+echo xssFree('<h1>Hai</h1>'); // output : Hai
+```
+
+Angka dan Huruf[​](http://slims.web.id/docs/development-guide/Helpers#angka-dan-huruf-1 "Direct link to heading")
+-----------------------------------------------------------------------------------------------------------------
+
+##### `currency()`[​](http://slims.web.id/docs/development-guide/Helpers#currency "Direct link to heading")
+
+fungsi berguna untuk memformat sebuah karakter angka menjadi angka yang lengkap dengan format mata uang, menggunakan pustaka `slims/currency` yang bergantung dengan ekstensi `php-intl` berdasarkan bahasa yang digunakan oleh SLiMS atau jenis mata uang yang diatur pada submenu `currency settings` pada modul sistem.
+
+```
+echo currency(3000); // output : Rp. 3.000,00// apabila ekstensi php-intl tidak tersedia// maka outputnya akan dikembalikan seperti apa yang diinputkanecho currency(3000); // output : 3000
+```
+
+##### `number()`[​](http://slims.web.id/docs/development-guide/Helpers#number "Direct link to heading")
+
+fungsi ini digunakan untuk memformat sebuah inputan menjadi tipe data tertentu seperti, `float`,`currency`,`integer`,`decimal`.
+
+```
+number("3.125")->toFloat(); // output: 3.125number(3125)->toCurrency(); // output: Rp. 3.125,00number(3.125)->toInteger(); // output: 3number(3125)->toDecimal(decimalNumber: 3, decimalSeparator: '.', thousand: ','); // output: 3,125.000
+```
+
+Selain mengubah sebuah inputan menjadi tipe data tertentu maka fungsi ini juga bisa digunakan untuk mengetahui bagaimana mengambil posisi, memecah dari karakter yang diinputkan.
+
+```
+$input = number(31250);// mendapatkan panjang karakterecho $input->len(); // output : 5// mendapatkan posisi tertentu dari $inputecho $input->get(0,3); // output : 312$input->chunk(2); // output array : [31,50]echo $input->mod(5); // output : 0
+```
+
+Selain posisi fungsi ini juga bisa membulatkan atau menyederhanakan angka.
+
+```
+$input = number('3.8655');// pembulatan dengan angka desimal tertentuecho $input->round(); // output : 4// pembulatan dengan jumlah angka desimal tertentuecho $input->round(2); // output : 3.87// pembulatan keatas tanpa mempertimbangkan aturan desimalecho $input->ceil(); // output : 4
+```
+
+##### `v()`[​](http://slims.web.id/docs/development-guide/Helpers#v "Direct link to heading")
+
+fungsi ini digunakan untuk membuat karakter acak yang nanti akan digabungkan dengan nama file statis seperti file dengan ekstensi `.js` dan `.css` dengan tujuan untuk memperbaharui **_caching_** file statis di **_Web Browser_**/Peramban Web. Tiap karakter yang dihasilkan akan tetap sama selama **_environment_** dalam mode **_production_** dan akan berubah ketika anda masuk ke dalam modul sistem pada menu pengaturan sistem karena pada **_event_** tersebut akan menghasilkan nomor acak pada konfigurasi `$sysconf['static_file_version']` yang dibutuhkan oleh fungsi ini.
+
+```
+$script = '<script src="' . v('app.js') . '"/>';echo $script; // contoh output : <script src="app.js?v=a5f86"/>
+```
+
+Tampilan[​](http://slims.web.id/docs/development-guide/Helpers#tampilan-1 "Direct link to heading")
+---------------------------------------------------------------------------------------------------
+
+##### `toastr()`[​](http://slims.web.id/docs/development-guide/Helpers#toastr "Direct link to heading")
+
+fungsi ini digunakan untuk menampilkan notifikasi khusus yang memanfaatkan pustaka javascript yaitu `toastr`. Gaya yang ditampilkan seperti `success`,`info`,`warning`, dan `error`.
+
+```
+toastr('Tulisa pesan anda disini')->success();// atau jika anda ingin judul notifikasi yang berbeda toastr('Tulisa pesan anda disini')->success('Yay Berhasi');// metode success(), dapat diganti menjadi info(), warning(), dan error()// Apabila anda salah mengetikan gaya notifikasi nya// maka yang akan tampil adalah notifikasi bawaan dari// browser yang sedang digunakan.toastr('Tulisa pesan anda disini')->sukses();
+```
+
+Http[​](http://slims.web.id/docs/development-guide/Helpers#http-1 "Direct link to heading")
+-------------------------------------------------------------------------------------------
+
+### Pengalihan[​](http://slims.web.id/docs/development-guide/Helpers#pengalihan-1 "Direct link to heading")
+
+##### `redirect()`[​](http://slims.web.id/docs/development-guide/Helpers#redirect "Direct link to heading")
+
+fungsi ini digunakan untuk mengalihkan suatu halaman ke halaman lain yang memanfaatkan pustaka `slims/redirect`.
+
+```
+// pengalihan ke laman lainredirect('https://foo.com');// pengalihan ke halaman tertentu didomain// yang samaredirect('/page/login');// Ke path/page tertentu di SLiMSredirect()->toPath('login'); // domain.com/?p=login// Mengalihkan dengan metode refreshredirect()->refresh('?p=login');// Mengalihkan ke halaman sebelumnya// misal akses dari halamanform $_POST dari ?p=member ke ?p=loginredirect()->back();// menghalihkan dengan mengikutkan // informasi response headerredirect()->withHeader('X-Rate-Limit', 59)->to('/');// atauredirect()->withHeader([   ['X-Custom-Header', 'foo'],   ['X-Rate-Limit', 59]])->to('/');// mengalihkan halaman dengan meninggalkan pesan,// memanfaatkan pustaka slims/flashredirect()->withMessage('login_error', 'Maaf username dan password salah')->back();// mengalihkan halaman tertentu via pustaka jQuery SimbioAJAXredirect()->simbioAJAX('url yang akan dirujuk');// mengalihkan dengan metode http POSTredirect()->simbioAJAX(url: 'url yang akan dirujuk', data: json_encode(['age' => 20, 'name' => 'Foo']));// mengalihkan pada selector tertenturedirect()->simbioAJAX(selector: '#preview', url: 'url yang akan dirujuk');// pada posisi tertenturedirect()->simbioAJAX(position: 'parent.', selector: '#preview', url: 'url yang akan dirujuk');// pengalihan dengan waktu delay dakan detikredirect()->simbioAJAX(timeout: 5, url: 'url yang akan dirujuk');
+```
+
+##### `flash()`[​](http://slims.web.id/docs/development-guide/Helpers#flash "Direct link to heading")
+
+fungsi ini digunakan untuk menampilkan pesan sementara atau temporer ketika proses `http` telah selesai. Pada SLiMS ini digunakan ketika proses `login` tidak berhasil atau dapat digunakan untuk kebutuhan lain.
+
+```
+$login = false;if ($login === false) {    flash('login_error', 'Maaf login tidak berhasil');    redirect()->back();}// mengecek apakah ada pesan login error atau tidakif (flash()->has($key = 'login_error')) {    echo flash()->get($key);}// atau jika anda ingin mengecek untuk lebih dari satu// pesanif ($key = flash()->inlcudes('wrong_password','csrf_failed','empty_field','captchaInvalid')) {    echo flash()->get($key);}// atau jika anda ingin menampilkan pesan dengan template// tertentu berdasarkan kategori seperti danger,warning,success, infoif ($key = flash()->inlcudes('wrong_password','csrf_failed','empty_field','captchaInvalid')) {    flash()->danger($key); // ganti dengan gaya yang disebutkan diatas}
+```
+
+### Url[​](http://slims.web.id/docs/development-guide/Helpers#url-1 "Direct link to heading")
+
+##### `pluginUrl()`[​](http://slims.web.id/docs/development-guide/Helpers#pluginurl "Direct link to heading")
+
+fungsi ini berguna untuk membuat url pada plugin yang aktif/sedang digunakan.
+
+```
+echo pluginUrl(); // output : /admin/plugin_container.php?mod=system&id=a86efea58....echo pluginUrl(['action' => 'delete']); // output : /admin/plugin_container.php?mod=system&id=a86efea58....&action=delete// mereset url dengan format plugin_container.php?id=<id>&mod=<mod>echo pluginUrl(reset: true);
+```
+
+##### `pluginNavigateTo()`[​](http://slims.web.id/docs/development-guide/Helpers#pluginnavigateto "Direct link to heading")
+
+fungsi ini digunakan untuk menghasilkan url yang berkaitan dengan plugin yang sedang aktif baik berada dalam folder yang sama atau berbeda.
+
+```
+/** * Struktuer direktori * /plugins * --- /satu * ------ satu.plugins.php * ------ satu_menu_pertama.php * ------ satu_menu_kedua.php */// didalam file satu_menu_pertama.phpredirect()->simbioAJAX(pluginNavigateTo('satu_menu_kedua.php')); // maka halaman akan teralihkan ke file satu_menu_kedua.php
+```
