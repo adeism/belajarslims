@@ -1,0 +1,918 @@
+Tables and Columns:
+
+backup_log:
+
+backup_log_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each backup log entry.
+
+user_id (INT): ID of the user who initiated the backup. Foreign key referencing the user table.
+
+backup_time (DATETIME): Timestamp indicating when the backup was created.
+
+backup_file (TEXT): The filename or location of the generated backup file.
+
+biblio:
+
+biblio_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each bibliographic record.
+
+gmd_id (INT): ID of the General Material Designation (GMD) describing the type of material (book, journal, etc.). Foreign key referencing the mst_gmd table.
+
+title (TEXT): Title of the bibliographic record. Fulltext indexed.
+
+sor (VARCHAR): Statement of Responsibility (e.g., author, editor, translator).
+
+edition (VARCHAR): Edition of the work.
+
+isbn_issn (VARCHAR): ISBN or ISSN of the work.
+
+publisher_id (INT): ID of the publisher. Foreign key referencing the mst_publisher table.
+
+publish_year (VARCHAR): Year of publication.
+
+collation (VARCHAR): Collation details (physical description of the item).
+
+series_title (VARCHAR): Title of the series the work belongs to. Fulltext indexed.
+
+call_number (VARCHAR): Library of Congress call number or other classification.
+
+language_id (CHAR): Language code (e.g., 'en' for English, 'id' for Indonesian). Foreign key referencing mst_language.
+
+source (VARCHAR): Source of the bibliographic record (e.g., how it was added to the database).
+
+publish_place_id (INT): ID of the place of publication. Foreign key referencing the mst_place table.
+
+classification (VARCHAR): Classification code (e.g., Dewey Decimal Classification).
+
+notes (TEXT): Any additional notes or comments about the record. Fulltext indexed.
+
+image (VARCHAR): Filename of the cover image.
+
+file_att (VARCHAR): Filename of attached files. (Note: This appears redundant given biblio_attachment table.)
+
+opac_hide (SMALLINT): Flag indicating whether the record should be hidden from the OPAC (Online Public Access Catalog) (0 = visible, 1 = hidden).
+
+promoted (SMALLINT): Flag indicating whether the record should be promoted (featured) in the OPAC (0 = not promoted, 1 = promoted).
+
+labels (TEXT): Predefined labels associated with the record (e.g., "New Title," "Favorite"). Fulltext indexed.
+
+frequency_id (INT): ID of publication frequency (for serials). Foreign key referencing the mst_frequency table.
+
+spec_detail_info (TEXT): Field for any specific detail information.
+
+content_type_id (INT): ID of the content type. Foreign key referencing mst_content_type.
+
+media_type_id (INT): ID of the media type. Foreign key referencing mst_media_type.
+
+carrier_type_id (INT): ID of the carrier type. Foreign key referencing mst_carrier_type.
+
+input_date (DATETIME): Timestamp indicating when the record was first added.
+
+last_update (DATETIME): Timestamp indicating when the record was last updated.
+
+uid (INT): ID of the user who last updated the record. Foreign key referencing the user table.
+
+biblio_attachment:
+
+biblio_id (INT): ID of the bibliographic record. Foreign key referencing the biblio table. Composite primary key.
+
+file_id (INT): ID of the attached file. Foreign key referencing the files table. Composite primary key.
+
+placement (ENUM): How the attachment is displayed (link, popup, embed).
+
+access_type (ENUM): Access control for the attachment (public, private).
+
+access_limit (TEXT): A serialized array specifying which member types can access a private attachment.
+
+biblio_author:
+
+biblio_id (INT): ID of the bibliographic record. Foreign key referencing the biblio table. Composite primary key.
+
+author_id (INT): ID of the author. Foreign key referencing the mst_author table. Composite primary key.
+
+level (INT): Indicates the author's level (1 for primary author, 2 for secondary author, etc.).
+
+biblio_topic:
+
+biblio_id (INT): ID of the bibliographic record. Foreign key referencing the biblio table. Composite primary key.
+
+topic_id (INT): ID of the subject/topic. Foreign key referencing the mst_topic table. Composite primary key.
+
+level (INT): Indicates the topic's level (1 for primary subject, 2 for secondary subject, etc.).
+
+content:
+
+content_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each content item.
+
+content_title (VARCHAR): Title of the content. Fulltext indexed.
+
+content_desc (TEXT): Description or content body. Fulltext indexed.
+
+content_path (VARCHAR): Path used for accessing the content (part of the URL). Unique key.
+
+is_news (SMALLINT): Flag indicating if the content is a news item.
+
+is_draft (SMALLINT): Flag indicating if the content is a draft.
+
+publish_date (DATE): Publication date for news items.
+
+input_date (DATETIME): Timestamp indicating when the content was created.
+
+last_update (DATETIME): Timestamp indicating when the content was last updated.
+
+content_ownpage (ENUM): Indicates if the content has its own page (1) or is part of another page (2).
+
+files:
+
+file_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each file.
+
+file_title (TEXT): Title of the file.
+
+file_name (TEXT): Original filename of the uploaded file. Fulltext indexed.
+
+file_url (TEXT): URL of the file (if available).
+
+file_dir (TEXT): Directory where the file is stored. Fulltext indexed.
+
+mime_type (VARCHAR): MIME type of the file.
+
+file_desc (TEXT): Description of the file.
+
+file_key (TEXT): A unique key for the file.
+
+uploader_id (INT): ID of the user who uploaded the file. Foreign key referencing the user table.
+
+input_date (DATETIME): Timestamp indicating when the file was uploaded.
+
+last_update (DATETIME): Timestamp indicating when the file information was last updated.
+
+fines:
+
+fines_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each fine record.
+
+fines_date (DATE): Date the fine was incurred.
+
+member_id (VARCHAR): ID of the member who incurred the fine. Foreign key referencing the member table.
+
+debet (INT): Amount of the fine.
+
+credit (INT): Amount of the fine paid.
+
+description (VARCHAR): Description of the fine.
+
+group_access:
+
+group_id (INT): ID of the user group. Foreign key referencing the user_group table. Composite primary key.
+
+module_id (INT): ID of the module. Foreign key referencing the mst_module table. Composite primary key.
+
+menus (JSON): A JSON array storing submenu access permissions.
+
+r (INT): Read permission (0 = no access, 1 = access).
+
+w (INT): Write permission (0 = no access, 1 = access).
+
+holiday:
+
+holiday_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each holiday entry.
+
+holiday_dayname (VARCHAR): Name of the day of the week (e.g., 'Monday').
+
+holiday_date (DATE): Specific date of the holiday (NULL if it's a recurring day name).
+
+description (VARCHAR): Description of the holiday.
+
+item:
+
+item_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each item.
+
+biblio_id (INT): ID of the bibliographic record this item belongs to. Foreign key referencing the biblio table.
+
+call_number (VARCHAR): Call number for this specific item.
+
+coll_type_id (INT): ID of the collection type. Foreign key referencing the mst_coll_type table.
+
+item_code (VARCHAR): Unique code for this item. Unique key.
+
+inventory_code (VARCHAR): Inventory code or other identifier for the item.
+
+received_date (DATE): Date the item was received.
+
+supplier_id (VARCHAR): ID of the supplier. Foreign key referencing the mst_supplier table.
+
+order_no (VARCHAR): Order number for the item.
+
+location_id (VARCHAR): ID of the item's location. Foreign key referencing the mst_location table.
+
+order_date (DATE): Date the item was ordered.
+
+item_status_id (CHAR): ID of the item's status. Foreign key referencing the mst_item_status table.
+
+site (VARCHAR): More detailed location information.
+
+source (INT): Source of the item (e.g., purchased, donated).
+
+invoice (VARCHAR): Invoice number.
+
+price (INT): Price of the item.
+
+price_currency (VARCHAR): Currency of the price.
+
+invoice_date (DATE): Invoice date.
+
+input_date (DATETIME): Timestamp indicating when the item was added.
+
+last_update (DATETIME): Timestamp indicating when the item information was last updated.
+
+uid (INT): ID of the user who last updated the record.
+
+kardex:
+
+kardex_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each kardex entry.
+
+date_expected (DATE): Expected arrival date of a serial issue.
+
+date_received (DATE): Actual arrival date of a serial issue.
+
+seq_number (VARCHAR): Sequence number of the issue.
+
+notes (TEXT): Any notes about the issue.
+
+serial_id (INT): ID of the serial publication. Foreign key referencing the serial table.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+loan:
+
+loan_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each loan.
+
+item_code (VARCHAR): Unique code of the loaned item. Foreign key referencing the item table.
+
+member_id (VARCHAR): ID of the member who borrowed the item. Foreign key referencing the member table.
+
+loan_date (DATE): Date the item was borrowed.
+
+due_date (DATE): Due date for returning the item.
+
+renewed (INT): Number of times the loan has been renewed.
+
+loan_rules_id (INT): ID of the loan rules applied. Foreign key referencing mst_loan_rules.
+
+actual (DATE): Actual return date of the item.
+
+is_lent (INT): Flag indicating if the item is currently on loan (1 = on loan, 0 = not on loan).
+
+is_return (INT): Flag indicating if the item has been returned (1 = returned, 0 = not returned).
+
+return_date (DATE): Date the item was returned.
+
+input_date (DATETIME): Timestamp indicating when the loan was recorded.
+
+last_update (DATETIME): Timestamp indicating when the loan information was last updated.
+
+uid (INT): ID of the user who last updated the record.
+
+member:
+
+member_id (VARCHAR, PRIMARY KEY): Unique identifier for each member (e.g., membership number).
+
+member_name (VARCHAR): Name of the member.
+
+gender (INT): Gender of the member.
+
+birth_date (DATE): Birth date of the member.
+
+member_type_id (INT): ID of the member type. Foreign key referencing the mst_member_type table.
+
+member_address (VARCHAR): Address of the member.
+
+member_mail_address (VARCHAR): Mailing address of the member.
+
+member_email (VARCHAR): Email address of the member.
+
+postal_code (VARCHAR): Postal code of the member's address.
+
+inst_name (VARCHAR): Name of the institution the member belongs to (if applicable).
+
+is_new (INT): Flag indicating if the member is new.
+
+member_image (VARCHAR): Filename of the member's image.
+
+pin (VARCHAR): Personal Identification Number (PIN) for the member.
+
+member_phone (VARCHAR): Phone number of the member.
+
+member_fax (VARCHAR): Fax number of the member.
+
+member_since_date (DATE): Date the member joined.
+
+register_date (DATE): Date the member registered.
+
+expire_date (DATE): Expiry date of the membership.
+
+member_notes (TEXT): Any additional notes about the member.
+
+is_pending (SMALLINT): Flag indicating if the membership is pending approval (0=not pending, 1=pending).
+
+mpasswd (VARCHAR): Member's password (hashed).
+
+last_login (DATETIME): Timestamp of the member's last login.
+
+last_login_ip (VARCHAR): IP address of the member's last login.
+
+input_date (DATE): Date the member record was created.
+
+last_update (DATE): Date the member record was last updated.
+
+mst_author:
+
+author_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each author.
+
+author_name (VARCHAR): Name of the author.
+
+author_year (VARCHAR): Year related to the author (possibly birth year or year of activity).
+
+authority_type (ENUM): Type of author (p=personal, o=organizational, c=conference).
+
+auth_list (VARCHAR): Authority list (source of the author information).
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_coll_type:
+
+coll_type_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each collection type.
+
+coll_type_name (VARCHAR): Name of the collection type (e.g., "Reference," "Textbook"). Unique key.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_frequency:
+
+frequency_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each publication frequency.
+
+frequency (VARCHAR): Name of the publication frequency (e.g., "Weekly," "Monthly").
+
+language_prefix (VARCHAR): Language prefix.
+
+time_increment (SMALLINT): Numerical value representing the increment.
+
+time_unit (ENUM): Unit of time for the increment (day, week, month, year).
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_gmd:
+
+gmd_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each GMD.
+
+gmd_code (VARCHAR): Short code for the GMD. Unique key.
+
+gmd_name (VARCHAR): Name of the General Material Designation (e.g., "Book," "Journal"). Unique key.
+
+icon_image (VARCHAR): Filename of an icon representing the GMD.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_item_status:
+
+item_status_id (CHAR, PRIMARY KEY): Unique code for the item status.
+
+item_status_name (VARCHAR): Name of the item status (e.g., "Available," "On Loan," "Lost"). Unique key.
+
+rules (VARCHAR): Serialized array defining rules associated with this status.
+
+no_loan (SMALLINT): Flag (0/1) indicating whether this status prevents an item from being loaned.
+
+skip_stock_take (SMALLINT): Flag (0/1) indicating whether this status causes the item to be skipped during stocktaking.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_label:
+
+label_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each label.
+
+label_name (VARCHAR): Name of the label (e.g., "New Title"). Unique key.
+
+label_desc (VARCHAR): Description of the label.
+
+label_image (VARCHAR): Filename of the image associated with the label.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_language:
+
+language_id (CHAR, PRIMARY KEY): Language code (e.g., "en," "id").
+
+language_name (VARCHAR): Name of the language. Unique key.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_loan_rules:
+
+loan_rules_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each set of loan rules.
+
+member_type_id (INT): ID of the member type these rules apply to. Foreign key referencing mst_member_type.
+
+coll_type_id (INT): ID of the collection type these rules apply to. Foreign key referencing mst_coll_type.
+
+gmd_id (INT): ID of the GMD these rules apply to. Foreign key referencing mst_gmd.
+
+loan_limit (INT): Maximum number of items a member of this type can borrow.
+
+loan_periode (INT): Loan period in days.
+
+reborrow_limit (INT): Number of times a loan can be renewed.
+
+fine_each_day (INT): Fine amount per overdue day.
+
+grace_periode (INT): Grace period (in days) before fines are applied.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_location:
+
+location_id (VARCHAR, PRIMARY KEY): Unique code for the location.
+
+location_name (VARCHAR): Name of the location (e.g., "Main Library," "Science Library"). Unique key.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_member_type:
+
+member_type_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each member type.
+
+member_type_name (VARCHAR): Name of the member type (e.g., "Student," "Faculty"). Unique key.
+
+loan_limit (INT): Maximum number of items this member type can borrow.
+
+loan_periode (INT): Loan period in days for this member type.
+
+enable_reserve (INT): Flag (0/1) indicating if reservations are allowed for this member type.
+
+reserve_limit (INT): Maximum number of reservations allowed for this member type.
+
+member_periode (INT): Membership period in days.
+
+reborrow_limit (INT): Number of renewals allowed for this member type.
+
+fine_each_day (INT): Fine amount per overdue day for this member type.
+
+grace_periode (INT): Grace period (in days) before fines are applied for this member type.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_module:
+
+module_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each module.
+
+module_name (VARCHAR): Name of the module.
+
+module_path (VARCHAR): Path to the module's files.
+
+module_desc (VARCHAR): Description of the module.
+
+mst_place:
+
+place_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each place.
+
+place_name (VARCHAR): Name of the place (e.g., "London," "New York"). Unique key.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_publisher:
+
+publisher_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each publisher.
+
+publisher_name (VARCHAR): Name of the publisher. Unique key.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_supplier:
+
+supplier_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each supplier.
+
+supplier_name (VARCHAR): Name of the supplier. Unique key.
+
+address (VARCHAR): Address of the supplier.
+
+postal_code (CHAR): Postal code of the supplier's address.
+
+phone (CHAR): Phone number of the supplier.
+
+contact (CHAR): Contact person at the supplier.
+
+fax (CHAR): Fax number of the supplier.
+
+account (CHAR): Account number (if applicable).
+
+e_mail (CHAR): Email address of the supplier.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+mst_topic:
+
+topic_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each topic.
+
+topic (VARCHAR): Name of the subject/topic.
+
+topic_type (ENUM): Type of topic (t=topical, g=geographic, n=name, tm=temporal, gr=genre, oc=occupation).
+
+auth_list (VARCHAR): Authority list (source of the topic).
+
+classification (VARCHAR): Classification code.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+reserve:
+
+reserve_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each reservation.
+
+member_id (VARCHAR): ID of the member who made the reservation. Foreign key referencing the member table.
+
+biblio_id (INT): ID of the bibliographic record reserved. Foreign key referencing the biblio table.
+
+item_code (VARCHAR): Unique code of the reserved item.
+
+reserve_date (DATETIME): Date and time the reservation was made.
+
+serial:
+
+serial_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each serial publication.
+
+date_start (DATE): Start date of the subscription.
+
+date_end (DATE): End date of the subscription (can be NULL).
+
+period (VARCHAR): Publication period (e.g., "Monthly," "Quarterly").
+
+notes (TEXT): Any notes about the serial publication.
+
+biblio_id (INT): ID of the bibliographic record for the serial. Foreign key referencing the biblio table.
+
+gmd_id (INT): ID of the GMD. Foreign key referencing the mst_gmd table.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+setting:
+
+setting_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each setting.
+
+setting_name (VARCHAR): Name of the setting. Unique key.
+
+setting_value (TEXT): Value of the setting (can be serialized data).
+
+user:
+
+user_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each user.
+
+username (VARCHAR): Username for logging in. Unique key.
+
+realname (VARCHAR): Real name of the user.
+
+passwd (VARCHAR): Hashed password for the user.
+
+2fa (TEXT): Two-factor authentication settings (if enabled).
+
+email (VARCHAR): Email address of the user.
+
+user_type (SMALLINT): Type of user (e.g., administrator, librarian).
+
+user_image (VARCHAR): Filename of the user's image.
+
+social_media (TEXT): Social media links (if provided).
+
+last_login (DATETIME): Timestamp of the user's last login.
+
+last_login_ip (CHAR): IP address of the user's last login.
+
+groups (VARCHAR): Serialized array of group IDs the user belongs to.
+
+admin_template (TEXT): Serialized array of custom template settings for the administrator.
+
+forgot (VARCHAR): Forgot password token.
+
+input_date (DATE): Date the user record was created.
+
+last_update (DATE): Date the user record was last updated.
+
+user_group:
+
+group_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each user group.
+
+group_name (VARCHAR): Name of the user group (e.g., "Administrators," "Librarians"). Unique key.
+
+input_date (DATE): Date of entry.
+
+last_update (DATE): Last update date.
+
+visitor_count:
+
+visitor_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each visitor record.
+
+member_id (VARCHAR): ID of the member (if logged in). Foreign key referencing the member table.
+
+member_name (VARCHAR): Name of the visitor (member or guest).
+
+institution (VARCHAR): Institution name (for guest visitors).
+
+room_code (VARCHAR): Code of the room the visitor is in.
+
+checkin_date (DATETIME): Timestamp of the visitor's check-in.
+
+biblio_custom:
+
+biblio_id (INT): ID of the bibliographic record. Foreign key referencing biblio. Primary key. This table is designed for one-to-one relationship with biblio. It likely holds additional, custom fields not included in the standard biblio table.
+
+search_biblio: This is a denormalized table used for speeding up searches. It contains many of the same fields as biblio, but with some differences:
+
+biblio_id (INT): ID of the bibliographic record. Unique key, although not a primary key.
+
+title, edition, isbn_issn, author, topic, gmd, publisher, publish_place, language, classification, spec_detail_info, carrier_type, content_type, media_type, location, publish_year, notes, series_title, items, collection_types, call_number, opac_hide, promoted, labels, collation, image, input_date, last_update (various data types): These columns mirror fields from biblio and related tables, but are stored directly within this table for faster querying. Many columns are fulltext indexed.
+
+member_custom: Similar to biblio_custom, this table likely stores custom fields for members, allowing for additional member-specific information beyond the standard fields in the member table.
+
+member_id (VARCHAR): Member ID. Primary Key.
+
+comment:
+
+comment_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each comment.
+
+biblio_id (INT): ID of the bibliographic record the comment is associated with. Foreign key referencing the biblio table.
+
+member_id (VARCHAR): ID of the member who posted the comment. Foreign key referencing the member table.
+
+comment (TEXT): The comment text.
+
+input_date (DATETIME): Timestamp indicating when the comment was posted.
+
+last_update (DATETIME): Timestamp indicating when the comment was last updated.
+
+mst_carrier_type:
+
+id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each carrier type.
+
+carrier_type (VARCHAR): Name of the carrier type.
+
+code (VARCHAR): Code for the carrier type.
+
+code2 (CHAR): Short code for the carrier type.
+
+input_date (DATETIME): Date and time the record was created.
+
+last_update (DATETIME): Date and time the record was last updated.
+
+mst_content_type:
+
+id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each content type.
+
+content_type (VARCHAR): Name of the content type.
+
+code (VARCHAR): Code for the content type.
+
+code2 (CHAR): Short code for the content type.
+
+input_date (DATETIME): Date and time the record was created.
+
+last_update (DATETIME): Date and time the record was last updated.
+
+mst_media_type:
+
+id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each media type.
+
+media_type (VARCHAR): Name of the media type.
+
+code (VARCHAR): Code for the media type.
+
+code2 (CHAR): Short code for the media type.
+
+input_date (DATETIME): Date and time the record was created.
+
+last_update (DATETIME): Date and time the record was last updated.
+
+mst_relation_term:
+
+ID (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each relation term.
+
+rt_id (VARCHAR): Relation term ID.
+
+rt_desc (VARCHAR): Description of the relation term.
+
+mst_voc_ctrl:
+
+vocabolary_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each vocabulary control record.
+
+topic_id (INT): ID of the topic.
+
+rt_id (VARCHAR): ID of the relation term. Foreign Key referencing mst_relation_term.
+
+related_topic_id (VARCHAR): IDs of related topics (serialized).
+
+scope (TEXT): Scope of the vocabulary control.
+
+biblio_relation:
+
+biblio_id (INT): ID of the bibliographic record. Foreign key to biblio. Composite Primary Key.
+
+rel_biblio_id (INT): ID of the related bibliographic record. Foreign key to biblio. Composite Primary Key.
+
+rel_type (INT): Type of relationship between the records.
+
+loan_history: This table stores a historical record of loan transactions. It's populated by triggers on the loan table. The columns largely mirror those in the loan table and related tables to provide a complete historical snapshot without requiring joins for querying.
+
+loan_id (INT): Loan ID (Primary Key)
+
+item_code (VARCHAR): Item code
+
+biblio_id (INT): Bibliographic ID
+
+title (VARCHAR): Title of the book
+
+call_number (VARCHAR): Call number
+
+classification (VARCHAR): Classification code
+
+gmd_name (VARCHAR): General Material Designation
+
+language_name (VARCHAR): Language name
+
+location_name (VARCHAR): Location name
+
+collection_type_name (VARCHAR): Collection type name
+
+member_id (VARCHAR): Member ID
+
+member_name (VARCHAR): Member name
+
+member_type_name (VARCHAR): Member type name
+
+loan_date (DATE): Loan date
+
+due_date (DATE): Due date
+
+renewed (INT): Number of renewals
+
+is_lent (INT): Lent status (0/1)
+
+is_return (INT): Return status (0/1)
+
+return_date (DATE): Return date
+
+input_date (DATETIME): Input date and time
+
+last_update (DATETIME): Last update date and time
+
+mst_custom_field:
+
+field_id (INT, AUTO_INCREMENT): Unique identifier for each custom field.
+
+primary_table (VARCHAR): The primary table this custom field belongs to.
+
+dbfield (VARCHAR): The database field name for this custom field (Primary Key).
+
+label (VARCHAR): The user-friendly label for this custom field.
+
+type (ENUM): The data type of the custom field ('text', 'checklist', 'numeric', 'dropdown', 'longtext', 'choice', 'date').
+
+default (VARCHAR): The default value for this custom field.
+
+max (INT): Maximum length or value for this custom field (depending on the type).
+
+data (TEXT): Serialized data, potentially containing options for dropdown or choice type fields.
+
+indexed (TINYINT): Flag indicating whether this field should be included in search indexes (0/1).
+
+class (VARCHAR): CSS class for this custom field.
+
+is_public (TINYINT): Flag indicating if the field should be visible in the OPAC (0/1).
+
+width (INT): Width of the field for display purposes.
+
+note (TEXT): Notes or description of the custom field.
+
+files_read:
+
+filelog_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each file download log entry.
+
+file_id (INT): ID of the downloaded file. Foreign key referencing the files table.
+
+date_read (TIMESTAMP): Timestamp indicating when the file was downloaded. Automatically updated on each access.
+
+member_id (VARCHAR): ID of the member who downloaded the file (if applicable).
+
+user_id (INT): ID of the staff user who downloaded the file (if applicable).
+
+client_ip (VARCHAR): IP address of the client who downloaded the file.
+
+plugins:
+
+id (VARCHAR, UNIQUE): Unique identifier for the plugin (usually an MD5 hash of the plugin's path). Primary Key.
+
+options (JSON): Serialized plugin options (settings).
+
+path (TEXT): The path to the plugin's directory.
+
+created_at (DATETIME): Timestamp indicating when the plugin was registered.
+
+updated_at (DATETIME): Timestamp indicating when the plugin information was last updated.
+
+deleted_at (DATETIME): Timestamp indicating when the plugin was deleted (NULL if not deleted).
+
+uid (INT): User ID of who installed or updated the plugin.
+
+index_words: This table is part of a custom full-text search index.
+
+id (BIGINT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each word in the index.
+
+word (VARCHAR): The indexed word.
+
+num_hits (INT): Total number of times the word appears in the indexed documents.
+
+doc_hits (INT): Number of unique documents containing the word.
+
+index_documents: This table is also part of the custom full-text search index, linking documents to words.
+
+document_id (INT): ID of the document (likely a bibliographic record ID). Composite Primary Key.
+
+word_id (BIGINT): ID of the word from the index_words table. Composite Primary Key.
+
+location (VARCHAR): The location of the word within the document (e.g., title, abstract). Composite Primary Key.
+
+hit_count (INT): Number of times the word appears in this specific location within the document.
+
+biblio_mark: This table stores bibliographic records marked/bookmarked by members.
+
+id (VARCHAR, PRIMARY KEY): Unique identifier for the bookmark entry (likely a UUID).
+
+member_id (VARCHAR): Member ID. Foreign key to member.
+
+biblio_id (INT): Bibliographic record ID. Foreign key to biblio.
+
+created_at (DATETIME): Timestamp indicating when the bookmark was created.
+
+mst_visitor_room: This table stores visitor room information.
+
+id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each room.
+
+name (VARCHAR): Name of the visitor room.
+
+unique_code (VARCHAR): Unique code to identify the room. Unique key and index.
+
+created_at (DATETIME): Timestamp indicating when the room was created.
+
+updated_at (DATETIME): Timestamp indicating when the room information was last updated.
+
+cache: This table is used for storing cached data within the database.
+
+name (VARCHAR, UNIQUE): Name or key of the cached data item. Unique Key.
+
+contents (TEXT): The cached data (serialized).
+
+created_at (DATETIME): Timestamp indicating when the data was cached.
+
+updated_at (DATETIME): Timestamp indicating when the cached data was last updated.
+
+expired_at (DATETIME): Timestamp indicating when the cached data expires (NULL if it doesn't expire).
+
+------
+Triggers:
+
+Three triggers are defined to maintain the loan_history table, ensuring it reflects changes in the loan table:
+
+delete_loan_history: Deletes entries from loan_history when a corresponding entry in loan is deleted.
+
+update_loan_history: Updates entries in loan_history when a corresponding entry in loan is updated.
+
+insert_loan_history: Inserts new entries into loan_history when new entries are added to loan. Note this trigger performs subqueries to populate several columns with data from related tables. This increases the complexity of the trigger, and potentially affects performance.
+
+-------
+Summary:
+This schema shows a well-structured database designed for a comprehensive library management system. The use of full-text indexing and triggers highlights a focus on efficient searching and data integrity. The inclusion of custom fields and plugins points toward flexibility and extensibility.
