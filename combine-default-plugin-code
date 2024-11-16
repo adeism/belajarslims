@@ -1,0 +1,1301 @@
+=== title: combine-default-plugin-code ===
+
+================================================================================
+File: biblio_adv_log.plugin.php
+================================================================================
+
+<?php
+/**
+ * Plugin Name: Bibliography Log - Advanced
+ * Plugin URI: https://github.com/slims/slims9_bulian
+ * Description: Add more detail for biblio log. This is an example of a plugin that uses the hooking method.
+ * Version: 1.0.0
+ * Author: Waris Agung Widodo
+ * Author URI: https://github.com/idoalit
+ */
+
+use SLiMS\DB;
+use SLiMS\Plugins;
+
+/**
+ * Get plugin instance
+ */
+$plugin = Plugins::getInstance();
+
+/**
+ *  Prepare variable to storing old data
+ */
+$old_data = [];
+
+/**
+ * Registering hook plugin on bibliography before updated
+ * In this hook, we will get the old data.
+ */
+$plugin->register('bibliography_before_update', function ($data) use (&$old_data) {
+    // api still uses mysqli driver, so we use the mysqli instance instead of pdo
+    $old_data = api::biblio_load(DB::getInstance('mysqli'), $data['biblio_id']);
+});
+
+/**
+ * Registering hook on bibliography after updated
+ * In this hook, we will compare old data with new data per field
+ */
+$plugin->register('bibliography_after_update', function ($data) use (&$old_data) {
+
+    // because old data get data from api, we will get new data from api too
+    $new_data = api::biblio_load(DB::getInstance('mysqli'), $data['biblio_id']);
+
+    // prepare sql statement to insert into biblio_log
+    $query = DB::getInstance()->prepare("INSERT INTO biblio_log (biblio_id, user_id, realname, title, ip, action, affectedrow, rawdata, additional_information, date) 
+                    VALUES (:biblio_id, :user_id, :realname, :title, :ip, :action, :affectedrow, :rawdata, :additional_information, :date)");
+
+    $query->bindValue(':biblio_id', $data['biblio_id'], PDO::PARAM_INT);
+    $query->bindValue(':user_id', $_SESSION['uid'], PDO::PARAM_INT);
+    $query->bindValue(':realname', $_SESSION['realname']);
+    $query->bindValue(':title', $data['title']);
+    $query->bindValue(':ip', $_SERVER['REMOTE_ADDR']);
+    $query->bindValue(':action', 'update');
+    $query->bindValue(':rawdata', urlencode(serialize($old_data)));
+    $query->bindValue(':date', date('Y-m-d H:i:s'));
+
+    // compare data
+    foreach ($old_data as $key => $datum) {
+
+        // Ignored list, this data is not valid for comparison or has been handled in other methods
+        if (in_array($key, ['last_update', 'input_date', 'hash', 'subjects', 'image', 'authors', 'uid', 'classification', 'id', '_id', 'biblio_id'])) continue;
+
+        // for now we will ignore array data too
+        if (is_array($datum) || is_array($new_data[$key])) continue;
+
+        // hashing data
+        $old_hash = md5($datum);
+        $new_hash = md5($new_data[$key]);
+
+        if ($old_hash !== $new_hash) {
+            $query->bindValue(':additional_information', 'Change data from "' . $datum . '" to "' . $new_data[$key] . '"');
+            $query->bindValue(':affectedrow', $key);
+            $query->execute();
+        }
+    }
+});
+================================================================================
+File: index.html
+================================================================================
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+================================================================================
+File: csp-manager\csp.template
+================================================================================
+
+<?php
+/**
+ * CSP (Content Security Policy)
+ * 
+ * fell free to add your custom CSP.
+ * 
+ * original code by 2022 Hendro Wicaksono (hendrowicaksono@yahoo.com)
+ * modified by Drajat Hasan (drajathasan20@gmail.com)
+ *
+ * @Customize by {realname}
+ * @ModifiedAt {timeModified}
+ * @HostName {hostName}
+ */
+return [
+    "base-uri {base-uri}",
+    "script-src {script-src}",
+    "style-src {style-src}",
+    "img-src {img-src}",
+    "connect-src {connect-src}",
+    "frame-src {frame-src}",
+    "font-src {font-src}",
+    "media-src {media-src}",
+    "object-src {object-src}",
+    "manifest-src {manifest-src}", 
+    "worker-src {worker-src}",
+    "frame-ancestors {frame-ancestors}"
+];
+================================================================================
+File: index.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 05/11/20 12.24
+ * @File name           : index.php
+ */
+================================================================================
+File: README.md
+================================================================================
+
+# Plugin System
+
+## Bagaimana membuat sebuah plugin?
+Untuk membuat sebuah plugin, mohon ikuti beberapa aturan berikut ini agar 
+plugin anda bisa berjalan dengan baik.
+
+- Letakan plugin anda pada folder `<slims root>/plugins`
+- Anda dapat meletakannya langsung pada directory tersebut atau didalam 
+*subfolder*. Direkomendasikan membuat *subfolder* untuk setiap plugin yang anda
+kembangkan untuk alasan kemudahan pengelolaan kode sumber (*source code*).
+- Nama plugin harus berakhiran `.plugin.php`, contoh: `contoh_saja.plugin.php`.
+- Tambahkan informasi plugin anda dengan format sebagai berikut ini, dan 
+letakan pada bagian paling atas file:
+
+```php
+    /**
+    * Plugin Name: Contoh Nama Plugin
+    * Plugin URI: <isikan alamat url dari repository plugin anda>
+    * Description: Deskripsi dari plugin anda
+    * Version: 0.0.1
+    * Author: Nama Anda
+    * Author URI: <isikan url dari profil anda>
+    */
+```
+- Saat ini ada 2 jenis plugin:
+    1. Plugin yang berdiri sendiri sebagai sebuah menu.
+    2. Plugin yang melakukan _hooking_ terhadap fitur yang sudah ada.
+
+## Menu Plugin
+Jenis plugin ini akan menambahkan submenu pada sebuah modul. Berikut ini contoh
+meregistrasikannya:
+
+```php
+// get plugin instance
+$plugin = \SLiMS\Plugins::getInstance();
+
+// registering plugin in bibliography module
+// Parameter 1 = nama module
+// Parameter 2 = Text untuk menunya
+// Parameter 3 = full path dari file yang akan digunakan
+$plugin->registerMenu('bibliography', 'Label & Barcode', __DIR__ . '/index.php');
+```
+
+## Group Menu Plugin
+Submenu yang ditambahkan dari plugin dapat dikelempokan. Berikut ini contoh 
+untuk meregistrasikannya, pada contoh kali ini juga akan ditampilkan bagaimana 
+meregistrasikan plugin dengan `static method`.
+
+```php
+use \SLiMS\Plugins;
+
+Plugins::group('Nama Group', function() {
+    Plugins::menu('nama_module', 'nama menu 1', '/path/dari/endpoint/pluginya/1.php');
+    Plugins::menu('nama_module', 'nama menu 2', '/path/dari/endpoint/pluginya/2.php');
+    Plugins::menu('nama_module', 'nama menu 3', '/path/dari/endpoint/pluginya/3.php');
+});
+```
+
+Kelompok menu-menu ini juga dapat kita letakan sebelum atau setelah menu 
+bawaan SLiMS. Sebagai contoh kita akan meletakan contoh menu plugin diatas 
+setelah kelompok `Eksemplar` pada module `Bibliography`.
+
+```php
+Plugins::group('Nama Group', function() {
+    # your code here
+})->after(__('ITEMS'));
+```
+
+## Hooking Plugin
+Jenis plugin ini akan berjalan saat sebuah fitur berada pada state tertentu.
+Berikut ini contoh untuk meregistrasikannya:
+
+```php
+// get plugin instance
+$plugin = \SLiMS\Plugins::getInstance();
+
+// registering hook
+// parameter 1 = tag hook
+// parameter 2 = callback
+$plugin->register('bibliography_on_delete', function () {});
+
+// Registering Hook via handler class
+// opsi 1
+Plugins::use(\Namespace\Library\Anda::class)->for(function($plugins){
+    // chain style
+    // parameter 1 = tag hook
+    // parameter 2 = method yang ada di \Namespace\Library\Anda::class
+    $plugins->registerHook('bibliography_after_save', 'saveTo3rdPartyIndexer');
+    // atau menggunakan static class
+    Plugins::hook('bibliography_after_save', 'saveTo3rdPartyIndexer');
+});
+// opsi 2 (jika tidak digabungkan dalam satu closure pada metode for())
+Plugins::use(\Namespace\Library\Anda::class);
+$plugins->registerHook('bibliography_after_save', 'saveTo3rdPartyIndexer');
+```
+Berikut ini `tag hook` yang tersedia:
+- Modul bibliografi
+    - `bibliography_init`: run on bibliography ready to go.
+    - `bibliography_before_save`: run before bibliography data tobe saved. The 
+    data will be save available in params.
+    - `bibliography_after_save`: run after bibliography data saved 
+    successfully. The data saved available in params.
+    - `bibliography_before_update`: run before bibliography data tobe updated.
+    The data will be update available in params.
+    - `bibliography_after_update`: run after bibliography data updated 
+    successfully. The data updated available in params.
+    - `bibliography_before_delete`: run before data has been deleted.The data
+    that will be deleted available in params.
+    - `bibliography_on_delete`: run after data has been deleted. Bibliography
+    ID available in param.
+
+- Modul Keanggotaan.
+    - `membership_init`: run on membership ready to go.
+    - `membership_before_update`: run after member data before updated.
+    - `membership_after_update`: run after member data after updated.
+    - `membership_after_save`: run after new member data is created/saved.
+
+- Modul Sirkulasi.
+    - `circulation_after_successful_transaction`: run after circulation 
+    transaction is done.
+
+Secara default plugin tidak akan aktif. Anda harus mengaktifkannya di menu 
+`System -> Plugins`.
+
+## Migration
+Sebuah plugin mungkin membutuhkan sebuah table tersendiri atau menambahkan 
+kolom pada table yang sudah ada. Untuk memudahkan dalam manajemen database 
+jika ada peningkatan versi, maka tool ini dapat membantu anda.
+
+Untuk melakukannya, anda hanya perlu menambahkan folder `migration` di dalam 
+folder plugin anda. Kemudian membuat sebuah file class dengan pola nama 
+`<versi-migration>_<nama-class>.php`. Class ini harus memiliki method `up` dan 
+`down` atau untuk memudahkan anda dapat meng-extend abstract class 
+`\SLiMS\Migration\Migration`.
+
+Contoh `1_CreateReadCounterTable.php` merupakan file class migration dalam 
+plugin `read_counter`.
+
+```php
+class CreateReadCounterTable extends \SLiMS\Migration\Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    function up() {...}
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    function down() {...}
+}
+```
+
+Method `up` berisi kode untuk menjalankan migrasi dan method `down` untuk 
+membalikannya. Sebagai contoh, method `up` berisi kode untuk membuat table 
+`biblio` maka method `down` berisi kode untuk menghapus table `biblio`.
+
+Berikut contoh struktur folder dari plugin `read_counter`:
+- `read_counter`
+    - index.php
+    - read_counter_plugin.php
+    - `migration`
+        - 1_CreateReadCounterTable.php
+        - 2_AddUIDColumn.php
+
+-----------
+
+# Plugin System - English version
+
+## How to build a plugin?
+To build a plugin, follow these rules in order to have a plugin to run without
+problem.
+
+- Place your plugin to `<slims root>/plugins` folder.
+- Place your plugin within the folder or a folder within it.
+- Make sure your plugin has `.plugin.php` for file name extension. For instance
+  `example.plugin.php`.
+- Also make sure to have additional information about your plugin, as follow 
+and place it with comment at the top of the file.
+
+```php
+    /**
+     * Plugin Name: Plugin name example
+     * Plugin URI: <place here you plugin repository address>
+     * Description: Your plugin description
+     * Version: 0.0.1
+     * Author: Your Name
+     * Author URI: <place here url of your profile>
+     */
+```
+- Currently, there are 2 (two) types of plugin:
+    1. An independent plugin as part of a submenu.
+    2. Plugin called _hooking_ to an existed feature.
+
+## Menu Plugin
+A submenu will be added on a module, with this kind of plugin.
+How to register it is explain below:
+
+```php
+// get plugin instance
+$plugin = \SLiMS\Plugins::getInstance();
+
+// registering plugin in bibliography module
+// Parameter 1 = Module's name
+// Parameter 2 = Menu's text
+// Parameter 3 = File's full path
+$plugin->registerMenu('bibliography', 'Label & Barcode', __DIR__ . '/index.php');
+```
+
+## Hooking Plugin
+This type of plugin will run over a feature under certain state.
+Below is an example of registering it:
+
+```php
+// get plugin instance
+$plugin = \SLiMS\Plugins::getInstance();
+
+// registering hook
+// parameter 1 = hook's tag
+// parameter 2 = callback
+$plugin->register('bibliography_on_delete', function () {});
+
+// Registering Hook via handler class
+// option 1
+Plugins::use(\Your\Library\Namespace::class)->for(function($plugins){
+    // chain style
+    // parameter 1 = tag hook
+    // parameter 2 = public method at \Namespace\Library\Anda::class
+    $plugins->registerHook('bibliography_after_save', 'saveTo3rdPartyIndexer');
+    // or use static class
+    Plugins::hook('bibliography_after_save', 'saveTo3rdPartyIndexer');
+});
+// option 2 (if not combined in one closure in for() method)
+Plugins::use(\Your\Library\Namespace::class);
+$plugins->registerHook('bibliography_after_save', 'saveTo3rdPartyIndexer');
+```
+Available `tag hook` are:
+
+- Bibliography module
+    - `bibliography_init`: run on bibliography ready to go.
+    - `bibliography_before_save`: run before bibliography data tobe saved. The 
+    data will be save available in params.
+    - `bibliography_after_save`: run after bibliography data saved 
+    successfully. The data saved available in params.
+    - `bibliography_before_update`: run before bibliography data tobe updated.
+    The data will be update available in params.
+    - `bibliography_after_update`: run after bibliography data updated 
+    successfully. The data updated available in params.
+    - `bibliography_before_delete`: run before data has been deleted.The data
+    that will be deleted available in params.
+    - `bibliography_on_delete`: run after data has been deleted. Bibliography
+    ID available in param.
+
+- Membership module.
+    - `membership_init`: run on membership ready to go.
+    - `membership_before_update`: run after member data before updated.
+    - `membership_after_update`: run after member data after updated.
+    - `membership_after_save`: run after new member data is created/saved.
+
+- Circulation module.
+    - `circulation_after_successful_transaction`: run after circulation 
+    transaction is done.
+
+By default, this plugin is inactive. You need to activate it in 
+`System -> Plugins` menu.
+================================================================================
+File: csp-manager\index.php
+================================================================================
+
+<?php
+/**
+ * @author Drajat Hasan
+ * @email drajathasan20@gmail.com
+ * @create date 2022-09-17 12:01:45
+ * @modify date 2022-11-13 18:39:35
+ * @license GPLv3
+ * @desc [description]
+ */
+
+defined('INDEX_AUTH') or die('Direct access is not allowed!');
+
+// start the session
+require SB.'admin/default/session.inc.php';
+require SB.'admin/default/session_check.inc.php';
+
+require SIMBIO.'simbio_GUI/form_maker/simbio_form_table_AJAX.inc.php';
+require SIMBIO.'simbio_GUI/table/simbio_table.inc.php';
+require SIMBIO.'simbio_DB/simbio_dbop.inc.php';
+
+function httpQuery($query = [])
+{
+    return http_build_query(array_unique(array_merge($_GET, $query)));
+}
+
+if (isset($_POST['saveData']))
+{
+    $isConfigWritable = is_writable(SB . 'config');
+
+    if (!$isConfigWritable)
+    {
+        toastr('Folder config tidak dapat ditulis!')->error();
+        exit;
+    }
+
+    $template = file_get_contents(__DIR__ . '/csp.template');
+    foreach ($_POST['csp'] as $policyName => $value) {
+        $template =  str_replace('{'.$policyName.'}', $value, $template);
+    }
+
+    // changes detail
+    $template = str_replace(['{realname}', '{timeModified}', '{hostName}'], [$_SESSION['realname'], date('Y-m-d H:i:s'), $_SERVER['HTTP_HOST']??'-'], $template);
+
+    // put content to file
+    $overWrite = file_put_contents(SB . 'config/csp.php', $template);
+
+    toastr('File ' . ($overWrite ? 'berhasil' : 'tidak berhasil') . ' disimpan')->{($overWrite ? 'success' : 'error')}();
+    exit;
+}
+?>
+<div class="menuBox">
+  <div class="menuBoxInner systemIcon">
+    <div class="per_title">
+      <h2>CSP (Content Security Policy)</h2>
+    </div>
+  </div>
+</div>
+<?php
+// create new instance
+$form = new simbio_form_table_AJAX('mainForm', $_SERVER['PHP_SELF'] . '?' . httpQuery(), 'post');
+$form->submit_button_attr = 'name="saveData" value="'.__('Save Settings').'" class="btn btn-default"';
+
+// form table attributes
+$form->table_attr = 'id="dataList" class="s-table table"';
+$form->table_header_attr = 'class="alterCell font-weight-bold"';
+$form->table_content_attr = 'class="alterCell2"';
+
+foreach (config('csp') as $csp) {
+    if (empty($csp)) continue;
+    $csp = explode(' ', $csp);
+    $policyName = $csp[0];
+    $policyValue = implode(' ', array_slice($csp, 1));
+
+    $form->addTextField('text', 'csp[' . simbio_security::xssFree($policyName) . ']', ucwords(str_replace('-', ' ', $policyName)), trim($policyValue), 'style="width: 100%;" class="form-control"');
+}
+
+// print out the object
+echo $form->printOut();
+
+================================================================================
+File: csp-manager\README.md
+================================================================================
+
+# slims-csp-manager
+
+mengatur isi dari CSP SLiMS
+
+================================================================================
+File: csp-manager\slims_csp.plugin.php
+================================================================================
+
+<?php
+/**
+ * Plugin Name: SLiMS CSP
+ * Plugin URI: https://github.com/drajathasan/slims-csp-manager
+ * Description: atur pengaturan CSP SLiMS
+ * Version: 1.0.0
+ * Author: Drajat Hasan
+ * Author URI: https://t.me/drajathasan
+ */
+
+// get plugin instance
+$plugin = \SLiMS\Plugins::getInstance();
+
+// registering menus or hook
+$plugin->registerMenu("system", 'CSP', __DIR__ . '/index.php');
+================================================================================
+File: label_barcode\index.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 06/11/20 00.56
+ * @File name           : index.php
+ */
+
+defined('INDEX_AUTH') OR die('Direct access not allowed!');
+
+// IP based access limitation
+require LIB . 'ip_based_access.inc.php';
+do_checkIP('smc');
+do_checkIP('smc-bibliography');
+// start the session
+require SB . 'admin/default/session.inc.php';
+require SIMBIO . 'simbio_GUI/table/simbio_table.inc.php';
+require SIMBIO . 'simbio_GUI/form_maker/simbio_form_table_AJAX.inc.php';
+require SIMBIO . 'simbio_GUI/paging/simbio_paging.inc.php';
+require SIMBIO . 'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+
+function httpQuery($query = [])
+{
+    return http_build_query(array_unique(array_merge($_GET, $query)));
+}
+
+// privileges checking
+$can_read = utility::havePrivilege('bibliography', 'r');
+
+if (!$can_read) {
+    die('<div class="errorBox">' . __('You are not authorized to view this section') . '</div>');
+}
+
+$max_print = 50;
+
+// for generate barcode && force use zend barcode
+ini_set('include_path', LIB);
+require_once LIB . 'Zend/Barcode.php';
+
+function generateBarcode($code)
+{
+    $file_name = __DIR__ . '/../../images/barcodes/' . $code . '.png';
+    $renderer = Zend_Barcode:: factory(
+        'code128', 'image', [
+            'text' => urldecode($code),
+            'factor' => 2,
+            'font' => realpath(LIB . 'phpbarcode/DejaVuSans.ttf'),
+            'fontSize' => 8,
+        ]
+    );
+    call_user_func('imagepng', $renderer->draw(), $file_name);
+}
+
+/* RECORD OPERATION */
+if (isset($_POST['itemID']) AND !empty($_POST['itemID']) AND isset($_POST['itemAction'])) {
+
+    if (!$can_read) {
+        die();
+    }
+    if (!is_array($_POST['itemID'])) {
+        // make an array
+        $_POST['itemID'] = array($_POST['itemID']);
+    }
+    /* LABEL SESSION ADDING PROCESS */
+    $print_count = 0;
+    if (isset($_SESSION['labels']['biblio'])) {
+        $print_count_biblio = count($_SESSION['labels']['biblio']);
+    }
+    if (isset($_SESSION['labels']['item'])) {
+        $print_count_item = count($_SESSION['labels']['item']);
+    }
+    // loop array
+    foreach ($_POST['itemID'] as $itemID) {
+        if ($print_count == $max_print) {
+            $limit_reach = true;
+            break;
+        }
+        if (stripos($itemID, 'b', 0) !== false) {
+            // Biblio ID
+            $biblioID = str_ireplace('b', '', $itemID);
+            if (isset($_SESSION['labels']['biblio'][$biblioID])) {
+                continue;
+            }
+            $_SESSION['labels']['biblio'][$biblioID] = $biblioID;
+            $print_count_biblio++;
+        } else {
+            // Item ID
+            $itemID = (integer)$itemID;
+            if (isset($_SESSION['labels']['item'][$itemID])) {
+                continue;
+            }
+            $_SESSION['labels']['item'][$itemID] = $itemID;
+            $print_count_item++;
+            $print_count++;
+        }
+    }
+    $print_count = $print_count_item + $print_count_biblio;
+    echo '<script type="text/javascript">top.$(\'#queueCount\').html(\'' . $print_count . '\');</script>';
+    if (isset($limit_reach)) {
+        $msg = str_replace('{max_print}', $max_print, __('Selected items NOT ADDED to print queue. Only {max_print} can be printed at once'));
+        utility::jsToastr('Labels Printing', $msg, 'warning');
+    } else {
+        // update print queue count object
+        utility::jsToastr('Labels Printing', __('Selected items added to print queue'), 'success');
+    }
+    exit();
+}
+
+// clean print queue
+if (isset($_GET['action']) AND $_GET['action'] == 'clear') {
+    utility::jsToastr('Labels Printing', __('Print queue cleared!'), 'success');
+    echo '<script type="text/javascript">top.$(\'#queueCount\').html(\'0\');</script>';
+    unset($_SESSION['labels']);
+    exit();
+}
+
+// on print action
+if (isset($_GET['action']) AND $_GET['action'] == 'print') {
+    // check if label session array is available
+    if (!isset($_SESSION['labels']['item']) && !isset($_SESSION['labels']['biblio'])) {
+        utility::jsToastr('Labels Printing', __('There is no data to print!'), 'error');
+        die();
+    }
+
+    // concat item ID
+    $item_ids = '';
+    if (isset($_SESSION['labels']['item'])) {
+        foreach ($_SESSION['labels']['item'] as $id) {
+            $item_ids .= $id . ',';
+        }
+    }
+    // concat biblio ID
+    $biblio_ids = '';
+    if (isset($_SESSION['labels']['biblio'])) {
+        foreach ($_SESSION['labels']['biblio'] as $id) {
+            $biblio_ids .= $id . ',';
+        }
+    }
+    // strip the last comma
+    $item_ids = substr_replace($item_ids, '', -1);
+    $biblio_ids = substr_replace($biblio_ids, '', -1);
+
+    // SQL criteria
+    if ($item_ids) {
+        $criteria = "i.item_id IN($item_ids)";
+    }
+    if ($biblio_ids) {
+        $criteria = "b.biblio_id IN($biblio_ids)";
+    }
+    if ($item_ids && $biblio_ids) {
+        $criteria = "i.item_id IN($item_ids) OR b.biblio_id IN($biblio_ids)";
+    }
+
+    // send query to database
+    $biblio_q = $dbs->query('SELECT IF(i.call_number<>\'\', i.call_number, b.call_number), i.item_code, b.title FROM biblio AS b LEFT JOIN item AS i ON b.biblio_id=i.biblio_id WHERE ' . $criteria);
+
+    $label_data_array = array();
+    while ($biblio_d = $biblio_q->fetch_row()) {
+        if ($biblio_d[0]) {
+            $label_data_array[] = $biblio_d;
+        }
+    }
+
+    // include printed settings configuration file
+    include SB . 'admin' . DS . 'admin_template' . DS . 'printed_settings.inc.php';
+    // check for custom template settings
+    $custom_settings = SB . 'admin' . DS . $sysconf['admin_template']['dir'] . DS . $sysconf['template']['theme'] . DS . 'printed_settings.inc.php';
+    if (file_exists($custom_settings)) {
+        include $custom_settings;
+    }
+
+    // load print settings from database to override value from printed_settings file
+    loadPrintSettings($dbs, 'label');
+
+    // chunk label array
+    $chunked_label_arrays = array_chunk($label_data_array, 2);
+    // create html ouput of images
+    $html_str = '';
+    // loop the chunked arrays to row
+    $html_str .= '<table class="table table-borderless">' . "\n";
+    echo '<script type="text/javascript" src="' . JWB . 'jquery.js"></script>';
+    foreach ($chunked_label_arrays as $label_data) {
+        $html_str .= '<tr>' . "\n";
+        foreach ($label_data as $labels) {
+            $barcode_text = trim($labels[1]);
+            /* replace space */
+            $barcode_text = str_replace(array(' ', '/', '\/'), '_', $barcode_text);
+            /* replace invalid characters */
+            $barcode_text = str_replace(array(':', ',', '*', '@'), '', $barcode_text);
+            generateBarcode($barcode_text);
+
+            $label = $labels[0];
+            $html_str .= '<td valign="top">';
+            $html_str .= '<div class="card card-body"><div class="d-flex align-items-center">';
+            $html_str .= '<div style="width:240px; margin-right: 40px;position:relative;">';
+            $html_str .= '<div style="padding:0 1rem;font-size:10pt;text-align:center;position:absolute;top:-1px;left:0;right:0;z-index:1;background:white;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;line-height:1.25">'.$labels[2].'</div>';
+            $html_str .= '<img class="img-fluid" src="' . SWB . IMG . '/barcodes/' . urlencode(urlencode($barcode_text)) . '.png?' . date('YmdHis') . '" border="0" />';
+            $html_str .= '</div>';
+            $html_str .= '<div>';
+            if ($sysconf['print']['label']['include_header_text']) {
+                $html_str .= '<div class="labelHeaderStyle">' . ($sysconf['print']['label']['header_text'] ? $sysconf['print']['label']['header_text'] : $sysconf['library_name']) . '</div>';
+            }
+            // explode label data by space except callnumber
+            $sliced_label = preg_split("/((?<=\w)\s+(?=\D))|((?<=\D)\s+(?=\d))/m", $label);
+            $html_str .= '<div class="labelStyle">';
+            foreach ($sliced_label as $slice_label_item) {
+                $html_str .= $slice_label_item . '<br />';
+            }
+            $html_str .= '</div></div></div>';
+            $html_str .= '</div>';
+            $html_str .= '</td>';
+        }
+        $html_str .= '</tr>' . "\n";
+    }
+    $html_str .= '</table>' . "\n";
+
+    $__ = '__';
+    $SWB = SWB;
+    $template = <<<HTML
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Label & Barcode Printing</title>
+        <link rel="stylesheet" href="{$SWB}css/bootstrap.min.css">
+        <style>
+            @media print {
+                .no-print {
+                    display: none !important;
+                }            
+            }
+            .rotate {
+              transform: rotate(-90deg);
+              -webkit-transform: rotate(-90deg);
+              -moz-transform: rotate(-90deg);
+              -ms-transform: rotate(-90deg);
+              -o-transform: rotate(-90deg);
+              filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+            }
+            .labelHeaderStyle {
+                border-bottom: 1px solid #8d8d8d;
+                padding-bottom: 8px;
+                margin-bottom: 8px;
+            }
+            .labelStyle {
+                font-weight: bold;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="#" class="no-print btn btn-success mb-4" onclick="window.print()">{$__('Print Again')}</a>
+        {$html_str}
+        <script type="text/javascript">self.print();</script>
+    </body>
+</html>
+HTML;
+
+    // unset the session
+    unset($_SESSION['labels']);
+    // write to file
+    $print_file_name = 'label_print_result_' . strtolower(str_replace(' ', '_', $_SESSION['uname'])) . '.html';
+    $file_write = @file_put_contents(UPLOAD . $print_file_name, $template);
+    if ($file_write) {
+        echo '<script type="text/javascript">parent.$(\'#queueCount\').html(\'0\');</script>';
+        // open result in new window
+        echo '<script type="text/javascript">top.$.colorbox({href: "' . SWB . FLS . '/' . $print_file_name . '?v='.date('YmdHis').'", iframe: true, width: (1200), height: (parent.window.innerHeight - 200), title: "' . __('Labels Printing') . '"})</script>';
+    } else {
+        utility::jsToastr('Labels Printing', str_replace('{directory}', SB . FLS, __('ERROR! Label failed to generate, possibly because {directory} directory is not writable')), 'error');
+    }
+    exit();
+}
+
+/* search form */
+?>
+    <div class="menuBox">
+        <div class="menuBoxInner printIcon">
+            <div class="per_title">
+                <h2><?php echo __('Labels & Barcode Printing'); ?></h2>
+            </div>
+            <div class="sub_section">
+                <div class="btn-group">
+                    <a target="blindSubmit" href="<?= $_SERVER['PHP_SELF'] . '?' . httpQuery(['action' => 'clear']) ?>"
+                       class="btn btn-default notAJAX "><?php echo __('Clear Print Queue'); ?></a>
+                    <a target="blindSubmit" href="<?= $_SERVER['PHP_SELF'] . '?' . httpQuery(['action' => 'print']) ?>"
+                       class="btn btn-success notAJAX "><?php echo __('Print Labels for Selected Data'); ?></a>
+                    <!--                    <a href="-->
+                    <?php //echo MWB; ?><!--bibliography/pop_print_settings.php?type=label" width="780" height="500" class="btn btn-default notAJAX openPopUp" title="-->
+                    <?php //echo __('Change print label settings'); ?><!--">-->
+                    <?php //echo __('Change print label settings'); ?><!--</a>-->
+                </div>
+                <form name="search" action="<?= $_SERVER['PHP_SELF'] . '?' . httpQuery() ?>" id="search" method="get"
+                      class="form-inline"><?php echo __('Search'); ?>
+                    <input type="text" name="keywords" class="form-control col-md-3"/>
+                    <input type="submit" id="doSearch" value="<?php echo __('Search'); ?>"
+                           class="s-btn btn btn-default"/>
+                </form>
+            </div>
+            <div class="infoBox">
+                <?php
+                echo __('Maximum') . ' <strong class="text-danger">' . $max_print . '</strong> ' . __('records can be printed at once. Currently there is') . ' ';
+                if (isset($_SESSION['labels'])) {
+                    echo '<strong id="queueCount" class="text-danger">' . @(count($_SESSION['labels']['item']) + count($_SESSION['labels']['biblio'])) . '</strong>';
+                } else {
+                    echo '<strong id="queueCount" class="text-danger">0</strong>';
+                }
+                echo ' ' . __('in queue waiting to be printed.');
+                ?>
+            </div>
+        </div>
+    </div>
+<?php
+/* search form end */
+
+// create datagrid
+$datagrid = new simbio_datagrid();
+/* BIBLIOGRAPHY LIST */
+require SIMBIO . 'simbio_UTILS/simbio_tokenizecql.inc.php';
+require LIB . 'biblio_list_model.inc.php';
+// index choice
+if ($sysconf['index']['type'] == 'index' || ($sysconf['index']['type'] == 'sphinx' && file_exists(LIB . 'sphinx/sphinxapi.php'))) {
+    if ($sysconf['index']['type'] == 'sphinx') {
+        require LIB . 'sphinx/sphinxapi.php';
+        require LIB . 'biblio_list_sphinx.inc.php';
+    } else {
+        require LIB . 'biblio_list_index.inc.php';
+    }
+    // table spec
+    $table_spec = 'search_biblio AS `index` LEFT JOIN `item` ON `index`.biblio_id=`item`.biblio_id';
+    if ($can_read) {
+        $datagrid->setSQLColumn('IF(item.item_id IS NOT NULL, item.item_id, CONCAT(\'b\', index.biblio_id))', 'index.title AS "' . __('Title') . '"', 'IF(item.call_number<>\'\', item.call_number, index.call_number) AS `' . __('Call Number') . '`', 'item.item_code AS `' . __('Item Code') . '`');
+    }
+} else {
+    require LIB . 'biblio_list.inc.php';
+    // table spec
+    $table_spec = 'biblio LEFT JOIN item ON biblio.biblio_id=item.biblio_id';
+    if ($can_read) {
+        $datagrid->setSQLColumn('IF(item.item_id IS NOT NULL, item.item_id, CONCAT(\'b\', biblio.biblio_id))', 'biblio.title AS `' . __('Title') . '`',
+            'IF(item.call_number<>\'\', item.call_number, biblio.call_number) AS `' . __('Call Number') . '`', 'item.item_code AS `' . __('Item Code') . '`');
+    }
+}
+$datagrid->setSQLorder('item.last_update DESC');
+// is there any search
+if (isset($_GET['keywords']) AND $_GET['keywords']) {
+    $keywords = utility::filterData('keywords', 'get', true, true, true);
+    $searchable_fields = array('title', 'author', 'class', 'callnumber', 'itemcode');
+    $search_str = '';
+    // if no qualifier in fields
+    if (!preg_match('@[a-z]+\s*=\s*@i', $keywords)) {
+        foreach ($searchable_fields as $search_field) {
+            $search_str .= $search_field . '=' . $keywords . ' OR ';
+        }
+    } else {
+        $search_str = $keywords;
+    }
+    $biblio_list = new biblio_list($dbs, 20);
+    $criteria = $biblio_list->setSQLcriteria($search_str);
+}
+$criteria_str = 'item.item_code IS NOT NULL';
+if (isset($criteria)) {
+    $criteria_str .= ' AND (' . $criteria['sql_criteria'] . ')';
+}
+$datagrid->setSQLCriteria($criteria_str);
+// set table and table header attributes
+$datagrid->table_attr = 'id="dataList" class="s-table table"';
+$datagrid->table_header_attr = 'class="dataListHeader" style="font-weight: bold;"';
+// edit and checkbox property
+$datagrid->edit_property = false;
+$datagrid->chbox_property = array('itemID', __('Add'));
+$datagrid->chbox_action_button = __('Add To Print Queue');
+$datagrid->chbox_confirm_msg = __('Add to print queue?');
+// set delete proccess URL
+$datagrid->chbox_form_URL = $_SERVER['PHP_SELF'] . '?' . httpQuery();
+$datagrid->column_width = array(0 => '75%', 1 => '20%');
+// put the result into variables
+$datagrid_result = $datagrid->createDataGrid($dbs, $table_spec, 20, $can_read);
+if (isset($_GET['keywords']) AND $_GET['keywords']) {
+    $msg = str_replace('{result->num_rows}', $datagrid->num_rows, __('Found <strong>{result->num_rows}</strong> from your keywords'));
+    echo '<div class="infoBox">' . $msg . ' : "' . htmlspecialchars($_GET['keywords']) . '"<div>' . __('Query took') . ' <b>' . $datagrid->query_time . '</b> ' . __('second(s) to complete') . '</div></div>';
+}
+echo $datagrid_result;
+/* main content end */
+
+================================================================================
+File: label_barcode\label.plugin.php
+================================================================================
+
+<?php
+/**
+ * Plugin Name: Label & Barcode
+ * Plugin URI: https://github.com/idoalit/label_barcode
+ * Description: Label Call Number including barcode item
+ * Version: 0.0.1
+ * Author: Waris Agung Widodo
+ * Author URI: https://github.com/idoalit
+ */
+
+// get plugin instance
+$plugin = \SLiMS\Plugins::getInstance();
+
+// registering menus
+$plugin->registerMenu('bibliography', 'Label & Barcode', __DIR__ . '/index.php');
+
+================================================================================
+File: read_counter\index.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 09/03/2021 16:40
+ * @File name           : index.php
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+defined('INDEX_AUTH') OR die('Direct access not allowed!');
+
+// IP based access limitation
+require LIB . 'ip_based_access.inc.php';
+do_checkIP('smc');
+do_checkIP('smc-bibliography');
+// start the session
+require SB . 'admin/default/session.inc.php';
+require SIMBIO . 'simbio_GUI/table/simbio_table.inc.php';
+require SIMBIO . 'simbio_GUI/form_maker/simbio_form_table_AJAX.inc.php';
+require SIMBIO . 'simbio_GUI/paging/simbio_paging.inc.php';
+require SIMBIO . 'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+
+// privileges checking
+$can_read = utility::havePrivilege('bibliography', 'r');
+
+if (!$can_read) {
+    die('<div class="errorBox">' . __('You are not authorized to view this section') . '</div>');
+}
+
+function httpQuery($query = [])
+{
+    return http_build_query(array_unique(array_merge($_GET, $query)));
+}
+
+if (isset($_GET['report']))
+{
+    include __DIR__ . '/report.php';
+    exit;
+}
+
+$flashError = '';
+if (isset($_POST['item_code']) && !empty($_POST['item_code'])) {
+    $item_code = utility::filterData('item_code', 'post', true, true, true);
+    $stmt = \SLiMS\DB::getInstance()->prepare("SELECT i.item_code, b.title FROM item AS i LEFT JOIN biblio b on i.biblio_id = b.biblio_id WHERE i.item_code = :item_code");
+    $stmt->execute(['item_code' => $item_code]);
+
+    if ($stmt->rowCount() > 0) {
+        $data = $stmt->fetchObject();
+        $stmt = \SLiMS\DB::getInstance()->prepare("INSERT INTO read_counter(item_code, title, created_at, uid) VALUES (:item_code, :title, :created_at, :uid)");
+        $stmt->execute(['item_code' => $data->item_code, 'title' => $data->title, 'created_at' => date('Y-m-d H:i:s'), 'uid' => $_SESSION['uid']]);
+    } else { $flashError = str_replace('{itemcode}', $item_code, __('No data found with item code {itemcode}.')); }
+}
+
+?>
+
+<div class="menuBox">
+    <div class="menuBoxInner printIcon">
+        <div class="per_title">
+            <h2><?php echo __('Read Counter'); ?></h2>
+        </div>
+        <div class="infoBox">
+            <?= __('Enter item code / barcode value into input form below!') ?>
+        </div>
+        <div class="<?= empty($flashError) ? 'd-none' : 'alert alert-warning font-weight-bold' ?>">
+            <?= $flashError ?>
+        </div>
+        <div class="sub_section">
+            <div class="btn-group">
+                <a href="<?= $_SERVER['PHP_SELF'] . '?' . httpQuery(['report' => 'yes']) ?>" class="btn btn-default"><?php echo __('Report'); ?></a>
+            </div>
+            <form name="read_counter" action="<?= $_SERVER['PHP_SELF'] . '?' . httpQuery() ?>" id="search" method="post"
+                  class="form-inline"><?php echo __('Barcode'); ?>&nbsp;:&nbsp;
+                <input type="text" name="item_code" class="form-control col-md-3" autocomplete="off"/>
+                <input type="submit" id="doAdd" value="<?php echo __('Add'); ?>"
+                       class="s-btn btn btn-success"/>
+            </form>
+        </div>
+    </div>
+</div>
+
+<?php
+$grid = new simbio_datagrid('class="table table-striped"');
+$grid->setSQLColumn("item_code AS '" . __('Item Code') . "'", "title AS '" . __('Title') . "'", "created_at AS '" . __('Input Date') . "'");
+$grid->setSQLorder('created_at DESC');
+echo $grid->createDataGrid(\SLiMS\DB::getInstance('mysqli'), 'read_counter');
+================================================================================
+File: read_counter\read_counter_plugin.php
+================================================================================
+
+<?php
+/**
+ * Plugin Name: Read Counter
+ * Plugin URI: https://github.com/idoalit/read_counter
+ * Description: Logging the books that have been read
+ * Version: 0.0.2
+ * Author: Waris Agung Widodo
+ * Author URI: https://github.com/idoalit
+ */
+
+// get instance of plugin object
+$plugin = \SLiMS\Plugins::getInstance();
+
+// registering our plugin into bibliography module
+$plugin->registerMenu('bibliography', __('Read Counter'), __DIR__ . '/index.php');
+
+================================================================================
+File: read_counter\report.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Drajat Hasan
+ * @Date                : 2022-06-26 14:11:46
+ * @File name           : index.php
+ */
+
+defined('INDEX_AUTH') OR die('Direct access not allowed!');
+
+require MDLBS . 'reporting/report_dbgrid.inc.php';
+
+$page_title = 'Read Counter Report';
+$reportView = false;
+$num_recs_show = 20;
+if (isset($_GET['reportView'])) {
+    $reportView = true;
+}
+
+if (!$reportView) {
+?>
+<!-- filter -->
+<div class="per_title">
+    <h2><?php echo __('Read Counter Report'); ?></h2>
+</div>
+<div class="infoBox">
+    <?php echo __('Report Filter'); ?>
+</div>
+<div class="sub_section">
+    <form method="get" action="<?= $_SERVER['PHP_SELF'] . '?' . httpQuery(); ?>" target="reportView">
+        <input type="hidden" name="id" value="<?= $_GET['id'] ?>"/>
+        <input type="hidden" name="mod" value="<?= $_GET['mod'] ?>"/>
+        <input type="hidden" name="report" value="yes"/>
+        <div id="filterForm">
+            <!-- Copy me if you want to make your custom field -->
+            <div class="form-group divRow">
+                <label><?= __('Title') ?></label>
+                <?php echo simbio_form_element::textField('text', 'title', '', 'class="form-control col-4"'); ?>
+            </div>
+            <div class="form-group divRow">
+                <label><?= __('Item Code') ?></label>
+                <?php echo simbio_form_element::textField('text', 'itemcode', '', 'class="form-control col-4"'); ?>
+            </div>
+            <!-- until here -->
+            <div class="form-group divRow">
+                <label><?= __('Read Start'); ?></label>
+                <?php
+                echo simbio_form_element::dateField('startDate', '2000-01-01','class="form-control"');
+                ?>
+            </div>
+            <div class="form-group divRow">
+                <label><?= __('Read Until'); ?></label>
+                <?php
+                echo simbio_form_element::dateField('untilDate', date('Y-m-d'),'class="form-control"');
+                ?>
+            </div>
+            <div class="form-group divRow">
+                <label><?php echo __('Record each page'); ?></label>
+                <input type="text" name="recsEachPage" size="3" maxlength="3" class="form-control col-1" value="<?php echo $num_recs_show; ?>" /><small class="text-muted"><?php echo __('Set between 20 and 200'); ?></small>
+            </div>
+        </div>
+        <input type="button" name="moreFilter" class="btn btn-default" value="<?php echo __('Show More Filter Options'); ?>" />
+        <input type="submit" name="applyFilter" class="btn btn-primary" value="<?php echo __('Apply Filter'); ?>" />
+        <input type="hidden" name="reportView" value="true" />
+    </form>
+</div>
+<!-- filter end -->
+<div class="paging-area"><div class="pt-3 pr-3" id="pagingBox"></div></div>
+<iframe name="reportView" id="reportView" src="<?= $_SERVER['PHP_SELF'] . '?' . httpQuery(['reportView' => 'true']); ?>" frameborder="0" style="width: 100%; height: 500px;"></iframe>
+<?php
+} else {
+    ob_start();
+    // create datagrid
+    $reportgrid = new report_datagrid();
+    $reportgrid->table_attr = 'class="s-table table table-sm table-bordered"';
+    $reportgrid->setSQLColumn("item_code AS '" . __('Item Code') . "'", "title AS '" . __('Title') . "'", "created_at AS '" . __('Input Date') . "'");
+    $reportgrid->setSQLorder('created_at DESC');
+//    $reportgrid->invisible_fields = array(0);
+
+    // is there any search
+    $criteria = 'title IS NOT NULL ';
+
+    if (isset($_GET['title']) && !empty($_GET['title']))
+    {
+        $title = utility::filterData('title', 'get', true, true, true);
+        $criteria .=  ' AND title like \'%' . $title . '%\'';
+    }
+
+    if (isset($_GET['itemcode']) && !empty($_GET['itemcode']))
+    {
+        $title = utility::filterData('itemcode', 'get', true, true, true);
+        $criteria .=  ' AND item_code = \'' . $title . '\'';
+    }
+
+        // loan date
+        if (isset($_GET['startDate']) AND isset($_GET['untilDate'])) {
+            $criteria .= ' AND (TO_DAYS(created_at) BETWEEN TO_DAYS(\''.utility::filterData('startDate', 'get', true, true, true).'\') AND
+                TO_DAYS(\''.utility::filterData('untilDate', 'get', true, true, true).'\'))';
+        }
+
+    if (isset($_GET['recsEachPage'])) {
+        $recsEachPage = (integer)$_GET['recsEachPage'];
+        $num_recs_show = ($recsEachPage >= 20 && $recsEachPage <= 200)?$recsEachPage:$num_recs_show;
+    }
+
+    // table spec
+    $table_spec = 'read_counter';
+
+    // set group by
+    $reportgrid->setSQLCriteria($criteria);
+
+    // show spreadsheet export button
+    $reportgrid->show_spreadsheet_export = true;
+    $reportgrid->spreadsheet_export_btn = '<a href="'.AWB.'modules/reporting/spreadsheet.php" class="s-btn btn btn-default">'.__('Export to spreadsheet format').'</a>';
+
+    // put the result into variables
+    echo $reportgrid->createDataGrid($dbs, $table_spec, $num_recs_show);
+
+    echo '<script type="text/javascript">'."\n";
+    echo 'parent.$(\'#pagingBox\').html(\''.str_replace(array("\n", "\r", "\t"), '', $reportgrid->paging_set).'\');'."\n";
+    echo '</script>';
+
+    $xlsquery = 'select item_code AS \'' . __('Item Code') . '\', title AS \'' . __('Title') . '\', created_at AS \'' . __('Input Date') . '\' from ' . $table_spec . ' WHERE '. $criteria;
+    // echo $xlsquery;
+    unset($_SESSION['xlsdata']);
+    $_SESSION['xlsquery'] = $xlsquery;
+    $_SESSION['tblout'] = "read-counter-report";
+    $content = ob_get_clean();
+    // include the page template
+    require SB.'/admin/'.$sysconf['admin_template']['dir'].'/printed_page_tpl.php';
+}
+================================================================================
+File: read_counter\migration\1_CreateReadCounterTable.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 14/03/2021 18:03
+ * @File name           : 1_CreateReadCounterTable.php
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+use SLiMS\Table\Schema;
+use SLiMS\Table\Blueprint;
+
+class CreateReadCounterTable extends \SLiMS\Migration\Migration
+{
+
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    function up()
+    {
+        Schema::create('read_counter', function(Blueprint $table){
+            $table->engine = 'MyISAM';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
+            $table->autoIncrement('id');
+            $table->string('item_code', 20)->notNull();
+            $table->string('title', 255)->notNull();
+            $table->datetime('created_at')->notNull();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    function down()
+    {
+        Schema::drop('read_counter');
+    }
+}
+================================================================================
+File: read_counter\migration\2_AddUIDColumn.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 17/03/2021 18:56
+ * @File name           : 2_AddUIDColumn.php
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+use SLiMS\Table\Schema;
+use SLiMS\Table\Blueprint;
+
+class AddUIDColumn extends \SLiMS\Migration\Migration
+{
+
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    function up()
+    {
+        Schema::table('read_counter', function(Blueprint $table){
+            $table->number('uid', 11)->nullable()->after('created_at')->add();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    function down()
+    {
+        Schema::table('read_counter', function(Blueprint $table){
+            $table->drop('uid');
+        });
+    }
+}
+================================================================================
+Total files processed: 15
+
