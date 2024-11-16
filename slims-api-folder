@@ -1,0 +1,758 @@
+File Summary:
+
+The files describe a RESTful API (version 1) built using AltoRouter for routing and seemingly employing a simple Model-View-Controller (MVC) pattern. The API appears to be designed for fetching data related to library resources and user activity. Caching is implemented using simple JSON files.
+
+v1/controllers/HomeController.php: A basic controller providing a simple welcome message ("Sugeng rawuh is selamat datang," which translates to "Welcome" in Javanese and Indonesian). Primarily serves as a test or default route.
+
+v1/controllers/Controller.php: A base controller class that includes a withJson() method for easily returning JSON responses. This simplifies the code in other controllers.
+
+v1/controllers/BiblioController.php: This controller handles requests related to bibliographic records. It includes:
+
+getPopular(): Retrieves the most popular bibliographic records based on loan data, falling back to recently added records if popular data is insufficient. Uses caching.
+
+getLatest(): Retrieves the latest added bibliographic records.
+
+getTotalAll(): Returns the total number of bibliographic records.
+
+getByGmd(): Retrieves records by Material Type (GMD).
+
+getByCollType(): Retrieves records by Collection Type.
+The controller uses the Image trait for generating thumbnail URLs.
+
+v1/routes.php: This file defines the API routes using the Router class. It maps HTTP methods (GET) to controller actions. Includes routes for:
+
+Home: /
+
+Bibliographic data: /biblio/popular, /biblio/latest, /biblio/gmd/:gmd, /biblio/coll_type/:coll_type, /biblio/total/all
+
+Subject data: /subject/popular, /subject/latest
+
+Member data: /member/top
+
+Item data: /item/total/all, /item/total/lent, /item/total/available
+
+Loan data: /loan/summary, /loan/getdate/:start_date, /loan/summary/:date
+It also incorporates a hook for extending routes via plugins.
+
+v1/controllers/ItemController.php: This controller provides functions for retrieving item-related statistics:
+
+getTotalAll(): Total number of items.
+
+getTotalLent(): Total number of items currently on loan.
+
+getTotalAvailable(): Total number of available items.
+
+v1/controllers/MemberController.php: This controller handles requests related to members.
+
+getTopMember(): Retrieves the top members based on the number of loans in the current year. Uses the Image trait for member image URLs.
+
+v1/controllers/SubjectController.php: This controller manages subject-related data.
+
+getPopular(): Retrieves popular subjects based on loan data, falling back to recently added subjects if necessary. Uses caching.
+
+getLatest(): Retrieves the latest added subjects.
+
+v1/controllers/LoanController.php: This controller handles loan-related data and statistics. It includes methods to get:
+
+getSummary(): Overall loan summary (total, new loans, returned, renewed, overdue).
+
+getDate(): Loan data for a specified date range.
+
+getSummaryDate(): Detailed loan summary for a specific date.
+
+v1/helpers/Cache.php: A helper class for simple file-based caching of JSON data. It provides methods for setting, getting, and destroying cache entries.
+
+v1/helpers/Image.php: A helper trait providing a method (getImagePath()) for constructing URLs to thumbnails, likely using the Mini Gal Nano library.
+
+Overall: This code represents a relatively straightforward REST API built to provide data for a library system's OPAC (Online Public Access Catalog). The use of caching and the modular design with controllers and helpers improve efficiency and maintainability. The inclusion of plugin hooks suggests extensibility for future features.
+
+
+================================================================================
+File: v1\controllers\HomeController.php
+================================================================================
+
+<?php
+
+/**
+ * @author              : Waris Agung Widodo
+ * @Date                : 2017-07-05 13:05:36
+ * @Last Modified by    : ido
+ * @Last Modified time  : 2017-07-05 13:12:51
+ *
+ * Copyright (C) 2017  Waris Agung Widodo (ido.alit@gmail.com)
+ */
+
+require_once 'Controller.php';
+
+class HomeController extends Controller
+{
+    
+    public function index()
+    {
+        $response = array(
+            'error' => false,
+            'message' => 'Sugeng rawuh is selamat datang.'
+            );
+        parent::withJson($response);
+    }
+}
+================================================================================
+File: v1\controllers\Controller.php
+================================================================================
+
+<?php
+
+/**
+ * @author              : Waris Agung Widodo
+ * @Date                : 2017-07-05 12:17:02
+ * @Last Modified by    : ido
+ * @Last Modified time  : 2017-07-05 13:53:28
+ *
+ * Copyright (C) 2017  Waris Agung Widodo (ido.alit@gmail.com)
+ */
+
+class Controller
+{
+ 
+    public function withJson($data)
+    {
+        header('Content-type: application/json');
+        if (is_array($data)) {
+            echo json_encode($data);
+        } else {
+            echo $data;
+        }
+
+        return true;
+    }
+    
+}
+================================================================================
+File: v1\controllers\BiblioController.php
+================================================================================
+
+<?php
+
+/**
+ * @author              : Waris Agung Widodo
+ * @Date                : 2017-07-05 12:15:12
+ * @Last Modified by    : ido
+ * @Last Modified time  : 2017-07-05 15:08:08
+ *
+ * Copyright (C) 2017  Waris Agung Widodo (ido.alit@gmail.com)
+ */
+
+require_once 'Controller.php';
+require_once __DIR__ . '/../helpers/Image.php';
+require_once __DIR__ . '/../helpers/Cache.php';
+
+class BiblioController extends Controller
+{
+
+    use Image;
+
+    protected $sysconf;
+
+    /**
+     * @var mysqli
+     */
+    protected $db;
+
+    function __construct($sysconf, $obj_db)
+    {
+        $this->sysconf = $sysconf;
+        $this->db = $obj_db;
+    }
+
+    public function getPopular()
+    {
+        $cache_name = 'biblio_popular';
+        if (!is_null($json = Cache::get($cache_name))) return parent::withJson($json);
+
+        $limit = $this->sysconf['template']['classic_popular_collection_item'];
+        $sql = "SELECT b.biblio_id, b.title, b.image, COUNT(*) AS total
+          FROM loan AS l
+          LEFT JOIN item AS i ON l.item_code=i.item_code
+          LEFT JOIN biblio AS b ON i.biblio_id=b.biblio_id
+          WHERE b.title IS NOT NULL AND b.opac_hide < 1
+          GROUP BY b.biblio_id
+          ORDER BY total DESC
+          LIMIT {$limit}";
+
+        $query = $this->db->query($sql);
+        $return = array();
+        while ($data = $query->fetch_assoc()) {
+            $data['image'] = $this->getImagePath($data['image']);
+            $return[] = $data;
+        }
+        if ($query->num_rows < $limit) {
+            $need = $limit - $query->num_rows;
+            if ($need < 0) {
+                $need = $limit;
+            }
+
+            $sql = "SELECT biblio_id, title, image FROM biblio WHERE opac_hide < 1 ORDER BY last_update DESC LIMIT {$need}";
+            $query = $this->db->query($sql);
+            while ($data = $query->fetch_assoc()) {
+                $data['image'] = $this->getImagePath($data['image']);
+                $return[] = $data;
+            }
+        }
+
+        Cache::set($cache_name, json_encode($return));
+        parent::withJson($return);
+    }
+
+    public function getLatest() {
+        $limit = 6;
+
+        $sql = "SELECT biblio_id, title, image
+          FROM biblio WHERE opac_hide < 1
+          ORDER BY last_update DESC
+          LIMIT {$limit}";
+
+        $query = $this->db->query($sql);
+        $return = array();
+        while ($data = $query->fetch_assoc()) {
+            $data['image'] = $this->getImagePath($data['image']);
+            $return[] = $data;
+        }
+
+        parent::withJson($return);
+    }
+
+    public function getTotalAll()
+    {
+        $query = $this->db->query("SELECT COUNT(biblio_id) FROM biblio WHERE opac_hide < 1");
+        parent::withJson([
+            'data' => ($query->fetch_row())[0]
+        ]);
+    }
+
+    public function getByGmd($gmd) {
+        $limit = 3;
+        $sql = "SELECT b.biblio_id, b.title, b.image, b.notes
+          FROM biblio AS b, mst_gmd AS g
+          WHERE b.gmd_id=g.gmd_id AND g.gmd_name='$gmd' AND b.opac_hide < 1
+          ORDER BY b.last_update DESC
+          LIMIT {$limit}";
+        $query = $this->db->query($sql);
+        $return = array();
+        while ($data = $query->fetch_assoc()) {
+            $data['image'] = $this->getImagePath($data['image']);
+            $return[] = $data;
+        }
+    
+        parent::withJson($return);
+    }
+
+    public function getByCollType($coll_type) {
+        $limit = 3;
+        $sql = "SELECT b.biblio_id, b.title, b.image, b.notes
+          FROM biblio AS b, item AS i, mst_coll_type AS c
+          WHERE b.biblio_id=i.biblio_id AND i.coll_type_id=c.coll_type_id AND c.coll_type_name='$coll_type' AND b.opac_hide < 1
+          ORDER BY b.last_update DESC
+          LIMIT {$limit}";
+        $query = $this->db->query($sql);
+        $return = array();
+        while ($data = $query->fetch_assoc()) {
+            $data['image'] = $this->getImagePath($data['image']);
+            $return[] = $data;
+        }
+    
+        parent::withJson($return);
+    }
+
+
+}
+================================================================================
+File: v1\routes.php
+================================================================================
+
+<?php
+
+/**
+ * @author              : Waris Agung Widodo
+ * @Date                : 2017-07-04 15:28:21
+ * @Last Modified by    : ido
+ * @Last Modified time  : 2017-07-05 15:04:29
+ *
+ * Copyright (C) 2017  Waris Agung Widodo (ido.alit@gmail.com)
+ */
+
+$header = getallheaders();
+
+if ((isset($header['SLiMS-Http-Cache']) || isset($header['slims-http-cache']))) {
+    if ($sysconf['http']['cache']['lifetime'] > 0) header('Cache-Control: max-age=' . $sysconf['http']['cache']['lifetime']);
+}
+
+/*----------  Require dependencies  ----------*/
+require 'lib/router.inc.php';
+require __DIR__ . '/controllers/HomeController.php';
+require __DIR__ . '/controllers/BiblioController.php';
+require __DIR__ . '/controllers/MemberController.php';
+require __DIR__ . '/controllers/SubjectController.php';
+require __DIR__ . '/controllers/ItemController.php';
+require __DIR__ . '/controllers/LoanController.php';
+
+/*----------  Create router object  ----------*/
+$router = new Router($sysconf, $dbs);
+$router->setBasePath('api');
+
+/*----------  Create routes  ----------*/
+$router->map('GET', '/', 'HomeController@index');
+$router->map('GET', '/biblio/popular', 'BiblioController@getPopular');
+$router->map('GET', '/biblio/latest', 'BiblioController@getLatest');
+$router->map('GET', '/subject/popular', 'SubjectController@getPopular');
+$router->map('GET', '/subject/latest', 'SubjectController@getLatest');
+$router->map('GET', '/member/top', 'MemberController@getTopMember');
+$router->map('GET', '/biblio/gmd/[*:gmd]', 'BiblioController@getByGmd');
+$router->map('GET', '/biblio/coll_type/[*:coll_type]', 'BiblioController@getByCollType');
+
+/*----------  Admin  ----------*/
+$router->map('GET', '/biblio/total/all', 'BiblioController@getTotalAll');
+$router->map('GET', '/item/total/all', 'ItemController@getTotalAll');
+$router->map('GET', '/item/total/lent', 'ItemController@getTotalLent');
+$router->map('GET', '/item/total/available', 'ItemController@getTotalAvailable');
+$router->map('GET', '/loan/summary', 'LoanController@getSummary');
+$router->map('GET', '/loan/getdate/[*:start_date]', 'LoanController@getDate');
+$router->map('GET', '/loan/summary/[*:date]', 'LoanController@getSummaryDate');
+
+/*----------  Custom route based on hook plugin  ----------*/
+\SLiMS\Plugins::getInstance()->execute('custom_api_route', ['router' => $router]);
+
+/*----------  Run matching route  ----------*/
+$router->run();
+
+// doesn't need template
+exit();
+================================================================================
+File: v1\controllers\ItemController.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 09/11/20 22.35
+ * @File name           : ItemController.php
+ */
+
+class ItemController extends Controller
+{
+    protected $sysconf;
+
+    /**
+     * @var mysqli
+     */
+    protected $db;
+
+    function __construct($sysconf, $obj_db)
+    {
+        $this->sysconf = $sysconf;
+        $this->db = $obj_db;
+    }
+
+    public function getTotalAll()
+    {
+        $query = $this->db->query("SELECT COUNT(item_id) FROM item");
+        parent::withJson([
+            'data' => ($query->fetch_row())[0]
+        ]);
+    }
+
+    public function getTotalLent()
+    {
+        $query = $this->db->query("SELECT COUNT(loan_id) FROM loan WHERE is_lent=1 AND is_return=0");
+        parent::withJson([
+            'data' => ($query->fetch_row())[0]
+        ]);
+    }
+
+    public function getTotalAvailable()
+    {
+        $query = $this->db->query("SELECT (SELECT COUNT(item_id) FROM item) - (SELECT COUNT(loan_id) FROM loan WHERE is_lent=1 AND is_return=0) AS 'available'");
+        parent::withJson([
+            'data' => ($query->fetch_row())[0]
+        ]);
+    }
+}
+================================================================================
+File: v1\controllers\MemberController.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 10/09/20 21.31
+ * @File name           : MemberController.php
+ */
+
+require_once 'Controller.php';
+require_once __DIR__ . '/../helpers/Image.php';
+
+class MemberController extends Controller
+{
+
+    use Image;
+
+    protected $sysconf;
+
+    /**
+     * @var mysqli
+     */
+    protected $db;
+
+    function __construct($sysconf, $obj_db)
+    {
+        $this->sysconf = $sysconf;
+        $this->db = $obj_db;
+    }
+
+    function getTopMember() {
+        $limit = 3;
+        $year = date('Y');
+        $sql = "SELECT m.member_name, mm.member_type_name, m.member_image, COUNT(*) AS total, GROUP_CONCAT(i.biblio_id SEPARATOR ';') AS biblio_id
+          FROM loan AS l
+          LEFT JOIN member AS m ON l.member_id=m.member_id
+          LEFT JOIN mst_member_type AS mm ON m.member_type_id=mm.member_type_id
+          LEFT JOIN item As i ON l.item_code=i.item_code
+          WHERE
+            l.loan_date LIKE '{$year}-%' AND
+            m.member_name IS NOT NULL
+          GROUP BY m.member_id
+          ORDER BY total DESC
+          LIMIT {$limit}";
+
+        $query = $this->db->query($sql);
+        $return = array();
+        if ($query) {
+            while ($data = $query->fetch_assoc()) {
+                $title = array_unique(explode(';', $data['biblio_id']));
+                $return[] = array(
+                    'name' => $data['member_name'],
+                    'type' => $data['member_type_name'],
+                    'image' =>  $this->getImagePath($data['member_image'], 'persons'),
+                    'total' => $data['total'],
+                    'total_title' => count($title),
+                    'order' => $data['total']+count($title));
+            }
+        }
+
+        usort($return, function ($a, $b) {
+            return $b['order'] <=> $a['order'];
+        });
+
+        parent::withJson($return);
+    }
+}
+================================================================================
+File: v1\controllers\SubjectController.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 10/09/20 21.27
+ * @File name           : SubjectController.php
+ */
+
+require_once 'Controller.php';
+
+class SubjectController extends Controller {
+
+    protected $sysconf;
+
+    /**
+     * @var mysqli
+     */
+    protected $db;
+
+    function __construct($sysconf, $obj_db)
+    {
+        $this->sysconf = $sysconf;
+        $this->db = $obj_db;
+    }
+
+    function getPopular() {
+        $limit = 5;
+        $year = date('Y');
+        $cache_name = 'subject_popular';
+        $json = Cache::get($cache_name);
+        if (!is_null($json) && $json !== 'null') return parent::withJson($json);
+
+        $sql = "SELECT mt.topic, COUNT(*) AS total
+          FROM loan AS l
+          LEFT JOIN item AS i ON l.item_code=i.item_code
+          LEFT JOIN biblio AS b ON i.biblio_id=b.biblio_id
+          LEFT JOIN biblio_topic AS bt ON i.biblio_id=bt.biblio_id
+          LEFT JOIN mst_topic AS mt ON bt.topic_id=mt.topic_id
+          WHERE mt.topic IS NOT NULL AND YEAR(l.loan_date) = '%s'
+          GROUP BY bt.topic_id
+          ORDER BY total DESC
+          LIMIT %d";
+
+        $query = $this->db->query(sprintf($sql, $year, $limit));
+        $return = array();
+        while ($data = $query->fetch_row()) {
+            $return[] = $data[0];
+        }
+        if ($query->num_rows < $limit) {
+            $need = $limit - $query->num_rows;
+            if ($need > 0) {
+                $return = array_merge($return, $this->getLatest($need));
+            }
+        }
+
+        Cache::set($cache_name, json_encode($return));
+    }
+
+    function getLatest($limit = 5) {
+
+        $sql = "SELECT topic FROM mst_topic mt
+                INNER JOIN (SELECT topic_id FROM biblio_topic bt 
+                INNER JOIN (SELECT biblio_id FROM biblio ORDER BY last_update DESC LIMIT 10) b ON bt.biblio_id=b.biblio_id 
+                GROUP BY topic_id) tt ON tt.topic_id=mt.topic_id 
+                LIMIT {$limit};";
+
+        $query = $this->db->query($sql);
+        $return = array();
+        while ($data = $query->fetch_row()) {
+            $return[] = $data[0];
+        }
+
+        parent::withJson($return);
+        return $return;
+    }
+}
+================================================================================
+File: v1\controllers\LoanController.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 09/11/20 23.24
+ * @File name           : LoanController.php
+ */
+
+class LoanController extends Controller
+{
+    protected $sysconf;
+
+    /**
+     * @var mysqli
+     */
+    protected $db;
+
+    function __construct($sysconf, $obj_db)
+    {
+        $this->sysconf = $sysconf;
+        $this->db = $obj_db;
+    }
+
+    function getSummary() {
+        parent::withJson([
+            'data' => [
+                'total' => $this->getTotal(),
+                'new' => $this->getNew(),
+                'return' => $this->getReturn(),
+                'extend' => $this->getExtends(),
+                'overdue' => $this->getOverdue()
+            ]
+        ]);
+    }
+
+    private function getTotal() {
+        $query = $this->db->query("SELECT COUNT(loan_id) FROM loan");
+        return ($query->fetch_row())[0];
+    }
+
+    private function getNew() {
+        $query = $this->db->query("SELECT COUNT(loan_id) FROM loan WHERE is_return=0 AND is_lent=1");
+        return ($query->fetch_row())[0];
+    }
+
+    private function getReturn() {
+        $query = $this->db->query("SELECT COUNT(loan_id) FROM loan WHERE is_return=1 AND is_lent=1");
+        return ($query->fetch_row())[0];
+    }
+
+    private function getExtends() {
+        $query = $this->db->query("SELECT COUNT(loan_id) FROM loan WHERE is_return=0 AND is_lent=1 AND renewed > 0");
+        return ($query->fetch_row())[0];
+    }
+
+    private function getOverdue() {
+        $query = $this->db->query("SELECT COUNT(loan_id) FROM loan WHERE is_return=0 AND is_lent=1 AND due_date < now()");
+        return ($query->fetch_row())[0];
+    }
+
+    public function getDate($start_date, $print = true)
+    {
+        $sql = "SELECT DATE_FORMAT(loan_date,'%d/%m') AS loandate, loan_date
+            FROM loan WHERE loan_date BETWEEN DATE_SUB('".$start_date."', INTERVAL 8 DAY) AND '".$start_date."' 
+            GROUP BY loan_date ORDER BY loan_date";
+        $query = $this->db->query($sql);
+        $date = ['raw' => [], 'date' => []];
+        while($data = $query->fetch_assoc()) {
+            $date['raw'][] = $data['loandate'];
+            $date['date'][] = $data['loan_date'];
+        }
+        $date['text'] = implode(', ', $date['raw']); 
+        if($print) parent::withJson($date);
+        return $date;
+    }
+
+    public function getSummaryDate($date)
+    {
+
+        $dates = $this->getDate($date, false);
+        $return = [
+            'loan' => [],
+            'return' => [],
+            'extend' => []
+        ];
+        
+        foreach ($dates['date'] as $value) {
+            $query_loan = $this->db->query("SELECT 
+                        COUNT(loan_date) AS countloan
+                    FROM 
+                        loan
+                    WHERE 
+                        loan_date = '".$value."' 
+                        AND is_lent = 1 
+                        AND renewed = 0
+                        AND is_return = 0
+                    GROUP BY 
+                        loan_date");
+            
+            if($query_loan->num_rows > 0) {
+                while ($data_loan = $query_loan->fetch_row()) $return['loan'][] = $data_loan[0];
+            } else {
+                $return['loan'][] = 0;
+            }
+
+            $query_loan = $this->db->query("SELECT 
+                        COUNT(loan_date) AS countloan
+                    FROM 
+                        loan
+                    WHERE 
+                        loan_date = '".$value."' 
+                        AND is_lent = 1
+                        AND is_return = 1
+                    GROUP BY 
+                        return_date");
+            
+            if($query_loan->num_rows > 0) {
+                while ($data_loan = $query_loan->fetch_row()) $return['return'][] = $data_loan[0];
+            } else {
+                $return['return'][] = 0;
+            }
+
+            $query_loan = $this->db->query("SELECT 
+                        COUNT(loan_date) AS countloan
+                    FROM 
+                        loan
+                    WHERE 
+                        loan_date = '".$value."' 
+                        AND is_lent     = 1 
+                        AND renewed     >= 1
+                        AND is_return   = 0
+                    GROUP BY 
+                        return_date");
+            
+            if($query_loan->num_rows > 0) {
+                while ($data_loan = $query_loan->fetch_row()) $return['extend'][] = $data_loan[0];
+            } else {
+                $return['extend'][] = 0;
+            }
+        }
+
+        parent::withJson([
+            'data' => $return
+        ]);
+    }
+}
+================================================================================
+File: v1\helpers\Cache.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 11/09/20 18.13
+ * @File name           : Cache.php
+ */
+
+class Cache
+{
+    /**
+     * @param $name string
+     * @param $data string
+     */
+    static function set($name, $data) {
+        $path = __DIR__ . '/../../../files/cache/cache_' . $name . '.json';
+        //Check if the directory already exists.
+        if(!is_dir(dirname($path))){
+            //Directory does not exist, so lets create it.
+            mkdir(dirname($path), 0755);
+        }
+        file_put_contents($path, $data);
+    }
+
+    /**
+     * @param $name string
+     * @return false|string|null
+     */
+    static function get($name) {
+        $path = __DIR__ . '/../../../files/cache/cache_' . $name . '.json';
+        if (file_exists($path) && time() - 18000 < filemtime($path)) {
+            return file_get_contents($path);
+        }
+        return null;
+    }
+
+    /**
+     * @param $name string
+     * @return void
+     */
+    static function destroy($name)
+    {
+        $path = __DIR__ . '/../../../files/cache/cache_' . $name . '.json';
+        if (file_exists($path)) {
+            @unlink($path);
+        }
+    }
+}
+================================================================================
+File: v1\helpers\Image.php
+================================================================================
+
+<?php
+/**
+ * @Created by          : Waris Agung Widodo (ido.alit@gmail.com)
+ * @Date                : 10/09/20 21.43
+ * @File name           : Image.php
+ */
+
+trait Image
+{
+    function getImagePath($image, $path = 'docs')
+    {
+        // cover images var
+        $thumb_url = '';
+        $image = urlencode($image??'');
+        $images_loc = 'images/' . $path . '/' . $image;
+        $img_status = pathinfo('images/' . $path . '/' . $image);
+        if(isset($img_status['extension'])){
+            $thumb_url = './lib/minigalnano/createthumb.php?filename=' . urlencode($images_loc) . '&width=120';
+        }else{
+            $thumb_url = './lib/minigalnano/createthumb.php?filename=images/default/image.png&width=120';
+        }
+
+        return $thumb_url;
+    }
+}
+================================================================================
+Total files processed: 10
+Total size: 0.02 MB
