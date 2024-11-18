@@ -1,0 +1,146 @@
+{
+  "SLiMS": {
+    "description": "SLiMS Directory Structure for Library Management System",
+    "directories": {
+      "admin": {
+        "description": "Admin Area",
+        "subdirectories": {
+          "admin_template": "Web Template for Admin Area",
+          "default": "Default Bootstrap Files for SLiMS",
+          "modules": "Automation Components and Functional Modules"
+        }
+      },
+      "api": {
+        "description": "Web Service API",
+        "subdirectories": {
+          "v1": "Version 1 of the API for SLiMS"
+        }
+      },
+      "config": {
+        "description": "Configuration Files for SLiMS"
+      },
+      "css": {
+        "description": "Stylesheets for SLiMS Web Interface"
+      },
+      "files": {
+        "description": "User-uploaded and System-generated Files",
+        "subdirectories": {
+          "backup": "Backup Files for Restoring Data",
+          "cache": "Cached Files for Improved Performance",
+          "chat": "Chat-related Data",
+          "membercard": "Member Card Images and Templates",
+          "reports": "Generated Reports",
+          "swfs": "Legacy Flash Files"
+        }
+      },
+      "help": {
+        "description": "Help and Documentation",
+        "subdirectories": {
+          "en_US": "English Help Files",
+          "es_ES": "Spanish Help Files",
+          "id_ID": "Indonesian Help Files"
+        }
+      },
+      "images": {
+        "description": "Images Repository for Various Purposes",
+        "subdirectories": {
+          "barcodes": "Barcode Images for Books and Members",
+          "cache": "Cached Images for Faster Loading",
+          "default": "Default Placeholder Images",
+          "docs": "Images for Documentation",
+          "labels": "Label Images",
+          "persons": "Profile Pictures of Members"
+        }
+      },
+      "indexing_engine": {
+        "description": "Indexing Engine for Search and Catalog"
+      },
+      "install": {
+        "description": "Installation Scripts and Files"
+      },
+      "js": {
+        "description": "JavaScript Libraries and Plugins",
+        "subdirectories": {
+          "chartjs": "Chart.js Library for Graphical Representations",
+          "chosen": "Chosen Library for Enhanced Select Boxes",
+          "ckeditor5": "CKEditor 5 for Rich Text Editing",
+          "colorbox": "Colorbox Library for Modal Popups",
+          "datepicker": "Datepicker Library for Date Inputs",
+          "flowplayer": "Flowplayer Library for Video Playback",
+          "ion.rangeSlider": "Range Slider for Numeric Inputs",
+          "jquery.imgareaselect": "Library for Selecting Image Areas",
+          "pdfjs": "PDF.js for Rendering PDF Files",
+          "plyr": "Plyr Library for Media Playback",
+          "quaggaJS": "QuaggaJS for Barcode Scanning",
+          "toastr": "Toastr Library for Notifications"
+        }
+      },
+      "lib": {
+        "description": "Core Libraries for SLiMS",
+        "subdirectories": {
+          "Cache": "Cache Management Library",
+          "collection": "Data Collection Library",
+          "contents": "Content Management Library",
+          "csrf": "CSRF Protection",
+          "ezyang": "Library for HTML Purifier",
+          "flex": "Flex Library for Flexibility",
+          "guzzlehttp": "HTTP Client Library",
+          "lang": "Language Management Library",
+          "maennchen": "Library for Specific Utilities",
+          "Mail": "Mail Sending Library",
+          "marc": "MARC Data Handling Library",
+          "Migration": "Migration Tools for Data",
+          "mysqldump-php": "Library for MySQL Dumping",
+          "SearchEngine": "Library for Search Functionality",
+          "Session": "Session Management Library",
+          "symfony": "Symfony Components",
+          "Table": "Table Management Library",
+          "uuid": "UUID Generation Library"
+        }
+      },
+      "plugins": {
+        "description": "Custom Plugins for Extending SLiMS",
+        "subdirectories": {
+          "label_barcode": "Plugin for Printing Barcode Labels",
+          "read_counter": "Plugin for Counting Read Statistics"
+        }
+      },
+      "repository": {
+        "description": "Data Repository for SLiMS"
+      },
+      "sample": {
+        "description": "Sample Data for Testing"
+      },
+      "simbio2": {
+        "description": "Simbio Libraries for Core Functionality",
+        "subdirectories": {
+          "simbio_DB": "Database Management Tools",
+          "simbio_FILE": "File Management Tools",
+          "simbio_GUI": "Graphical User Interface Tools",
+          "simbio_UTILS": "Utility Functions"
+        }
+      },
+      "src": {
+        "description": "Source Code for SLiMS Core",
+        "subdirectories": {
+          "Slims": "Core Slims Source Code"
+        }
+      },
+      "template": {
+        "description": "Web Templates for SLiMS",
+        "subdirectories": {
+          "akasia": "Akasia Template",
+          "default": "Default Template",
+          "libdikbud": "Libdikbud Template",
+          "lightweight": "Lightweight Template"
+        }
+      },
+      "upgrade": {
+        "description": "Upgrade Scripts and Tools",
+        "subdirectories": {
+          "old_sql": "Legacy SQL Scripts for Upgrades"
+        }
+      }
+    }
+  }
+}
