@@ -131,7 +131,6 @@
         "subdirectories": {
           "akasia": "Akasia Template",
           "default": "Default Template",
-          "libdikbud": "Libdikbud Template",
           "lightweight": "Lightweight Template"
         }
       },
