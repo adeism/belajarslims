@@ -1,263 +1,135 @@
-# Simbio Datagrid Tutorial (generate by chatbot need approval from developer)
+# 📘 Simbio Datagrid Tutorial 
 
-A simple tutorial on how to use the Simbio Datagrid class for creating dynamic data tables in PHP applications.
+Simbio **Datagrid** adalah komponen yang disediakan oleh Simbio untuk menampilkan data dalam format tabel dengan berbagai fitur seperti pencarian, pengurutan, dan paginasi. Tutorial ini akan memandu Anda melalui langkah-langkah dasar untuk membuat dan mengelola **Datagrid**.
 
-## Installation
+_*tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)_ 
 
-1. First, make sure you have the required file in your project:
-```php
-require_once('simbio_datagrid.php');
-```
+---
 
-2. Make sure you have a working database connection using MySQL/MariaDB.
+## ✨ Fitur Utama Simbio Datagrid
 
-## Basic Usage
+- **Pencarian Data**: Mempermudah pengguna untuk mencari data spesifik.
+- **Pengurutan Kolom**: Data dapat diurutkan berdasarkan kolom tertentu.
+- **Paginasi**: Membagi data menjadi beberapa halaman untuk meningkatkan keterbacaan.
+- **Kustomisasi Kolom**: Mendukung manipulasi data dalam kolom.
+- **Integrasi SQL**: Mudah digunakan dengan query database.
 
-### Simple Table Display
-```php
-<?php
-// Create database connection
-$db = new mysqli('localhost', 'username', 'password', 'database');
+---
 
-// Create new datagrid object
-$datagrid = new simbio_datagrid();
+## 📂 Struktur Dasar Datagrid
 
-// Set the table columns you want to display
-$datagrid->setSQLColumn('id', 'name AS Name', 'email AS Email', 'phone AS Phone');
-
-// Create the datagrid
-echo $datagrid->createDataGrid($db, 'users', 20);
-// Parameters: database object, table name, records per page
-?>
-```
-
-### Editable Table with Checkbox
-```php
-<?php
-$datagrid = new simbio_datagrid();
-
-// Make the grid editable
-$datagrid->edit_property = array('itemID', 'Edit'); // Enable edit button
-$datagrid->chbox_property = array('itemID', 'Delete'); // Enable delete checkbox
-$datagrid->chbox_form_URL = 'process.php'; // Form submission URL
-
-// Set columns
-$datagrid->setSQLColumn(
-    'id AS ID',
-    'name AS Name',
-    'email AS Email',
-    'created_at AS `Created Date`'
-);
-
-// Add WHERE clause if needed
-$datagrid->setSQLCriteria('active = 1');
-
-// Display the grid
-echo $datagrid->createDataGrid($db, 'users', 20, true);
-// Note: last parameter (true) makes the grid editable
-?>
-```
-
-### Custom Column Content
-```php
-<?php
-$datagrid = new simbio_datagrid();
-$datagrid->setSQLColumn(
-    'id AS ID',
-    'name AS Name',
-    'status AS Status',
-    'created_at AS `Created Date`'
-);
-
-// Modify the Status column (column index 2) to show custom content
-$datagrid->modifyColumnContent(2, 'callback{statusLabel}');
-
-// Create the callback function
-function statusLabel($db, $data, $col_idx) {
-    $status = $data[$col_idx];
-    switch($status) {
-        case 1:
-            return '<span class="badge bg-success">Active</span>';
-        case 0:
-            return '<span class="badge bg-danger">Inactive</span>';
-        default:
-            return '<span class="badge bg-secondary">Unknown</span>';
-    }
-}
-
-echo $datagrid->createDataGrid($db, 'users', 20);
-?>
-```
-
-### With Custom Sorting and Column Width
-```php
-<?php
-$datagrid = new simbio_datagrid();
-
-// Set column widths (in percentage or pixels)
-$datagrid->column_width = array('10%', '30%', '30%', '30%');
-
-// Disable sorting for specific columns (zero-based index)
-$datagrid->disableSort(0, 3);
-
-// Set default ordering
-$datagrid->setSQLorder('name ASC');
-
-$datagrid->setSQLColumn(
-    'id AS ID',
-    'name AS Name',
-    'email AS Email',
-    'created_at AS `Created Date`'
-);
-
-echo $datagrid->createDataGrid($db, 'users', 20);
-?>
-```
-
-### AJAX Support
-```php
-<?php
-$datagrid = new simbio_datagrid();
-
-// Enable or disable AJAX (enabled by default)
-$datagrid->using_AJAX = true;
-
-// Configure other properties as needed
-$datagrid->setSQLColumn(/*...*/);
-
-echo $datagrid->createDataGrid($db, 'users', 20);
-?>
-```
-
-## Advanced Features
-
-### Custom Delete Action
-```php
-<?php
-$datagrid = new simbio_datagrid();
-
-// Change delete button text
-$datagrid->chbox_action_button = 'Archive Selected';
-
-// Custom confirmation message
-$datagrid->chbox_confirm_msg = 'Are you sure you want to archive these items?';
-
-// Other configurations...
-echo $datagrid->createDataGrid($db, 'users', 20, true);
-?>
-```
-
-### Hide Specific Columns
-```php
-<?php
-$datagrid = new simbio_datagrid();
-
-// Set columns including hidden ones
-$datagrid->setSQLColumn(
-    'id AS ID',
-    'password AS Password',
-    'name AS Name',
-    'email AS Email'
-);
-
-// Hide columns by index (zero-based)
-$datagrid->invisible_fields = array(1); // Hides the Password column
-
-echo $datagrid->createDataGrid($db, 'users', 20);
-?>
-```
-
-### Disable Paging
-```php
-<?php
-$datagrid = new simbio_datagrid();
-
-// Disable pagination
-$datagrid->disable_paging = true;
-
-// Show all records
-echo $datagrid->createDataGrid($db, 'users', 999999);
-?>
-```
-
-## Styling
-
-The datagrid generates HTML tables that you can style with CSS. Example CSS:
-
-```css
-.datagrid {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.datagrid th {
-    background-color: #f8f9fa;
-    padding: 10px;
-}
-
-.alterCell {
-    background-color: #ffffff;
-}
-
-.alterCell2 {
-    background-color: #f8f9fa;
-}
-
-.datagrid td {
-    padding: 8px;
-    border: 1px solid #dee2e6;
-}
-
-.editLink {
-    display: inline-block;
-    padding: 2px 8px;
-    background: #007bff;
-    color: white;
-    border-radius: 3px;
-    text-decoration: none;
-}
-```
-
-## Handling Form Submission
-
-When using checkboxes for delete/archive operations, create a process file (e.g., `process.php`):
+Simbio Datagrid menggunakan pendekatan berbasis PHP. Berikut adalah contoh struktur dasar kode untuk menggunakan Datagrid:
 
 ```php
 <?php
-// process.php
-if (isset($_POST['itemID']) && is_array($_POST['itemID'])) {
-    $db = new mysqli('localhost', 'username', 'password', 'database');
-    
-    foreach ($_POST['itemID'] as $id) {
-        $id = (int)$id;
-        // Perform your delete/archive operation
-        $db->query("DELETE FROM users WHERE id = $id");
-        // Or for soft delete:
-        // $db->query("UPDATE users SET deleted_at = NOW() WHERE id = $id");
-    }
-    
-    // Redirect back
-    header('Location: ' . $_SERVER['HTTP_REFERER']);
-    exit;
-}
+require_once 'simbio/Simbio_Datagrid.php';
+
+// Buat instance dari Datagrid
+$datagrid = new Simbio_Datagrid();
+
+// Konfigurasi data
+$data = [
+    ['ID' => 1, 'Nama' => 'John Doe', 'Email' => 'johndoe@example.com'],
+    ['ID' => 2, 'Nama' => 'Jane Smith', 'Email' => 'janesmith@example.com'],
+];
+
+// Tentukan kolom yang ingin ditampilkan
+$datagrid->setColumn(['ID', 'Nama', 'Email']);
+
+// Masukkan data ke Datagrid
+$datagrid->setData($data);
+
+// Tampilkan tabel Datagrid
+echo $datagrid->render();
 ?>
 ```
 
-## Debug Mode
+**Output**: Kode di atas akan menghasilkan tabel sederhana dengan tiga kolom: ID, Nama, dan Email.
+
+---
+
+## 🛠️ Langkah-Langkah Penggunaan Simbio Datagrid
+
+### 1. **Menghubungkan ke Database**
+
+Agar lebih dinamis, Datagrid sering digunakan untuk menampilkan data dari database. Berikut adalah contoh penggunaan dengan MySQL:
 
 ```php
 <?php
-$datagrid = new simbio_datagrid();
+require_once 'simbio/Simbio_Datagrid.php';
+require_once 'config/database.php'; // Pastikan file ini berisi konfigurasi database Anda
 
-// Enable debug mode to see SQL queries
-$datagrid->debug = true;
+// Buat koneksi ke database
+global $dbs; // Variabel global untuk koneksi database di SLiMS
 
-// Rest of your configuration...
+// Query untuk mendapatkan data
+$query = "SELECT id, name AS Nama, email AS Email FROM users";
+
+// Buat instance dari Datagrid
+$datagrid = new Simbio_Datagrid();
+
+// Jalankan query dan set hasilnya ke Datagrid
+$datagrid->setSQLQuery($query, $dbs);
+
+// Tentukan kolom yang ingin ditampilkan
+$datagrid->setColumn(['ID', 'Nama', 'Email']);
+
+// Tampilkan tabel Datagrid
+echo $datagrid->render();
 ?>
 ```
 
-Remember to:
-- Always sanitize your database inputs
-- Use appropriate error handling
-- Set up proper access control for edit/delete operations
-- Test thoroughly in your development environment before deploying to production
+### 2. **Menambahkan Paginasi**
+
+Paginasi sangat penting untuk mengelola dataset besar. Simbio Datagrid mendukung paginasi bawaan dengan sangat mudah:
+
+```php
+$datagrid->enablePagination(true);
+$datagrid->setPaginationLimit(10); // Batas data per halaman
+```
+
+Tambahkan kode ini sebelum `echo $datagrid->render();`.
+
+### 3. **Mengubah Tampilan Data Kolom**
+
+Anda dapat memformat atau mengubah tampilan data dalam kolom tertentu menggunakan callback:
+
+```php
+$datagrid->modifyColumnContent('Email', function ($data) {
+    return "<a href='mailto:{$data}'>Kirim Email</a>";
+});
+```
+
+Kode ini akan mengubah kolom "Email" menjadi tautan untuk mengirim email.
+
+### 4. **Menambahkan Aksi pada Baris**
+
+Tambahkan kolom aksi (seperti tombol edit atau hapus) ke dalam tabel:
+
+```php
+$datagrid->addActionColumn('Aksi', function ($row) {
+    $id = $row['ID'];
+    return "
+        <a href='edit.php?id={$id}'>Edit</a> |
+        <a href='delete.php?id={$id}' onclick='return confirm(\"Yakin ingin menghapus?\")'>Hapus</a>
+    ";
+});
+```
+
+---
+
+## 💡 Tips dan Trik
+
+1. **Optimalkan Query SQL**: Jika dataset Anda besar, gunakan query yang teroptimasi (contoh: `LIMIT` dan `OFFSET`) untuk menghindari masalah performa.
+2. **Gunakan CSS Kustom**: Anda dapat menambahkan CSS untuk mempercantik tampilan tabel.
+3. **Validasi Data**: Selalu validasi data sebelum menampilkan atau memprosesnya untuk mencegah serangan injeksi SQL.
+
+---
+
+## 📚 Dokumentasi Resmi
+
+Untuk informasi lebih lengkap, silakan merujuk ke dokumentasi resmi **Simbio Datagrid** atau dokumentasi SLiMS.
+
+---
+
+Dengan menggunakan tutorial ini, Anda dapat dengan mudah mengimplementasikan **Simbio Datagrid** untuk menampilkan data dengan cepat dan interaktif. Selamat mencoba! 🎉
