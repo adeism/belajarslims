@@ -79,7 +79,7 @@ Folder ini menangani autentikasi API, baik melalui username/password maupun toke
 - auth.php: File utama untuk autentikasi pengguna dan validasi kredensial.
 - token.php: File untuk menghasilkan token autentikasi.
 
-Contoh Penggunaan API
+## Contoh Penggunaan API
 1. Mengambil Data Bibliografi
 
 GET /api/index.php?module=biblio&title=example
