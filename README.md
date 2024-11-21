@@ -4,6 +4,10 @@ Selamat datang di panduan Non Official **SLiMS (Senayan Library Management Syste
 
 SLiMS adalah sistem manajemen perpustakaan berbasis web yang fleksibel dan dapat dikustomisasi untuk memenuhi kebutuhan Anda.
 
+## 🚀 Mau coba buat Plugin pakai ChatGPT ? 
+[yuk tes, SLiMS Plugin Maker (CustomGPT - ChatGPT)](https://chatgpt.com/g/g-5ZMtyYG5B-slims-plugin-maker)
+
+
 ## 📘 Belajar Yuk
 - 🏛️ [Belajar Struktur Folder Utama](https://github.com/adeism/belajarslims/blob/main/belajar-struktur-folder-utama.md)
 - 🗃️ [Belajar Tabel Database](https://github.com/adeism/belajarslims/blob/main/belajar-tabel-database.md)
@@ -39,7 +43,7 @@ Berikut adalah beberapa repositori GitHub yang berhubungan dengan pengembangan S
 
 - [Waris Agung Widodo (idoalit)](https://github.com/idoalit?tab=repositories&q=slims)
 - [Drajat Hasan (drajathasan)](https://github.com/drajathasan?tab=repositories&q=slims)
-- [Ari Dicarve Nugraha (dicarve)](https://github.com/dicarve?tab=repositories?q=slims)
+- [Ari Nugraha (dicarve)](https://github.com/dicarve?tab=repositories?q=slims)
 - [Hendro Wicaksono (hendrowicaksono)](https://github.com/hendrowicaksono?tab=repositories?q=slims)
 - [Purwoko (purwoko)](https://github.com/purwoko?tab=repositories?q=slims)
 - [Arif Syamsudin (buitenzorg812)](https://github.com/buitenzorg812?tab=repositories?q=slims)
