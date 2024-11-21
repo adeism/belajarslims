@@ -1,6 +1,8 @@
 # 📚 Belajar SLiMS
 
-Selamat datang di panduan **SLiMS (Senayan Library Management System)**! 🎉 SLiMS adalah sistem manajemen perpustakaan berbasis web yang fleksibel dan dapat dikustomisasi untuk memenuhi kebutuhan Anda.
+Selamat datang di panduan Non Official **SLiMS (Senayan Library Management System)**! 🎉
+
+SLiMS adalah sistem manajemen perpustakaan berbasis web yang fleksibel dan dapat dikustomisasi untuk memenuhi kebutuhan Anda.
 
 
 ## 📖 Dokumentasi SLiMS
@@ -20,9 +22,11 @@ Selamat datang di panduan **SLiMS (Senayan Library Management System)**! 🎉 SL
   - 🛠️ Helpers
 
 
-## 🔗 Repositori Terkait SLiMS
+## 🔗 Repositori Terkait SLiMS 
 
-Berikut adalah beberapa repositori GitHub yang berhubungan dengan pengembangan SLiMS:
+Berikut adalah beberapa repositori GitHub yang berhubungan dengan pengembangan SLiMS 
+
+(**bisa cari plugin juga disini**):
 
 - 🛠️ [idoalit](https://github.com/idoalit?tab=repositories)  
 - 💻 [drajathasan](https://github.com/drajathasan?tab=repositories)  
