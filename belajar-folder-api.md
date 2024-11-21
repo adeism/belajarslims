@@ -25,7 +25,8 @@ Folder `/api` digunakan untuk menyediakan layanan **web service** atau **RESTful
 │   ├── token.php              🔐 File untuk menghasilkan token autentikasi
 ```
 # Penjelasan Per File
-index.php 🏁
+
+## index.php 🏁
 
 File entry point utama untuk layanan API. Semua permintaan diarahkan ke file ini.
 
@@ -33,45 +34,45 @@ File entry point utama untuk layanan API. Semua permintaan diarahkan ke file ini
 - Menangani format respons (JSON atau XML).
 - Mengelola keamanan API (jika autentikasi diaktifkan).
 
-/modules/ 🧩
+## /modules/ 🧩
 
 Folder ini berisi modul-modul API yang bertugas menangani fitur-fitur spesifik SLiMS.
 
-/modules/biblio/ 📚
+## /modules/biblio/ 📚
 
 Modul ini menangani data bibliografi dan koleksi.
 
 - biblio.php: Endpoint untuk mendapatkan data bibliografi berdasarkan parameter tertentu.
 - biblio_item.php: Endpoint untuk mendapatkan data eksemplar koleksi.
 
-/modules/member/ 🧍
+## /modules/member/ 🧍
 
 Modul ini menangani data anggota perpustakaan.
 
 - member.php: Endpoint untuk mendapatkan data anggota berdasarkan parameter (misalnya, ID anggota).
 - member_update.php: Endpoint untuk memperbarui data anggota. Menggunakan metode HTTP POST.
 
-/modules/circulation/ 🔄
+## /modules/circulation/ 🔄
 
 Modul ini menangani data peminjaman dan pengembalian buku.
 
 - loan.php: Endpoint untuk mendapatkan data peminjaman berdasarkan anggota tertentu.
 - return.php: Endpoint untuk mencatat pengembalian buku. Menggunakan metode HTTP POST.
 
-/modules/report/ 📊
+## /modules/report/ 📊
 
 Modul ini menyediakan laporan perpustakaan.
 
 - report.php: Endpoint untuk mengambil data laporan berdasarkan parameter yang diminta (misalnya, statistik peminjaman).
 
-/locale/ 🌐
+## /locale/ 🌐
 
 Folder ini berisi file terjemahan untuk API.
 
 - en_US.php: File terjemahan bahasa Inggris.
 - id_ID.php: File terjemahan bahasa Indonesia.
 
-/auth/ 🔒
+## /auth/ 🔒
 
 Folder ini menangani autentikasi API, baik melalui username/password maupun token.
 
