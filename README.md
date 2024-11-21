@@ -22,17 +22,17 @@ SLiMS adalah sistem manajemen perpustakaan berbasis web yang fleksibel dan dapat
   - 🛠️ Helpers
 
 
-## 🔗 Repositori Terkait SLiMS 
+## 🔗 Repositori Terkait SLiMS
 
-Berikut adalah beberapa repositori GitHub yang berhubungan dengan pengembangan SLiMS 
+Berikut adalah beberapa repositori GitHub yang berhubungan dengan pengembangan SLiMS. Anda dapat mencari plugin dan kontribusi lainnya di sini:
 
-(**bisa cari plugin juga disini**):
-
-- 🛠️ [idoalit](https://github.com/idoalit?tab=repositories)  
-- 💻 [drajathasan](https://github.com/drajathasan?tab=repositories)  
-- 📘 [dicarve](https://github.com/dicarve?tab=repositories)  
-- 🌟 [hendrowicaksono](https://github.com/hendrowicaksono?tab=repositories)  
-- 📝 [purwoko](https://github.com/purwoko?tab=repositories)  
+- [Waris Agung Widodo (idoalit)](https://github.com/idoalit?tab=repositories&q=slims)
+- [Drajat Hasan (drajathasan)](https://github.com/drajathasan?tab=repositories&q=slims)
+- [Ari Dicarve Nugraha (dicarve)](https://github.com/dicarve?tab=repositories?q=slims)
+- [Hendro Wicaksono (hendrowicaksono)](https://github.com/hendrowicaksono?tab=repositories?q=slims)
+- [Purwoko (purwoko)](https://github.com/purwoko?tab=repositories?q=slims)
+- [Arif Syamsudin (buitenzorg812)](https://github.com/buitenzorg812?tab=repositories?q=slims)
+- [Heru Subekti (heroesoebekti)](https://github.com/heroesoebekti?tab=repositories?q=slims)
 
 
 ## 🌟 Sumber Daya Lainnya
