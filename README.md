@@ -5,14 +5,15 @@ Selamat datang di panduan Non Official **SLiMS (Senayan Library Management Syste
 SLiMS adalah sistem manajemen perpustakaan berbasis web yang fleksibel dan dapat dikustomisasi untuk memenuhi kebutuhan Anda.
 
 ## 📘 Belajar Yuk
-
+- 🏛️ [Belajar Struktur Folder Utama](https://github.com/adeism/belajarslims/blob/main/belajar-struktur-folder-utama.md)
+- 🗃️ [Belajar Tabel Database](https://github.com/adeism/belajarslims/blob/main/belajar-tabel-database.md)
 - 📂 [Belajar Folder Admin](https://github.com/adeism/belajarslims/blob/main/belajar-folder-admin.md)
 - 🔗 [Belajar Folder API](https://github.com/adeism/belajarslims/blob/main/belajar-folder-api.md)
 - 📁 [Belajar Folder Files](https://github.com/adeism/belajarslims/blob/main/belajar-folder-files.md)
-- 📚 [Belajar Lib Folder](https://github.com/adeism/belajarslims/blob/main/belajar-lib-folder.md)
+- 📚 [Belajar Folder Lib](https://github.com/adeism/belajarslims/blob/main/belajar-lib-folder.md)
 - 🛠️ [Belajar Simbio Datagrid](https://github.com/adeism/belajarslims/blob/main/belajar-simbio-datagrid.md)
-- 🏛️ [Belajar Struktur Folder Utama](https://github.com/adeism/belajarslims/blob/main/belajar-struktur-folder-utama.md)
-- 🗃️ [Belajar Tabel Database](https://github.com/adeism/belajarslims/blob/main/belajar-tabel-database.md)
+
+
 
 
 ## 📖 Dokumentasi SLiMS
