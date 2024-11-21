@@ -1,4 +1,4 @@
-# Simbio Datagrid Tutorial
+# Simbio Datagrid Tutorial (generate by chatbot need approval from developer)
 
 A simple tutorial on how to use the Simbio Datagrid class for creating dynamic data tables in PHP applications.
 
