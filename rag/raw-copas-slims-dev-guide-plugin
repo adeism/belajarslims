@@ -1,0 +1,454 @@
+Plugin > Pengantar
+
+Pengantar
+Permulaan
+Sistem plugin merupakan inovasi yang dihadirkan sejak versi SLiMS Bulian 9.3.0 oleh Mas Ido Alit. Tujuan dari inovasi ini yaitu untuk mempermudah kerja dari pengembang SLiMS (dari sisi pengguna atau pihak yang membantu pengguna) dalam melakukan proses upgrade SLiMS dari versi sekarang ke versi yang lebih mutakhir.
+
+Persiapan
+Hal yang perlu disiapkan (minimal) untuk membuat sebuah plugi n seperti:
+
+Pengetahuan mengenai bahasa pemrograman HTML (termasuk CSS), PHP, JS, dan SQL
+Pemahaman mengenai penggunaan library dan tool seperti composer (opsional)
+Sistematika plugin
+Semua plugin SLiMS secara default diletakan di folder plugins/, yang ditandai dengan ekstensi file .plugin.php. Seluruh plugin akan dipindai oleh SLiMS dengan kedalaman tingkat folder hingga 3 tinggkat.
+
+# Contoh tingkat kedalaman folder yang dipindai
+plugins/ # tingkat 0
+--- biblio_adv_log.plugin.php # plugin tingkat 1
+--- label_barcode/ # folder tingkat 1
+------ label.plugin.php # plugin tingkat 2
+--- contoh_plugin/ # folder tingkat 1
+------ folder_didalam_contoh_plugin/ # folder tingkat 2
+--------- plugin_didalam_contoh_plugin.plugin.php # plugin tingkat 3
+
+dengan ini anda dapat membuat plugin dengan sistem hirarki.
+
+Format isi plugin
+format isi digunakan untuk menginformasikan SLiMS mengenai informasi terkait pembuat plugin, versi plugin, deskrpsi plugin, dll.
+
+<?php
+/**
+ * Plugin Name: <nama plugin>
+ * Plugin URI: <url untuk mengunduh plugin ini>
+ * Description: <deskripsi plugin>
+ * Version: <versi plugin dalam format Pemversian Semantic>
+ * Author: <Nama Pembuat Plugin>
+ * Author URI: <Alamat Media Sosial Pembuat Plugin>
+ */
+
+Isi informasi yang ada dengan menganti contoh isi yang ada, contoh: <nama_plugin> menjadi nama anda. Setelah itu, kita perlu mencantumpkan kelas pustaka SLiMS yaitu SLiMS\Plugins seperti berikut setalah informasi plugin sebelumnya:
+
+use SLiMS\Plugins;
+
+lalu membuat variable plugin:
+
+$plugins = Plugins::getInstance();
+
+Maka format isi plugin selengkapnya seperti ini:
+
+<?php
+/**
+ * Plugin Name: <nama plugin>
+ * Plugin URI: <url untuk mengunduh plugin ini>
+ * Description: <deskripsi plugin>
+ * Version: <versi plugin dalam format Pemversian Semantic>
+ * Author: <Nama Pembuat Plugin>
+ * Author URI: <Alamat Media Sosial Pembuat Plugin>
+ */
+use SLiMS\Plugins;
+$plugins = Plugins::getInstance();
+
+Tipe operasi plugin
+Setelah anda paham mengenai format isi plugin, maka anda harus mencantumkan operasi apa yang akan dilakukan oleh plugin tersebut. Sistem plugin SLiMS berjalan dalam beberapa tipe, seperti hook, path, dan menu.
+
+Hook
+merupakan metoda yang digunakan oleh SLiMS untuk mengoperasikan beberapa perintah untuk melakukan modifikasi atau menambah atau menginterupsi operasi yang sudah/akan berjalan sesuai nama hook yang tersedia. Berikut daftar operasi hook yang tersedia di SLiMS:
+
+const ADMIN_SESSION_AFTER_START = 'admin_session_after_start';
+const CONTENT_BEFORE_LOAD = 'before_content_load';
+const CONTENT_AFTER_LOAD = 'after_content_load';
+const BIBLIOGRAPHY_INIT = 'bibliography_init';
+const BIBLIOGRAPHY_BEFORE_UPDATE = 'bibliography_before_update';
+const BIBLIOGRAPHY_AFTER_UPDATE = 'bibliography_after_update';
+const BIBLIOGRAPHY_BEFORE_SAVE = 'bibliography_before_save';
+const BIBLIOGRAPHY_AFTER_SAVE = 'bibliography_after_save';
+const BIBLIOGRAPHY_BEFORE_DELETE = 'bibliography_before_delete';
+const BIBLIOGRAPHY_AFTER_DELETE = 'bibliography_after_delete';
+const BIBLIOGRAPHY_CUSTOM_FIELD_DATA = 'advance_custom_field_data';
+const BIBLIOGRAPHY_CUSTOM_FIELD_FORM = 'advance_custom_field_form';
+const BIBLIOGRAPHY_BEFORE_DATAGRID_OUTPUT = 'bibliography_before_datagrid_output';
+const CIRCULATION_AFTER_SUCCESSFUL_TRANSACTION = 'circulation_after_successful_transaction';
+const MEMBERSHIP_INIT = 'membership_init';
+const MEMBERSHIP_BEFORE_UPDATE = 'membership_before_update';
+const MEMBERSHIP_AFTER_UPDATE = 'membership_after_update';
+const MEMBERSHIP_BEFORE_SAVE = 'membership_before_save';
+const MEMBERSHIP_AFTER_SAVE = 'membership_after_save';
+const OVERDUE_NOTICE_INIT = 'overduenotice_init';
+const DUEDATE_NOTICE_INIT = 'duedate_init';
+const MODULE_MAIN_MENU_INIT = 'module_main_menu_init';
+const OAI2_INIT = 'oai2_init';
+
+Daftar diatas merupakan operasi hook yang terdaftar secara default di sistem plugin SLiMS. Namun ada beberapa yang tidak terdaftar namun tetap dapat bekerja dengan baik, berikut penjelasannya:
+
+ADMIN_SESSION_AFTER_START : hook akan bekerja ketika sesi login admin dimulaui.
+CONTENT_BEFORE_LOAD : hook ini berjalan di OPAC, dimana prosesnya akan bekerja sebelum konten OPAC dimuat.
+CONTENT_AFTER_LOAD : ini kebalikan dari hook kedua, yaitu setelah konten pada OPAC dimuat.
+BIBLIOGRAPHY_INIT : hook ini berada pada halaman utama pada modul bibliografi.
+BIBLIOGRAPHY_BEFORE_UPDATE : hook ini beroperasi sebelum proses pembaharuan data bibliografi dimulai.
+BIBLIOGRAPHY_BEFORE_SAVE : hook ini beroperasi sebelum proses penyimpanan data bibliografi dimulai.
+BIBLIOGRAPHY_AFTER_UPDATE : hook ini beroperasi setelah proses pembaharuan data bibliografi dimulai.
+BIBLIOGRAPHY_AFTER_SAVE : hook ini beroperasi setelah proses penyimpanan data bibliografi dimulai.
+BIBLIOGRAPHY_CUSTOM_FIELD_DATA : hook ini merupakan operasi yang digunakan untuk mendaftarkan data ruas tambahan secara mahir.
+BIBLIOGRAPHY_CUSTOM_FIELD_FORM : hook ini merupakan operasi yang digunakan untuk mendaftarkan ruas tambahan secara mahir.
+MEMBERSHIP_INIT : tidak berbeda jauh dengan BIBLIOGRAPHY_INIT hanya saja ini berjalan di modul membership
+MEMBERSHIP_BEFORE_UPDATE : hook ini mirip seperti BIBLIOGRAPHY_BEFORE_UPDATE. Namun hanya pada modul membership.
+MEMBERSHIP_BEFORE_SAVE : hook ini mirip seperti BIBLIOGRAPHY_BEFORE_SAVE. Namun hanya pada modul membership.
+MEMBERSHIP_AFTER_UPDATE : hook ini mirip seperti BIBLIOGRAPHY_AFTER_UPDATE. Namun hanya pada modul membership.
+MEMBERSHIP_AFTER_SAVE : hook ini mirip seperti BIBLIOGRAPHY_AFTER_SAVE. Namun hanya pada modul membership.
+OAI2_INIT : hook ini berjalan pada file oai2.php pada halaman utama, dapat digunakan untuk memodifikasi process pertukaran data melalui protokol oai-pmh
+Berikut ini cara penggunaan hook yang tersedia pada daftar diatas:
+
+<?php 
+# Contoh
+$plugins->register('<nama_hook>', function(){
+    // lakukan suatu hal didalam block fungsi ini
+});
+
+// atau jika dipraktikan akan seperti ini
+$plugins->register(Plugins::MEMBERSHIP_INIT, function(){
+    // lakukan suatu hal didalam block fungsi ini
+});
+
+// atau jika anda tidak nyaman dengan penulisan Class::konstanta bisa
+// juga seperti ini.
+// sesuaikan saja dengan daftar hook yang tersedia
+$plugins->register('membership_init', function(){
+    // lakukan suatu hal didalam block fungsi ini
+});
+
+// atau bisa juga dengan gaya seperti ini
+Plugins::hook(Plugins::MEMBERSHIP_INIT, function(){
+    // lakukan suatu hal didalam block fungsi ini
+});
+
+Path
+Operasi ini merupakan cara yang digunakan untuk memodifikas tampilan halaman OPAC yang sudah ada tanpa merubah source code asli SLiMS. Misal path halaman member jika dicontohkan dalam bentuk URL secara penuh http://localhost/slims/index.php?p=member. Tampilan dalam halaman itu dapat anda ganti dengan menggunakan metoda ini. Berikut cara nya:
+
+// atau jika dipraktikan akan seperti ini
+$plugins->registerMenu('opac', 'member', __DIR__ . '/member.inc.php');
+// atau
+Plugins::menu('opac', 'member', __DIR__ . '/member.inc.php');
+// atau
+Plugins::opac('member', __DIR__ . '/member.inc.php');
+
+Penjelasan paramter pada fungsi registerMenu():
+
+opac : ini menandakan bahwa anda mendaftarkan menu/path baru pada OPAC.
+member : nama path yang dipanggil melalui ?p= seperti yang ada dicontoh URL di atas.
+__DIR__ . '/member.inc.php' : merupakan lokasi file yang akan mengganti tampilan sebenarnya pada halaman ?p=member.
+Anda juga dapat mendaftarkan path lain nya yang tidak ada di SLiMS. Contoh sebagai berikut:
+
+// halaman custom, bebas pustaka
+$plugins->registerMenu('opac', 'bebas pustaka', __DIR__ . '/sayabebas.inc.php');
+
+Pada paramter ke 2 setiap spasi akan dikonversi menjadi _ atau underscore. Contoh 'bebas pustaka' menjadi 'bebas_pustaka', maka ketika anda memanggil path itu dibrowser menjadi ✅ http://localhost/slims/index.php?p=bebas_pustaka bukan 🚫 http://localhost/slims/index.php?p=bebas pustaka.
+
+Menu
+Tak berbeda dengan sebelumnya, bagian ini merupakan penjelasan bagaimana menambah/merubah menu yang ada di setiap module saat login sebagai pustakawan. Ini mempermudah anda sebagai pengembang SLiMS dalam mendaftarkan menu pada modul tertentu tanpa harus merubah file submenu.php pada setiap module. Berikut cara nya:
+
+// atau jika dipraktikan akan seperti ini
+$plugins->registerMenu('membership', 'Bebas Pustaka', __DIR__ . '/sayabebas.inc.php');
+// atau
+Plugins::menu('membership', 'Bebas Pustaka', __DIR__ . '/sayabebas.inc.php');
+// atau
+Plugins::membership('Bebas Pustaka', __DIR__ . '/sayabebas.inc.php');
+
+Penjelasan paramter pada fungsi registerMenu():
+
+membership : ini menandakan bahwa anda mendaftarkan/merubah menu baru pada modul membership. Anda dapat mendaftarkan pada modul yang lain selama modul itu tersedia dan aktif.
+Bebas Pustaka : nama menu yang akan muncul di daftar menu pada modul yang dituliskan pada parameter ke 1.
+__DIR__ . '/sayabebas.inc.php' : merupakan lokasi file yang akan muncul ketika menu diklik.
+note
+Perbedaan fungsi registerMenu() pada operasi path dan operasi menu adalah penempatannya. Jika OPAC berada di halaman opac SLiMS, maka selain itu akan ditampilkan pada halaman admin jika memang modul nya tersedia.
+
+---
+
+Plugin > Membuat Plugin Sederhana
+Membuat plugin "Hello World"
+Kita mulai dengan hal yang mudah terlebih dahulu. Berikut langkahnya
+
+Buatlah sebuah file bernama hello_world.plugin.php pada folder plugins/ yang ada di folder utama SLiMS anda.
+Isi file tersebut dengan persyaratan minimal yang ada pada Laman ini
+Jika sudah maka kita akan coba untuk menggunakan operasi Hook pada halaman OPAC, seperti berikut:
+
+$plugins->register(Plugins::CONTENT_BEFORE_LOAD, function(){
+    exit('<h1>Hello World</h1>')
+});
+
+Berikut contohny lenghkap nya
+
+<?php
+/**
+ * Plugin Name: Hello World
+ * Plugin URI: -
+ * Description: Belajar membuat plugin sederhana
+ * Version: 1.0.0
+ * Author: Foo
+ * Author URI: https://foo.who
+ */
+use SLiMS\Plugins;
+$plugins = Plugins::getInstance();
+
+$plugins->register(Plugins::CONTENT_BEFORE_LOAD, function(){
+    exit('<h1>Hello World</h1>')
+});
+
+Setelah itu aktifkan plugin itu pada modul System > Plugin. Lalu buka halaman OPAC anda, dan lihat apa yang terjadi 😁. Bagaimana? sudah melihat hasilnya? nah dengan ini anda sudah membuat sebuah plugin sederhana.
+---
+
+Plugin > Membuat plugin modifikasi halaman tertentu di OPAC
+Membuat plugin modifikasi halaman tertentu di OPAC
+Pengantar
+Kadang kala kita membutuhkan fitur yang tidak tersedia secara bawaan di SLiMS seperti bebas pustaka dll. Beruntung nya SLiMS terkini sudah mendukung hal tersebut dimana anda dimudahkan untuk proses pembuatannya yaitu dengan sistem plugin. Berdasarkan artikel sebelumnya sistem plugin SLiMS mendukung manipulasi/membuat halaman yang sudah/belum ada di SLiMS menjadi halaman kustom yang kita inginkan tanpa perlu repot mengutak-utik file aslinya.
+
+Contoh plugin modifikasi halaman yang sudah ada
+Kita tahu url <url-slims-anda>/?p=member merupakan halaman area anggota, dimana mereka dapat masuk dan melakukan transaksi seperti reservasi buku dll. Kasus yang akan dicontohkan bagaimana membuat halaman tersebut berisi pesan sederhana dari Pustakawan mengenai layanan yang ada. Berikut langkahnya:
+
+Buat sebuah folder baru di dalam folder plugins/ dengan nama kustom_member lalu masuk ke dalam folder tadi.
+Setelah itu buat file kustom_member.plugin.inc.php
+Isi file tersebut dengan skrip dibawah ini:
+<?php
+/**
+ * Plugin Name: Kustom Member
+ * Plugin URI: -
+ * Description: Belajar membuat plugin kustom page
+ * Version: 1.0.0
+ * Author: Foo
+ * Author URI: https://foo.who
+ */
+use SLiMS\Plugins;
+$plugins = Plugins::getInstance();
+
+$plugins->registerMenu('opac', 'member', __DIR__ . '/member.inc.php');
+
+
+Salin file yang berada di lib/contents/member.inc.php kedalam folder plugins/kustom_member/
+Lalu buka file member.inc.php yang ada di folder plugins/kustom_member/.
+Kita coba untuk menambahkan sedikit informasi. Pada baris 978 atau cari skrip kurang lebih seperti ini:
+<div>
+    <div class="tagline"><?php echo __('Library Member Login'); ?></div>
+
+
+Setelah itu tambahkan skrip seperti ini
+<div>
+    <div class="alert alert-info">Telah tersedia menu bebas pustaka dalam area anggota</div>
+    <div class="tagline"><?php echo __('Library Member Login'); ?></div>
+
+
+Setelah itu aktifkan plugin itu pada modul System > Plugin. Lalu buka halaman OPAC anda pada laman <slims-url>/?p=member, dan lihat apa yang terjadi 😁. Bagaimana? sudah melihat hasilnya? nah dengan ini anda sudah membuat sebuah plugin yang memodifikasi halaman yang sudah ada di SLiMS tanpa merusak sumber aslinya.
+Contoh plugin modifikasi halaman yang belum ada
+Tak berbeda jauh dengan langkah sebelumnya. Berikut langkahnya:
+
+Buat sebuah folder baru di dalam folder plugins/ dengan nama bebas_pustaka lalu masuk ke dalam folder tadi.
+Setelah itu buat file bebas_pustaka.plugin.php
+Isi file tersebut dengan skrip dibawah ini:
+<?php
+/**
+ * Plugin Name: Bebas Pustaka
+ * Plugin URI: -
+ * Description: Belajar membuat plugin kustom page
+ * Version: 1.0.0
+ * Author: Foo
+ * Author URI: https://foo.who
+ */
+use SLiMS\Plugins;
+$plugins = Plugins::getInstance();
+
+$plugins->registerMenu('opac', 'bebas_pustaka', __DIR__ . '/bebas_pustaka.php');
+
+
+Buat file bebas_pustaka.php pada folder yang sebelumnya dibuat.
+Lalu isi file tersebut dengan skrip dibawah berikut:
+<?php
+
+echo "Bebas Pustaka";
+
+Setelah itu aktifkan plugin itu pada modul System > Plugin. Lalu buka halaman OPAC anda pada laman <slims-url>/?p=bebas_pustaka, dan lihat apa yang terjadi 😁. Bagaimana? sudah melihat hasilnya? nah dengan ini anda sudah membuat sebuah plugin yang memodifikasi halaman yang sudah ada di SLiMS tanpa merusak sumber aslinya.
+Keterangan
+pada skrip diatas terdapat
+
+$plugins->registerMenu('opac', 'member', __DIR__ . '/member.inc.php'); 
+
+
+berikut penjelasannya:
+
+opac : Merupakan lokasi dimana plugin tersebut akan muncul yaitu OPAC.
+member : Merupakan nama path yang akan diakses via ?p=<path> misal ?p=member.
+__DIR__ . '/member.inc.php' : Merupakan lokasi file hasil modifikasi yang kita buat
+
+---
+
+Plugin > Cara membuat plugin diarea admin
+Membuat Plugin Modifikasi Pada Area Admin
+Pengantar
+Pada materi sebelumnya sudah dibahas mengenai langkah-langkah memodifikasi halaman yang ada di OPAC. Pada bagian ini kita akan belajar untuk membuat/memodifikasi halaman yang ada di area admin. Langkah yang akan digunakan tak berbeda jauh, seperti yang ada dibawah ini:
+
+Memanfaatkan operasi hook
+Pada materi hook dijelaskan bagaimana kita melakukan manipulasi proses yang akan/belum terjadi di SLiMS, misalnya kita akan menginterupsi proses penyimpanan data sebelum data itu tersimpan. Lalu apa kegunaannya? kita dapat memberikan fitur-fitur yang kita inginkan dalam proses penyimpanan data, misalnya membuat percabangan penyimpnan dimana kita ingin sebelum data itu disimpan kita akan mengambil beberapa data yang ada lalu menyimpannya ditempat lain. Studi kasusnya yaitu menyimpan data yang ada di SLiMS ke database lain, seperti ElasticSearch, MeiliSearch dll yang akan digunakan sebagai basis data untuk pencarian. Kita akan buat contoh sederhana seperti berikut:
+
+Buat folder di plugins/ dengan nama hooking.
+Pada folder yang dibuat pada langkah pertama, buat sebuah file dengan nama hooking.plugin.php.
+Isi dari file yang dibuat pada langkah ketika seperti skrip dibawah ini
+<?php
+/**
+ * Plugin Name: Hooking
+ * Plugin URI: -
+ * Description: Memanipulasi proses data di SLiMS
+ * Version: 1.0.0
+ * Author: Foo
+ * Author URI: https://foo.who
+ */
+use SLiMS\Plugins;
+$plugins = Plugins::getInstance();
+
+$plugins->register('bibliography_before_save', function($data){
+    toastr('Test hooking')->native();
+});
+
+
+Setelah itu aktifkan plugin itu pada modul System > Plugin dengan nama hooking. Example
+Jika sudah anda buka menu tambah bibliografi baru modul bibliography dan buat sebuah data baru (anda bisa isi sembarang data misal saja dengan judul test).
+Apabila plugin berjalan dengan baik maka akan muncul seperti berikut (setelah anda menekan tombol simpan) proof
+Penjelasan
+lihat komentar pada skrip dibawah berikut:
+
+$plugins->register('bibliography_before_save', function($data){
+    // disini anda dapat melakukan berbagai macam proses manipulasi data
+    // bahkan sampai menginterupsi pun anda bisa. Lakukan apa yang
+    // anda butuhkan di bagian ini.
+    toastr('Test hooking')->native(); // ini sebagai contoh saja bisa diganti kok.
+});
+
+
+Masih banyak lagi contoh penggunaan hook, anda dapat mengganti proses hook bibliography_before_save dengan proses yang lain.
+
+Menambah menu kustom pada submenu
+Pada materi sebelumnya mengenai modifikasi menu. Kali ini kita akan mempraktikan terkait menambahkan kustom menu kedalam submenu pada modul bibliography tanpa merubah isi dari file submenu.php yang ada di dalam modul tersebut. Berikut langkahnya:
+
+Buat folder di plugins/ dengan nama custom_menu.
+Pada folder yang dibuat pada langkah pertama, buat sebuah file dengan nama custom_menu.plugin.php.
+Isi dari file yang dibuat pada langkah ketika seperti skrip dibawah ini
+<?php
+/**
+ * Plugin Name: Custom Menu
+ * Plugin URI: -
+ * Description: Menambah kustom menu
+ * Version: 1.0.0
+ * Author: Foo
+ * Author URI: https://foo.who
+ */
+use SLiMS\Plugins;
+$plugins = Plugins::getInstance();
+
+$plugins->registerMenu('bibliography', 'Kustom Menu', __DIR__ . '/custom_menu.php');
+
+
+Buat sebuah file dengan nama custom_menu.php didirektori yang sama dengan custom_menu.plugin.php
+Isi file pada langkah ke 4 dengan skrip dibawha ini:
+<?php
+echo "<h1>Hai ini isi dari custom_menu.php</h1>";
+
+Setelah itu aktifkan plugin itu pada modul System > Plugin dengan nama Custom Menu. custom_menu
+Maka akan muncul menu baru diujung paling bawah seperti berikut: custom_menu
+Jika diklik maka muncul seperti gambar dibawah berikut: custom_menu
+Merubah isi menu yang sudah ada pada submenu
+Pada materi diatas dijelaskan bahwa kita dapat menambah menu kustom pada submenu. Tak jauh berbeda dengan materi diatas, kali kita akan memanipulasi isi dari sebuah menu yang sudah ada. Langkah yaitu melanjutkan dari langkah sebelumnya:
+
+Pada folder plugins/custom_menu buat sebuah file bernama custom_index.php
+Buka file submenu.php pada folder admin/modules/bibliography/submenu.php, salin skrip yang ada didalam kotak merah seperti dibawah berikut: submenu
+Buka file custom_menu.plugin.php pada folder plugins/custom_menu lalu tambah skrip dibawah berikut:
+$plugins->registerMenu('bibliography', __('Bibliographic List'), __DIR__ . '/custom_index.php');
+
+
+Maka skrip lengkapnya sebagai berikut:
+<?php
+/**
+ * Plugin Name: Custom Menu
+ * Plugin URI: -
+ * Description: Menambah kustom menu
+ * Version: 1.0.0
+ * Author: Foo
+ * Author URI: https://foo.who
+ */
+use SLiMS\Plugins;
+$plugins = Plugins::getInstance();
+
+$plugins->registerMenu('bibliography', 'Kustom Menu', __DIR__ . '/custom_menu.php');
+$plugins->registerMenu('bibliography', __('Bibliographic List'), __DIR__ . '/custom_index.php');
+
+
+Isi file yang sudah dibuat pada langkah ke 1 dengan skrip berikut:
+<?php
+echo "<h1>Hai ini isi dari custom_index.php</h1>
+<p>yang menggantikan isi dari admin/modules/bibliography/index.php</p>";
+
+
+Refresh halaman saat ini masuk ke modul biblography. Jika langkah 5 berhasil maka muncul sebagai berikut: proof
+Penjelasan
+$plugins->registerMenu('bibliography', __('Bibliographic List'), __DIR__ . '/custom_index.php');
+
+
+bibliography : adalah nama modul yang dituju, anda dapat menganti modul tersebut dengan modul yang tersedia seperti bibliography, membership, master_file, circulation, stock_take, system, reporting, dan serial_control setiap pendaftaran menu akan muncul disetiap modul yang disebutkan. Namun, apabila modul yang disebutkan tidak tersedia/aktif di SLiMS maka menu tidak akan pernah muncul.
+__('Bibliographic List') : Adalah nama menu yang tersedia di modul Bibliography. Kenapa harus diawali dengan __( dan akhiri ) karena metoda tersebut digunakan untuk menterjemahkan setiap kata yang diletekan dikeduanya. Jadi plugin anda dapat dibaca diberbagai macam bahasa.
+__DIR__ . '/custom_index.php' : Nama file yang akan digunakan untuk menggantikan file sebenarnya pada modul bibliography.
+
+---
+
+Plugin > Migration
+Migration
+Ini merupakan bagian dari fitur Plugin yang digunakan untuk melakukan proses migrasi basis data atau akrab dikenal sebagai Database Migration. Sebuah proses dimana anda sebagai pengembang/developer plugin dapat dengan leluasa memindahkan struktur tabel yang anda buat khusus untuk plugin anda tanpa perlu repot memindahkan manual dengan mengekspor file .sql dll kedalam database anda.
+
+Langkah-Langkah
+Buat sebuah folder bernama migration didalam folder anda
+
+Buat sebuah file dengan nama 1_CreateBase.php (nama bisa desuaikan). Setiap nama yang dibuat wajib diawali dengan angka dan dipisahkan dengan "_" (garis bawah) misalnya 2_ModifyColumn.php dst. Pemberi nomor bertujuan untuk mengurutkan proses migrasi dari awal hingga akhir dan nama setelah nomor tidak boleh ada yang sama.
+
+Buka file yang sudah anda buat lalu isinya sebagai berikut:
+
+<?php
+use SLiMS\Migration\Migration;
+
+class CreateBase extends Migration
+{
+    function up() {
+        // tulis disini
+    }
+
+    function down() {
+        // tulis disini
+    }
+}
+
+Penjelasan
+Up
+function up()
+
+Metoda/method ini akan dijalan ketika plugin diaktifkan. Anda dapat meletakan proses pembuatan tabel,kolom dll yang berkaitan dengan struktur basis data SLiMS yang hendak anda ubah.
+
+Down
+function down()
+
+Kebalikan dari metoda seblumnya. Proses yang bisa anda lakukab seperti menghapus struktur tabel, tabel, kolom dll.
+
+Simpulan
+Anda dapat menulis query untuk melakukan proses migrasi dengan pustaka yang sudah disedikan oleh SLiMS seperti SLiMS\DB contoh:
+
+function up() {
+    \SLiMS\DB::getInstance()->query(<<<SQL
+    CREATE TABLE IF NOT EXISTS `test` {
+        id int,
+        nama varchar(255),
+        nama_akhir varchar(255)
+    }
+    SQL);
+}
