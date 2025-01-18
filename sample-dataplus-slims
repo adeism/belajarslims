@@ -1,12 +1,12 @@
 Membuat sample data mencakup
-1. member loan
-2. overdued warning, overdued list
+1. 10 member loan
+2. 3 overdued warning, 3 overdued list
 3. nominal denda
 4. 10 member data (2 expired, 1 seminggu sebelum expire)
 5. 3 user data (pustakawan/staf)
 6. 3 visitor member type
 7. 3 user group
-8. loan rules
+8. 3 loan rules
 9. expired member (menyebabkan jumlah hari peminjaman buku tidak normal = hanya sampai expired date)
 10. 3 supplier
 11. 3 location
