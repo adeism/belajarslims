@@ -2,15 +2,15 @@ Membuat sample data mencakup
 1. 10 member loan
 2. 3 overdued warning, 3 overdued list
 3. nominal denda
-4. 10 member data (2 expired, 1 seminggu sebelum expire)
-5. 3 user data (pustakawan/staf)
+4. 10 member data, 2 expired, 1 seminggu sebelum expired (gunakan nama umum di Indonesia maks 3 kata)
+5. 3 user data pustakawan/staf (gunakan nama umum di Indonesia maks 3 kata)
 6. 3 visitor member type
-7. 3 user group
+7. 3 user group 
 8. 3 loan rules
 9. expired member (menyebabkan jumlah hari peminjaman buku tidak normal = hanya sampai expired date)
 10. 3 supplier
 11. 3 location
-12. 3 visitor room
+12. 3 visitor room (Ruang Baca, Ruang Referensi, Ruang Arsip)
 13. 5 comment biblio
 14. 3 cataloging servers
 15. 3 item code patern
@@ -20,10 +20,11 @@ Membuat sample data mencakup
 19. 3 Orphaned Place
 20. initialize stock take
 21. stock take history
-22. 1 custom field bibliography (buku prodi)
-23. 1 custom field member (program studi)
+22. 1 custom field bibliography = penggunan oleh program studi (type: check list)
+23. 1 custom field member = program studi member (type: drop down)
 24. 1 content (news) publish at (7 days ahead)
 25. holiday setting (Saturday, Sunday)
 26. 3 special holiday
 27. 1 database backup
 28. 3 file (1 public, 1 private, 1 url)
+29. 3 reserve book (reserve list)
