@@ -1,30 +1,29 @@
-Membuat sample data mencakup
-1. 10 member loan
-2. 3 overdued warning, 3 overdued list
-3. nominal denda
-4. 10 member data, 2 expired, 1 seminggu sebelum expired (gunakan nama umum di Indonesia maks 3 kata)
-5. 3 user data pustakawan/staf (gunakan nama umum di Indonesia maks 3 kata)
-6. 3 visitor member type
-7. 3 user group 
-8. 3 loan rules
-9. expired member (menyebabkan jumlah hari peminjaman buku tidak normal = hanya sampai expired date)
-10. 3 supplier
-11. 3 location
-12. 3 visitor room (Ruang Baca, Ruang Referensi, Ruang Arsip)
-13. 5 comment biblio
-14. 3 cataloging servers
-15. 3 item code patern
-16. 3 Orphaned Author
-17. 3 Orphaned Subject
-18. 3 Orphaned Publisher
-19. 3 Orphaned Place
-20. initialize stock take
-21. stock take history
-22. 1 custom field bibliography = penggunan oleh program studi (type: check list)
-23. 1 custom field member = program studi member (type: drop down)
-24. 1 content (news) publish at (7 days ahead)
-25. holiday setting (Saturday, Sunday)
-26. 3 special holiday
-27. 1 database backup
-28. 3 file (1 public, 1 private, 1 url)
-29. 3 reserve book (reserve list)
+Add 3 visitor member types.
+Add 3 user groups.
+Add 3 loan rules.
+Add 10 member data (including 2 expired and 1 expiring soon members).
+Add 3 librarian/staff user data.
+Add 10 member loan data.
+Add 3 overdue loan warnings.
+Add 3 overdue loan list entries.
+Set fine amounts for overdue loans.
+Add 1 expired member loan.
+Add 3 supplier data entries.
+Add 3 location data entries.
+Add 3 visitor room data entries.
+Add 5 bibliography comments.
+Add 3 cataloging server data entries.
+Add 3 item code patterns.
+Add 3 orphaned authors.
+Add 3 orphaned subjects.
+Add 3 orphaned publishers.
+Add 3 orphaned places.
+Initialize 1 stock take.
+Add stock take history.
+Add 1 bibliography custom field (type: check list)
+Add 1 member custom field. (type: drop down)
+Add 1 content (news) scheduled for publishing.
+Set holiday settings. (sunday)
+Add 3 special holidays. (idul fitri, idul adha, kemerdekaan indonesia)
+Add 1 database backup entry.
+Add 3 files (1 public, 1 private, 1 URL).
