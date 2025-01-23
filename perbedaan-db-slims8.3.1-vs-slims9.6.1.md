@@ -1,6 +1,6 @@
 ## Perbedaan Database SLiMS 9 dan SLiMS 8
 
-Informasi berdasarkan 
+Informasi berdasarkan - generate by ai (bisa salah)
 
 SLiMS 8.3.1 : https://github.com/slims/slims8_akasia/blob/master/install/senayan.sql.php
 
