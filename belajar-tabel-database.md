@@ -108,3 +108,6 @@ Untuk informasi lebih lanjut, silakan kunjungi:
 ---
 
 🚀 **Semoga panduan ini membantu Anda memahami tabel database SLiMS dengan lebih baik!** 🎉
+
+>*tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)
+
