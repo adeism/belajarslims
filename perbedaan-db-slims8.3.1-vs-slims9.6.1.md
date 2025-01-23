@@ -1,6 +1,6 @@
 ## Perbedaan Database SLiMS 9 dan SLiMS 8
 
-Informasi berdasarkan - generate by ai (bisa salah)
+Informasi berdasarkan
 
 SLiMS 8.3.1 : https://github.com/slims/slims8_akasia/blob/master/install/senayan.sql.php
 
@@ -41,3 +41,5 @@ Berikut adalah tabel yang merangkum perbedaan database antara SLiMS 9 dan SLiMS 
 | Setting `logo_image`                    | Tidak ada                     | Ada                                                                       | Setting baru untuk menyimpan informasi logo perpustakaan.                                                                                 |
 
 Tabel ini memberikan ringkasan perbedaan database utama antara SLiMS 9 dan SLiMS 8. Perubahan ini mencerminkan penambahan fitur dan peningkatan sistem pada SLiMS 9.
+
+> *tutorial ini dibuat dengan gemini chatbot (ada kemungkinan salah/halusinasi)
