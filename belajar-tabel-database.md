@@ -99,15 +99,5 @@ Berikut adalah daftar tabel utama yang terdapat dalam database SLiMS, dikelompok
 
 ---
 
-## 📚 Dokumentasi Tambahan
-
-Untuk informasi lebih lanjut, silakan kunjungi:
-- **[Dokumentasi Resmi SLiMS](https://slims.web.id)**
-- **[Repositori SLiMS di GitHub](https://github.com/slims)**
-
----
-
-🚀 **Semoga panduan ini membantu Anda memahami tabel database SLiMS dengan lebih baik!** 🎉
-
 >*tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)
 
