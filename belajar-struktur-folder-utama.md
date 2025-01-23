@@ -23,7 +23,7 @@ Berisi file untuk keperluan web service atau integrasi API. Digunakan jika ingin
 Folder ini menyimpan file konfigurasi sistem SLiMS, termasuk pengaturan database dan pengaturan dasar aplikasi.
 
 - **File Penting**:
-  - `database.php`: Berisi pengaturan koneksi database.
+  - `database.php`: Berisi pengaturan koneksi database. < dibuat ketika selesai installasi awal 
   - `sysconfig.inc.php`: Konfigurasi sistem utama.
 
 ---
