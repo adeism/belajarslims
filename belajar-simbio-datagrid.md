@@ -2,8 +2,6 @@
 
 Simbio **Datagrid** adalah komponen yang disediakan oleh Simbio untuk menampilkan data dalam format tabel dengan berbagai fitur seperti pencarian, pengurutan, dan paginasi. Tutorial ini akan memandu Anda melalui langkah-langkah dasar untuk membuat dan mengelola **Datagrid**.
 
-_*tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)_ 
-
 ---
 
 ## ✨ Fitur Utama Simbio Datagrid
@@ -133,3 +131,6 @@ Untuk informasi lebih lengkap, silakan merujuk ke dokumentasi resmi **Simbio Dat
 ---
 
 Dengan menggunakan tutorial ini, Anda dapat dengan mudah mengimplementasikan **Simbio Datagrid** untuk menampilkan data dengan cepat dan interaktif. Selamat mencoba! 🎉
+
+>*tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)_ 
+
