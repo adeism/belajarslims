@@ -132,3 +132,7 @@ Untuk informasi lebih lengkap, kunjungi:
 ---
 
 🚀 **Mulai eksplorasi direktori `lib` SLiMS dan kembangkan fitur sesuai kebutuhan perpustakaan Anda!** 🎉
+
+---
+
+> *Tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)*
