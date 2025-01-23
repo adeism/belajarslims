@@ -4,12 +4,6 @@ Selamat datang di panduan Non Official **SLiMS (Senayan Library Management Syste
 
 SLiMS adalah sistem manajemen perpustakaan berbasis web yang fleksibel dan dapat dikustomisasi untuk memenuhi kebutuhan Anda.
 
-## ❓ Bingung cara pakai SLiMS ? 
-[yuk tes, Asisten SLiMS (CustomGPT - ChatGPT)](https://chatgpt.com/g/g-673ede38817081918ab86b867d67b1d3-asisten-slims)
-
-## 🚀 Mau coba buat Plugin pakai ChatGPT ? 
-[yuk tes, SLiMS Plugin Maker (CustomGPT - ChatGPT)](https://chatgpt.com/g/g-5ZMtyYG5B-slims-plugin-maker)
-
 ## 📘 Belajar Yuk
 - 🏛️ [Belajar Struktur Folder Utama](https://github.com/adeism/belajarslims/blob/main/belajar-struktur-folder-utama.md)
 - 🗃️ [Belajar Tabel Database](https://github.com/adeism/belajarslims/blob/main/belajar-tabel-database.md)
