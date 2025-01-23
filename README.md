@@ -1,41 +1,42 @@
 # 📚 Belajar SLiMS
 
-Selamat datang di panduan Non Official **SLiMS (Senayan Library Management System)**! 🎉
+Selamat datang di panduan **SLiMS (Senayan Library Management System)**, sebuah inisiatif non-official untuk membantu Anda belajar! 🎉
 
-SLiMS adalah sistem manajemen perpustakaan berbasis web yang fleksibel dan dapat dikustomisasi untuk memenuhi kebutuhan Anda.
+SLiMS adalah sistem manajemen perpustakaan berbasis web yang fleksibel dan dapat dikustomisasi untuk memenuhi kebutuhan perpustakaan Anda.
 
-## 📘 Belajar Yuk
-- 🏛️ [Belajar Struktur Folder Utama](https://github.com/adeism/belajarslims/blob/main/belajar-struktur-folder-utama.md)
-- 🗃️ [Belajar Tabel Database](https://github.com/adeism/belajarslims/blob/main/belajar-tabel-database.md)
-- 📂 [Belajar Folder Admin](https://github.com/adeism/belajarslims/blob/main/belajar-folder-admin.md)
-- 🔗 [Belajar Folder API](https://github.com/adeism/belajarslims/blob/main/belajar-folder-api.md)
-- 📁 [Belajar Folder Files](https://github.com/adeism/belajarslims/blob/main/belajar-folder-files.md)
-- 📚 [Belajar Folder Lib](https://github.com/adeism/belajarslims/blob/main/belajar-lib-folder.md)
-- 🛠️ [Belajar Simbio Datagrid](https://github.com/adeism/belajarslims/blob/main/belajar-simbio-datagrid.md)
+## 📘 Mari Belajar Struktur SLiMS
 
+Berikut adalah beberapa panduan untuk memahami struktur dasar SLiMS:
 
+- 🏛️ [Struktur Folder Utama](https://github.com/adeism/belajarslims/blob/main/belajar-struktur-folder-utama.md)
+- 🗃️ [Tabel Database](https://github.com/adeism/belajarslims/blob/main/belajar-tabel-database.md)
+- 📂 [Folder Admin](https://github.com/adeism/belajarslims/blob/main/belajar-folder-admin.md)
+- 🔗 [Folder API](https://github.com/adeism/belajarslims/blob/main/belajar-folder-api.md)
+- 📁 [Folder Files](https://github.com/adeism/belajarslims/blob/main/belajar-folder-files.md)
+- 📚 [Folder Lib](https://github.com/adeism/belajarslims/blob/main/belajar-lib-folder.md)
+- 🛠️ [Simbio Datagrid](https://github.com/adeism/belajarslims/blob/main/belajar-simbio-datagrid.md)
 
+## 📖 Dokumentasi Resmi SLiMS
 
-## 📖 Dokumentasi SLiMS
+Manfaatkan dokumentasi resmi untuk panduan lengkap:
 
 - 📄 **[Panduan Pengguna](https://slims.web.id/docs/user-guide/about/)**  
-  Pelajari cara menggunakan SLiMS dengan panduan lengkap ini.
+  Pelajari cara menggunakan SLiMS dengan panduan langkah demi langkah.
 
 - 🛠️ **[Panduan Pengembang](https://slims.web.id/docs/development-guide/about/)**  
-  Mencakup topik seperti:
-  - 🔧 Struktur Direktori
-  - ⚙️ Alur Sistem
-  - 🧩 Plugin
-  - 🗃️ Database
-  - 🖥️ Console
-  - 🌐 Http
-  - 🚀 Cache
-  - 🛠️ Helpers
+  Mencakup topik penting bagi pengembang, seperti:
+    - 🔧 Struktur Direktori
+    - ⚙️ Alur Sistem
+    - 🧩 Plugin
+    - 🗃️ Database
+    - 🖥️ Console
+    - 🌐 HTTP
+    - 🚀 Cache
+    - 🛠️ Helpers
 
+## 🔗 Repositori GitHub Terkait SLiMS
 
-## 🔗 Repositori Terkait SLiMS
-
-Berikut adalah beberapa repositori GitHub yang berhubungan dengan pengembangan SLiMS. Anda dapat mencari plugin dan kontribusi lainnya di sini:
+Temukan plugin dan kontribusi lain dari pengembang SLiMS di repositori berikut:
 
 - [Waris Agung Widodo (idoalit)](https://github.com/idoalit?tab=repositories&q=slims)
 - [Drajat Hasan (drajathasan)](https://github.com/drajathasan?tab=repositories&q=slims)
@@ -46,18 +47,18 @@ Berikut adalah beberapa repositori GitHub yang berhubungan dengan pengembangan S
 - [Heru Subekti (heroesoebekti)](https://github.com/heroesoebekti?tab=repositories?q=slims)
 - [Erwan Setyo Budi (erwansetyobudi)](https://github.com/erwansetyobudi?tab=repositories&q=slims)
 
+## 🌟 Sumber Daya Komunitas SLiMS
 
-## 🌟 Sumber Daya Lainnya
+Bergabunglah dengan komunitas SLiMS untuk mendapatkan dukungan dan berkolaborasi:
 
-- 🌐 **[Website Resmi SLiMS](https://slims.web.id/web/)**  
-  Informasi terkini tentang SLiMS.
+- 🌐 **[Website Resmi SLiMS](https://slims.web.id/web/)** Dapatkan informasi terbaru tentang SLiMS.
 
-- 👥 **[Grup Facebook SLiMS](https://www.facebook.com/groups/senayan.slims/)**  
-  Diskusikan SLiMS dengan komunitas.
+- 👥 **[Grup Facebook SLiMS](https://www.facebook.com/groups/senayan.slims/)** Berdiskusi dan berbagi pengalaman dengan komunitas SLiMS.
 
-- 🗂️ **[Repositori Resmi SLiMS](https://github.com/slims?tab=repositories)**  
-  Akses kode sumber utama SLiMS di GitHub.
+- 💬 **[Grup WhatsApp SLiMS](https://chat.whatsapp.com/JNyiQPmJjFT7cjjzveB7HH)** Bergabung dengan komunitas SLiMS melalui WhatsApp.
+
+- 🗂️ **[Repositori Resmi SLiMS](https://github.com/slims?tab=repositories)** Akses kode sumber utama SLiMS di GitHub.
 
 ---
 
-🎯 **Jangan ragu untuk berkontribusi atau mempelajari lebih jauh tentang SLiMS!** 🚀
+🎯 **Jangan ragu untuk berkontribusi, bertanya, dan terus belajar tentang SLiMS!** 🚀
