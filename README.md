@@ -44,6 +44,7 @@ Berikut adalah beberapa repositori GitHub yang berhubungan dengan pengembangan S
 - [Purwoko (purwoko)](https://github.com/purwoko?tab=repositories?q=slims)
 - [Arif Syamsudin (buitenzorg812)](https://github.com/buitenzorg812?tab=repositories?q=slims)
 - [Heru Subekti (heroesoebekti)](https://github.com/heroesoebekti?tab=repositories?q=slims)
+- [Erwan Setyo Budi (erwansetyobudi)](https://github.com/erwansetyobudi?tab=repositories&q=slims)
 
 
 ## 🌟 Sumber Daya Lainnya
