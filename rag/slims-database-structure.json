@@ -52,7 +52,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["backup_log_id"],
+          "columns": [
+            "backup_log_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -383,47 +385,72 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["biblio_id"],
+          "columns": [
+            "biblio_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "references_idx",
-          "columns": ["gmd_id", "publisher_id", "language_id", "publish_place_id"],
+          "columns": [
+            "gmd_id",
+            "publisher_id",
+            "language_id",
+            "publish_place_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "classification",
-          "columns": ["classification"],
+          "columns": [
+            "classification"
+          ],
           "type": "KEY"
         },
         {
           "name": "biblio_flag_idx",
-          "columns": ["opac_hide", "promoted"],
+          "columns": [
+            "opac_hide",
+            "promoted"
+          ],
           "type": "KEY"
         },
         {
           "name": "rda_idx",
-          "columns": ["content_type_id", "media_type_id", "carrier_type_id"],
+          "columns": [
+            "content_type_id",
+            "media_type_id",
+            "carrier_type_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "uid",
-          "columns": ["uid"],
+          "columns": [
+            "uid"
+          ],
           "type": "KEY"
         },
         {
           "name": "title_ft_idx",
-          "columns": ["title", "series_title"],
+          "columns": [
+            "title",
+            "series_title"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "notes_ft_idx",
-          "columns": ["notes"],
+          "columns": [
+            "notes"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "labels",
-          "columns": ["labels"],
+          "columns": [
+            "labels"
+          ],
           "type": "FULLTEXT"
         }
       ],
@@ -534,17 +561,24 @@
       "indexes": [
         {
           "name": "biblio_id",
-          "columns": ["biblio_id"],
+          "columns": [
+            "biblio_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "file_id",
-          "columns": ["file_id"],
+          "columns": [
+            "file_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "biblio_id_2",
-          "columns": ["biblio_id", "file_id"],
+          "columns": [
+            "biblio_id",
+            "file_id"
+          ],
           "type": "KEY"
         }
       ],
@@ -605,17 +639,24 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["biblio_id", "author_id"],
+          "columns": [
+            "biblio_id",
+            "author_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "biblio_id",
-          "columns": ["biblio_id"],
+          "columns": [
+            "biblio_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "author_id",
-          "columns": ["author_id"],
+          "columns": [
+            "author_id"
+          ],
           "type": "KEY"
         }
       ],
@@ -686,17 +727,24 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["biblio_id", "topic_id"],
+          "columns": [
+            "biblio_id",
+            "topic_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "biblio_id",
-          "columns": ["biblio_id"],
+          "columns": [
+            "biblio_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "topic_id",
-          "columns": ["topic_id"],
+          "columns": [
+            "topic_id"
+          ],
           "type": "KEY"
         }
       ],
@@ -831,22 +879,30 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["content_id"],
+          "columns": [
+            "content_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "content_path",
-          "columns": ["content_path"],
+          "columns": [
+            "content_path"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "content_title",
-          "columns": ["content_title"],
+          "columns": [
+            "content_title"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "content_desc",
-          "columns": ["content_desc"],
+          "columns": [
+            "content_desc"
+          ],
           "type": "FULLTEXT"
         }
       ],
@@ -973,17 +1029,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["file_id"],
+          "columns": [
+            "file_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "file_name",
-          "columns": ["file_name"],
+          "columns": [
+            "file_name"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "file_dir",
-          "columns": ["file_dir"],
+          "columns": [
+            "file_dir"
+          ],
           "type": "FULLTEXT"
         }
       ],
@@ -1071,12 +1133,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["fines_id"],
+          "columns": [
+            "fines_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "member_id",
-          "columns": ["member_id"],
+          "columns": [
+            "member_id"
+          ],
           "type": "KEY"
         }
       ],
@@ -1152,7 +1218,10 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["group_id", "module_id"],
+          "columns": [
+            "group_id",
+            "module_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -1217,12 +1286,17 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["holiday_id"],
+          "columns": [
+            "holiday_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "holiday_dayname",
-          "columns": ["holiday_dayname", "holiday_date"],
+          "columns": [
+            "holiday_dayname",
+            "holiday_date"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -1464,27 +1538,39 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["item_id"],
+          "columns": [
+            "item_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "item_code",
-          "columns": ["item_code"],
+          "columns": [
+            "item_code"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "uid",
-          "columns": ["uid"],
+          "columns": [
+            "uid"
+          ],
           "type": "KEY"
         },
         {
           "name": "item_references_idx",
-          "columns": ["coll_type_id", "location_id", "item_status_id"],
+          "columns": [
+            "coll_type_id",
+            "location_id",
+            "item_status_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "biblio_id_idx",
-          "columns": ["biblio_id"],
+          "columns": [
+            "biblio_id"
+          ],
           "type": "KEY"
         }
       ],
@@ -1602,12 +1688,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["kardex_id"],
+          "columns": [
+            "kardex_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "fk_serial",
-          "columns": ["serial_id"],
+          "columns": [
+            "serial_id"
+          ],
           "type": "KEY"
         }
       ],
@@ -1779,22 +1869,32 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["loan_id"],
+          "columns": [
+            "loan_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "item_code",
-          "columns": ["item_code"],
+          "columns": [
+            "item_code"
+          ],
           "type": "KEY"
         },
         {
           "name": "member_id",
-          "columns": ["member_id"],
+          "columns": [
+            "member_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "input_date",
-          "columns": ["input_date", "last_update", "uid"],
+          "columns": [
+            "input_date",
+            "last_update",
+            "uid"
+          ],
           "type": "KEY"
         }
       ],
@@ -2039,12 +2139,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["loan_id"],
+          "columns": [
+            "loan_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "member_name",
-          "columns": ["member_name"],
+          "columns": [
+            "member_name"
+          ],
           "type": "KEY"
         }
       ],
@@ -2317,17 +2421,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["member_id"],
+          "columns": [
+            "member_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "member_name",
-          "columns": ["member_name"],
+          "columns": [
+            "member_name"
+          ],
           "type": "KEY"
         },
         {
           "name": "member_type_id",
-          "columns": ["member_type_id"],
+          "columns": [
+            "member_type_id"
+          ],
           "type": "KEY"
         }
       ],
@@ -2452,12 +2562,17 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["author_id"],
+          "columns": [
+            "author_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "author_name",
-          "columns": ["author_name", "authority_type"],
+          "columns": [
+            "author_name",
+            "authority_type"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -2537,17 +2652,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["id"],
+          "columns": [
+            "id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "media_type",
-          "columns": ["carrier_type"],
+          "columns": [
+            "carrier_type"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "code",
-          "columns": ["code"],
+          "columns": [
+            "code"
+          ],
           "type": "KEY"
         }
       ],
@@ -2607,12 +2728,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["coll_type_id"],
+          "columns": [
+            "coll_type_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "coll_type_name",
-          "columns": ["coll_type_name"],
+          "columns": [
+            "coll_type_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -2697,17 +2822,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["id"],
+          "columns": [
+            "id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "content_type",
-          "columns": ["content_type"],
+          "columns": [
+            "content_type"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "code",
-          "columns": ["code"],
+          "columns": [
+            "code"
+          ],
           "type": "KEY"
         }
       ],
@@ -2857,12 +2988,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["dbfield"],
+          "columns": [
+            "dbfield"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "field_id",
-          "columns": ["field_id"],
+          "columns": [
+            "field_id"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -2946,7 +3081,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["frequency_id"],
+          "columns": [
+            "frequency_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -3026,17 +3163,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["gmd_id"],
+          "columns": [
+            "gmd_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "gmd_name",
-          "columns": ["gmd_name"],
+          "columns": [
+            "gmd_name"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "gmd_code",
-          "columns": ["gmd_code"],
+          "columns": [
+            "gmd_code"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -3136,12 +3279,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["item_status_id"],
+          "columns": [
+            "item_status_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "item_status_name",
-          "columns": ["item_status_name"],
+          "columns": [
+            "item_status_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -3221,12 +3368,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["label_id"],
+          "columns": [
+            "label_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "label_name",
-          "columns": ["label_name"],
+          "columns": [
+            "label_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -3280,12 +3431,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["language_id"],
+          "columns": [
+            "language_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "language_name",
-          "columns": ["language_name"],
+          "columns": [
+            "language_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -3429,7 +3584,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["loan_rules_id"],
+          "columns": [
+            "loan_rules_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -3489,12 +3646,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["location_id"],
+          "columns": [
+            "location_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "location_name",
-          "columns": ["location_name"],
+          "columns": [
+            "location_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -3584,17 +3745,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["id"],
+          "columns": [
+            "id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "media_type",
-          "columns": ["media_type"],
+          "columns": [
+            "media_type"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "code",
-          "columns": ["code"],
+          "columns": [
+            "code"
+          ],
           "type": "KEY"
         }
       ],
@@ -3734,12 +3901,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["member_type_id"],
+          "columns": [
+            "member_type_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "member_type_name",
-          "columns": ["member_type_name"],
+          "columns": [
+            "member_type_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -3809,12 +3980,17 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["module_id"],
+          "columns": [
+            "module_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "module_name",
-          "columns": ["module_name", "module_path"],
+          "columns": [
+            "module_name",
+            "module_path"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -3874,12 +4050,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["place_id"],
+          "columns": [
+            "place_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "place_name",
-          "columns": ["place_name"],
+          "columns": [
+            "place_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -3939,12 +4119,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["publisher_id"],
+          "columns": [
+            "publisher_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "publisher_name",
-          "columns": ["publisher_name"],
+          "columns": [
+            "publisher_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -3994,7 +4178,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["ID"],
+          "columns": [
+            "ID"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -4074,7 +4260,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["server_id"],
+          "columns": [
+            "server_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -4198,12 +4386,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["supplier_id"],
+          "columns": [
+            "supplier_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "supplier_name",
-          "columns": ["supplier_name"],
+          "columns": [
+            "supplier_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -4293,12 +4485,17 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["topic_id"],
+          "columns": [
+            "topic_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "topic",
-          "columns": ["topic", "topic_type"],
+          "columns": [
+            "topic",
+            "topic_type"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -4383,17 +4580,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["id"],
+          "columns": [
+            "id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "unique_code_unq",
-          "columns": ["unique_code"],
+          "columns": [
+            "unique_code"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "unique_code_idx",
-          "columns": ["unique_code"],
+          "columns": [
+            "unique_code"
+          ],
           "type": "KEY"
         }
       ],
@@ -4486,7 +4689,9 @@
       "indexes": [
         {
           "name": "id",
-          "columns": ["id"],
+          "columns": [
+            "id"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -4559,17 +4764,24 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["reserve_id"],
+          "columns": [
+            "reserve_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "references_idx",
-          "columns": ["member_id", "biblio_id"],
+          "columns": [
+            "member_id",
+            "biblio_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "item_code_idx",
-          "columns": ["item_code"],
+          "columns": [
+            "item_code"
+          ],
           "type": "KEY"
         }
       ],
@@ -4892,57 +5104,89 @@
       "indexes": [
         {
           "name": "biblio_id",
-          "columns": ["biblio_id"],
+          "columns": [
+            "biblio_id"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "add_indexes",
-          "columns": ["gmd", "publisher", "publish_place", "language", "classification", "publish_year", "call_number"],
+          "columns": [
+            "gmd",
+            "publisher",
+            "publish_place",
+            "language",
+            "classification",
+            "publish_year",
+            "call_number"
+          ],
           "type": "KEY"
         },
         {
           "name": "add_indexes2",
-          "columns": ["opac_hide", "promoted"],
+          "columns": [
+            "opac_hide",
+            "promoted"
+          ],
           "type": "KEY"
         },
         {
           "name": "rda_indexes",
-          "columns": ["carrier_type", "media_type", "content_type"],
+          "columns": [
+            "carrier_type",
+            "media_type",
+            "content_type"
+          ],
           "type": "KEY"
         },
         {
           "name": "title",
-          "columns": ["title", "series_title"],
+          "columns": [
+            "title",
+            "series_title"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "author",
-          "columns": ["author"],
+          "columns": [
+            "author"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "topic",
-          "columns": ["topic"],
+          "columns": [
+            "topic"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "location",
-          "columns": ["location"],
+          "columns": [
+            "location"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "items",
-          "columns": ["items"],
+          "columns": [
+            "items"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "collection_types",
-          "columns": ["collection_types"],
+          "columns": [
+            "collection_types"
+          ],
           "type": "FULLTEXT"
         },
         {
           "name": "labels",
-          "columns": ["labels"],
+          "columns": [
+            "labels"
+          ],
           "type": "FULLTEXT"
         }
       ],
@@ -5058,17 +5302,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["serial_id"],
+          "columns": [
+            "serial_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "fk_serial_biblio",
-          "columns": ["biblio_id"],
+          "columns": [
+            "biblio_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "fk_serial_gmd",
-          "columns": ["gmd_id"],
+          "columns": [
+            "gmd_id"
+          ],
           "type": "KEY"
         }
       ],
@@ -5128,12 +5378,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["setting_id"],
+          "columns": [
+            "setting_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "setting_name",
-          "columns": ["setting_name"],
+          "columns": [
+            "setting_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -5267,7 +5521,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["stock_take_id"],
+          "columns": [
+            "stock_take_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -5413,22 +5669,34 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["stock_take_id", "item_id"],
+          "columns": [
+            "stock_take_id",
+            "item_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "item_code",
-          "columns": ["item_code"],
+          "columns": [
+            "item_code"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "status",
-          "columns": ["status"],
+          "columns": [
+            "status"
+          ],
           "type": "KEY"
         },
         {
           "name": "item_properties_idx",
-          "columns": ["gmd_name", "classification", "coll_type_name", "location"],
+          "columns": [
+            "gmd_name",
+            "classification",
+            "coll_type_name",
+            "location"
+          ],
           "type": "KEY"
         }
       ],
@@ -5533,17 +5801,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["log_id"],
+          "columns": [
+            "log_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "log_type",
-          "columns": ["log_type"],
+          "columns": [
+            "log_type"
+          ],
           "type": "KEY"
         },
         {
           "name": "id",
-          "columns": ["id"],
+          "columns": [
+            "id"
+          ],
           "type": "KEY"
         }
       ],
@@ -5717,17 +5991,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["user_id"],
+          "columns": [
+            "user_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "username",
-          "columns": ["username"],
+          "columns": [
+            "username"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "realname",
-          "columns": ["realname"],
+          "columns": [
+            "realname"
+          ],
           "type": "KEY"
         }
       ],
@@ -5817,12 +6097,16 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["group_id"],
+          "columns": [
+            "group_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "group_name",
-          "columns": ["group_name"],
+          "columns": [
+            "group_name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -5913,17 +6197,23 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["visitor_id"],
+          "columns": [
+            "visitor_id"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "member_id",
-          "columns": ["member_id"],
+          "columns": [
+            "member_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "room_code",
-          "columns": ["room_code"],
+          "columns": [
+            "room_code"
+          ],
           "type": "KEY"
         }
       ],
@@ -6007,7 +6297,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["vocabolary_id"],
+          "columns": [
+            "vocabolary_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -6028,9 +6320,7 @@
           "relationship_description": "Many vocabulary control entries can have one related topic."
         }
       ]
-    }
-  ]
-},
+    },
     {
       "name": "biblio_relation",
       "description": "Defines relationships between bibliographic records (e.g., sequels, prequels, translations).",
@@ -6075,7 +6365,10 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["biblio_id", "rel_biblio_id"],
+          "columns": [
+            "biblio_id",
+            "rel_biblio_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -6155,7 +6448,9 @@
       "indexes": [
         {
           "name": "name",
-          "columns": ["name"],
+          "columns": [
+            "name"
+          ],
           "type": "UNIQUE"
         }
       ],
@@ -6182,7 +6477,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["biblio_id"],
+          "columns": [
+            "biblio_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -6215,7 +6512,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["member_id"],
+          "columns": [
+            "member_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -6301,7 +6600,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["comment_id"],
+          "columns": [
+            "comment_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -6318,7 +6619,7 @@
         }
       ]
     },
-      {
+    {
       "name": "files_read",
       "description": "Logs file read activities.",
       "columns": [
@@ -6395,7 +6696,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["filelog_id"],
+          "columns": [
+            "filelog_id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -6471,22 +6774,32 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["document_id", "word_id", "location"],
+          "columns": [
+            "document_id",
+            "word_id",
+            "location"
+          ],
           "type": "PRIMARY KEY"
         },
         {
           "name": "document_id",
-          "columns": ["document_id"],
+          "columns": [
+            "document_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "word_id",
-          "columns": ["word_id"],
+          "columns": [
+            "word_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "location",
-          "columns": ["location"],
+          "columns": [
+            "location"
+          ],
           "type": "KEY"
         }
       ],
@@ -6551,7 +6864,9 @@
       "indexes": [
         {
           "name": "PRIMARY",
-          "columns": ["id"],
+          "columns": [
+            "id"
+          ],
           "type": "PRIMARY KEY"
         }
       ],
@@ -6617,17 +6932,23 @@
       "indexes": [
         {
           "name": "id",
-          "columns": ["id"],
+          "columns": [
+            "id"
+          ],
           "type": "UNIQUE"
         },
         {
           "name": "member_id_idx",
-          "columns": ["member_id"],
+          "columns": [
+            "member_id"
+          ],
           "type": "KEY"
         },
         {
           "name": "biblio_id_idx",
-          "columns": ["biblio_id"],
+          "columns": [
+            "biblio_id"
+          ],
           "type": "KEY"
         }
       ],
