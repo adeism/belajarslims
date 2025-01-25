@@ -1,918 +1,1897 @@
-Tables and Columns:
+Penjelasan Umum Database:
 
-backup_log:
+Database ini dirancang untuk sistem manajemen perpustakaan (SLiMS - Senayan Library Management System). Tujuannya adalah untuk mengelola berbagai aspek operasional perpustakaan, termasuk:
 
-backup_log_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each backup log entry.
+Katalog Bibliografi: Mencatat dan mengelola informasi detail tentang koleksi perpustakaan seperti buku, majalah, dan jenis materi lainnya.
 
-user_id (INT): ID of the user who initiated the backup. Foreign key referencing the user table.
+Manajemen Item Koleksi: Melacak salinan fisik dari setiap judul bibliografi, termasuk kode item, lokasi, dan status.
 
-backup_time (DATETIME): Timestamp indicating when the backup was created.
+Sirkulasi: Mengelola proses peminjaman dan pengembalian koleksi oleh anggota perpustakaan, termasuk aturan peminjaman dan denda.
 
-backup_file (TEXT): The filename or location of the generated backup file.
+Keanggotaan: Mengelola informasi anggota perpustakaan dan jenis keanggotaan.
 
-biblio:
+Master File: Menyediakan data referensi yang digunakan di seluruh sistem, seperti daftar pengarang, penerbit, topik, jenis koleksi, dll.
 
-biblio_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each bibliographic record.
+Inventarisasi: Memudahkan proses stock opname atau inventarisasi koleksi.
 
-gmd_id (INT): ID of the General Material Designation (GMD) describing the type of material (book, journal, etc.). Foreign key referencing the mst_gmd table.
+Pelaporan: Menghasilkan berbagai laporan terkait koleksi, sirkulasi, dan keanggotaan.
 
-title (TEXT): Title of the bibliographic record. Fulltext indexed.
+Manajemen Terbitan Berseri: Mengelola langganan dan penerimaan terbitan berseri seperti majalah dan jurnal.
 
-sor (VARCHAR): Statement of Responsibility (e.g., author, editor, translator).
+Sistem: Mengelola konfigurasi sistem, pengguna (pustakawan), dan backup database.
 
-edition (VARCHAR): Edition of the work.
+Detail Tabel dan Hubungannya
 
-isbn_issn (VARCHAR): ISBN or ISSN of the work.
+Berikut adalah penjelasan detail untuk setiap tabel dalam database, termasuk kolom, tipe data, dan hubungan antar tabel:
 
-publisher_id (INT): ID of the publisher. Foreign key referencing the mst_publisher table.
+backup_log
 
-publish_year (VARCHAR): Year of publication.
+Deskripsi: Mencatat log aktivitas backup database.
 
-collation (VARCHAR): Collation details (physical description of the item).
+Kolom:
 
-series_title (VARCHAR): Title of the series the work belongs to. Fulltext indexed.
+backup_log_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik untuk setiap log backup.
 
-call_number (VARCHAR): Library of Congress call number or other classification.
+user_id (INT): ID pengguna yang melakukan backup. Terhubung dengan tabel user.
 
-language_id (CHAR): Language code (e.g., 'en' for English, 'id' for Indonesian). Foreign key referencing mst_language.
+backup_time (DATETIME): Waktu backup dilakukan.
 
-source (VARCHAR): Source of the bibliographic record (e.g., how it was added to the database).
+backup_file (TEXT): Nama file backup.
 
-publish_place_id (INT): ID of the place of publication. Foreign key referencing the mst_place table.
+biblio
 
-classification (VARCHAR): Classification code (e.g., Dewey Decimal Classification).
+Deskripsi: Tabel inti yang menyimpan data bibliografi (informasi katalog) untuk setiap koleksi.
 
-notes (TEXT): Any additional notes or comments about the record. Fulltext indexed.
+Kolom:
 
-image (VARCHAR): Filename of the cover image.
+biblio_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik untuk setiap entri bibliografi.
 
-file_att (VARCHAR): Filename of attached files. (Note: This appears redundant given biblio_attachment table.)
+gmd_id (INT): ID jenis bahan pustaka (General Material Designation). Terhubung dengan tabel mst_gmd.
 
-opac_hide (SMALLINT): Flag indicating whether the record should be hidden from the OPAC (Online Public Access Catalog) (0 = visible, 1 = hidden).
+title (TEXT): Judul koleksi.
 
-promoted (SMALLINT): Flag indicating whether the record should be promoted (featured) in the OPAC (0 = not promoted, 1 = promoted).
+sor (VARCHAR(200)): Pernyataan tanggung jawab (Statement of Responsibility - Pengarang, editor, dll.).
 
-labels (TEXT): Predefined labels associated with the record (e.g., "New Title," "Favorite"). Fulltext indexed.
+edition (VARCHAR(50)): Edisi koleksi.
 
-frequency_id (INT): ID of publication frequency (for serials). Foreign key referencing the mst_frequency table.
+isbn_issn (VARCHAR(32)): ISBN atau ISSN koleksi.
 
-spec_detail_info (TEXT): Field for any specific detail information.
+publisher_id (INT): ID penerbit. Terhubung dengan tabel mst_publisher.
 
-content_type_id (INT): ID of the content type. Foreign key referencing mst_content_type.
+publish_year (VARCHAR(20)): Tahun terbit.
 
-media_type_id (INT): ID of the media type. Foreign key referencing mst_media_type.
+collation (VARCHAR(100)): Kolasi (deskripsi fisik koleksi).
 
-carrier_type_id (INT): ID of the carrier type. Foreign key referencing mst_carrier_type.
+series_title (VARCHAR(200)): Judul seri.
 
-input_date (DATETIME): Timestamp indicating when the record was first added.
+call_number (VARCHAR(50)): Nomor panggil koleksi (klasifikasi).
 
-last_update (DATETIME): Timestamp indicating when the record was last updated.
+language_id (CHAR(5), DEFAULT 'en'): ID bahasa. Terhubung dengan tabel mst_language.
 
-uid (INT): ID of the user who last updated the record. Foreign key referencing the user table.
+source (VARCHAR(3)): Sumber koleksi.
 
-biblio_attachment:
+publish_place_id (INT): ID tempat terbit. Terhubung dengan tabel mst_place.
 
-biblio_id (INT): ID of the bibliographic record. Foreign key referencing the biblio table. Composite primary key.
+classification (VARCHAR(40)): Klasifikasi koleksi.
 
-file_id (INT): ID of the attached file. Foreign key referencing the files table. Composite primary key.
+notes (TEXT): Catatan tentang koleksi.
 
-placement (ENUM): How the attachment is displayed (link, popup, embed).
+image (VARCHAR(100)): Nama file gambar sampul koleksi.
 
-access_type (ENUM): Access control for the attachment (public, private).
+file_att (VARCHAR(255)): Nama file lampiran koleksi.
 
-access_limit (TEXT): A serialized array specifying which member types can access a private attachment.
+opac_hide (SMALLINT(1), DEFAULT '0'): Bendera untuk menyembunyikan koleksi dari OPAC (Online Public Access Catalog).
 
-biblio_author:
+promoted (SMALLINT(1), DEFAULT '0'): Bendera untuk menandai koleksi sebagai unggulan.
 
-biblio_id (INT): ID of the bibliographic record. Foreign key referencing the biblio table. Composite primary key.
+labels (TEXT): Label-label yang terkait dengan koleksi (misalnya "Baru", "Favorit").
 
-author_id (INT): ID of the author. Foreign key referencing the mst_author table. Composite primary key.
+frequency_id (INT, DEFAULT '0'): ID frekuensi terbitan (untuk terbitan berseri). Terhubung dengan tabel mst_frequency.
 
-level (INT): Indicates the author's level (1 for primary author, 2 for secondary author, etc.).
+spec_detail_info (TEXT): Informasi detail spesifik koleksi.
 
-biblio_topic:
+content_type_id (INT): ID tipe konten RDA (Resource Description and Access). Terhubung dengan tabel mst_content_type.
 
-biblio_id (INT): ID of the bibliographic record. Foreign key referencing the biblio table. Composite primary key.
+media_type_id (INT): ID tipe media RDA. Terhubung dengan tabel mst_media_type.
 
-topic_id (INT): ID of the subject/topic. Foreign key referencing the mst_topic table. Composite primary key.
+carrier_type_id (INT): ID tipe pembawa RDA. Terhubung dengan tabel mst_carrier_type.
 
-level (INT): Indicates the topic's level (1 for primary subject, 2 for secondary subject, etc.).
+input_date (DATETIME): Tanggal input data.
 
-content:
+last_update (DATETIME): Tanggal terakhir diperbarui.
 
-content_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each content item.
+uid (INT): ID pengguna yang terakhir memperbarui data. Terhubung dengan tabel user.
 
-content_title (VARCHAR): Title of the content. Fulltext indexed.
+Index dan Key:
 
-content_desc (TEXT): Description or content body. Fulltext indexed.
+PRIMARY KEY (biblio_id)
 
-content_path (VARCHAR): Path used for accessing the content (part of the URL). Unique key.
+KEY references_idx (gmd_id, publisher_id, language_id, publish_place_id): Index untuk mempercepat pencarian berdasarkan ID GMD, Penerbit, Bahasa, dan Tempat Terbit.
 
-is_news (SMALLINT): Flag indicating if the content is a news item.
+KEY classification (classification): Index untuk mempercepat pencarian berdasarkan klasifikasi.
 
-is_draft (SMALLINT): Flag indicating if the content is a draft.
+KEY biblio_flag_idx (opac_hide, promoted): Index untuk mempercepat pencarian berdasarkan status opac_hide dan promoted.
 
-publish_date (DATE): Publication date for news items.
+KEY rda_idx (content_type_id, media_type_id, carrier_type_id): Index untuk mempercepat pencarian berdasarkan elemen RDA.
 
-input_date (DATETIME): Timestamp indicating when the content was created.
+KEY uid (uid): Index untuk mempercepat pencarian berdasarkan uid.
 
-last_update (DATETIME): Timestamp indicating when the content was last updated.
+FULLTEXT KEY title_ft_idx (title, series_title): Fulltext index untuk pencarian cepat pada judul dan judul seri.
 
-content_ownpage (ENUM): Indicates if the content has its own page (1) or is part of another page (2).
+FULLTEXT KEY notes_ft_idx (notes): Fulltext index untuk pencarian cepat pada catatan.
 
-files:
+FULLTEXT KEY labels (labels): Fulltext index untuk pencarian cepat pada label.
 
-file_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each file.
+biblio_attachment
 
-file_title (TEXT): Title of the file.
+Deskripsi: Menghubungkan bibliografi dengan file lampiran (misalnya file digital, PDF).
 
-file_name (TEXT): Original filename of the uploaded file. Fulltext indexed.
+Kolom:
 
-file_url (TEXT): URL of the file (if available).
+biblio_id (INT): ID bibliografi. FOREIGN KEY ke tabel biblio.
 
-file_dir (TEXT): Directory where the file is stored. Fulltext indexed.
+file_id (INT): ID file. FOREIGN KEY ke tabel files.
 
-mime_type (VARCHAR): MIME type of the file.
+placement (ENUM('link', 'popup', 'embed')): Cara file lampiran ditampilkan (link, popup, embed).
 
-file_desc (TEXT): Description of the file.
+access_type (ENUM('public', 'private')): Jenis akses file (publik atau pribadi).
 
-file_key (TEXT): A unique key for the file.
+access_limit (TEXT): Batasan akses (jika ada, mungkin berdasarkan grup pengguna atau lainnya).
 
-uploader_id (INT): ID of the user who uploaded the file. Foreign key referencing the user table.
+Index dan Key:
 
-input_date (DATETIME): Timestamp indicating when the file was uploaded.
+KEY biblio_id (biblio_id)
 
-last_update (DATETIME): Timestamp indicating when the file information was last updated.
+KEY file_id (file_id)
 
-fines:
+KEY biblio_id_2 (biblio_id, file_id)
 
-fines_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each fine record.
+biblio_author
 
-fines_date (DATE): Date the fine was incurred.
+Deskripsi: Tabel penghubung many-to-many antara tabel biblio dan mst_author. Menunjukkan pengarang dari suatu bibliografi.
 
-member_id (VARCHAR): ID of the member who incurred the fine. Foreign key referencing the member table.
+Kolom:
 
-debet (INT): Amount of the fine.
+biblio_id (INT): ID bibliografi. FOREIGN KEY ke tabel biblio.
 
-credit (INT): Amount of the fine paid.
+author_id (INT): ID pengarang. FOREIGN KEY ke tabel mst_author.
 
-description (VARCHAR): Description of the fine.
+level (INT(1), DEFAULT '1'): Tingkat kontribusi pengarang (misalnya pengarang utama, pengarang pendamping).
 
-group_access:
+Index dan Key:
 
-group_id (INT): ID of the user group. Foreign key referencing the user_group table. Composite primary key.
+KEY biblio_id (biblio_id)
 
-module_id (INT): ID of the module. Foreign key referencing the mst_module table. Composite primary key.
+KEY author_id (author_id)
 
-menus (JSON): A JSON array storing submenu access permissions.
+PRIMARY KEY (biblio_id, author_id) (Composite Primary Key)
 
-r (INT): Read permission (0 = no access, 1 = access).
+biblio_topic
 
-w (INT): Write permission (0 = no access, 1 = access).
+Deskripsi: Tabel penghubung many-to-many antara tabel biblio dan mst_topic. Menunjukkan topik/subjek dari suatu bibliografi.
 
-holiday:
+Kolom:
 
-holiday_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each holiday entry.
+biblio_id (INT): ID bibliografi. FOREIGN KEY ke tabel biblio.
 
-holiday_dayname (VARCHAR): Name of the day of the week (e.g., 'Monday').
+topic_id (INT): ID topik. FOREIGN KEY ke tabel mst_topic.
 
-holiday_date (DATE): Specific date of the holiday (NULL if it's a recurring day name).
+level (INT(1), DEFAULT '1'): Tingkat relevansi topik.
 
-description (VARCHAR): Description of the holiday.
+Index dan Key:
 
-item:
+KEY biblio_id (biblio_id)
 
-item_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each item.
+KEY topic_id (topic_id)
 
-biblio_id (INT): ID of the bibliographic record this item belongs to. Foreign key referencing the biblio table.
+PRIMARY KEY (biblio_id, topic_id) (Composite Primary Key)
 
-call_number (VARCHAR): Call number for this specific item.
+content
 
-coll_type_id (INT): ID of the collection type. Foreign key referencing the mst_coll_type table.
+Deskripsi: Menyimpan konten halaman statis atau berita yang ditampilkan di website perpustakaan (misalnya informasi perpustakaan, bantuan penggunaan, dll.).
 
-item_code (VARCHAR): Unique code for this item. Unique key.
+Kolom:
 
-inventory_code (VARCHAR): Inventory code or other identifier for the item.
+content_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik konten.
 
-received_date (DATE): Date the item was received.
+content_title (VARCHAR(255)): Judul konten.
 
-supplier_id (VARCHAR): ID of the supplier. Foreign key referencing the mst_supplier table.
+content_desc (TEXT): Deskripsi atau isi konten (bisa berupa HTML).
 
-order_no (VARCHAR): Order number for the item.
+content_path (VARCHAR(20)): Path URL untuk mengakses konten. Harus unik.
 
-location_id (VARCHAR): ID of the item's location. Foreign key referencing the mst_location table.
+is_news (SMALLINT(1), NULL DEFAULT NULL): Bendera untuk menandai konten sebagai berita.
 
-order_date (DATE): Date the item was ordered.
+is_draft (SMALLINT(1), DEFAULT 0): Bendera untuk menandai konten sebagai draft.
 
-item_status_id (CHAR): ID of the item's status. Foreign key referencing the mst_item_status table.
+publish_date (DATE): Tanggal publikasi konten.
 
-site (VARCHAR): More detailed location information.
+input_date (DATETIME): Tanggal input data.
 
-source (INT): Source of the item (e.g., purchased, donated).
+last_update (DATETIME): Tanggal terakhir diperbarui.
 
-invoice (VARCHAR): Invoice number.
+content_ownpage (ENUM('1', '2'), DEFAULT '1'): Menentukan apakah konten ditampilkan di halaman sendiri atau tidak.
 
-price (INT): Price of the item.
+Index dan Key:
 
-price_currency (VARCHAR): Currency of the price.
+PRIMARY KEY (content_id)
 
-invoice_date (DATE): Invoice date.
+UNIQUE KEY content_path (content_path): Memastikan content_path unik.
 
-input_date (DATETIME): Timestamp indicating when the item was added.
+FULLTEXT KEY content_title (content_title): Fulltext index untuk pencarian cepat pada judul konten.
 
-last_update (DATETIME): Timestamp indicating when the item information was last updated.
+FULLTEXT KEY content_desc (content_desc): Fulltext index untuk pencarian cepat pada deskripsi konten.
 
-uid (INT): ID of the user who last updated the record.
+files
 
-kardex:
+Deskripsi: Mengelola file digital yang diunggah (misalnya untuk lampiran bibliografi, gambar, dll.).
 
-kardex_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each kardex entry.
+Kolom:
 
-date_expected (DATE): Expected arrival date of a serial issue.
+file_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik file.
 
-date_received (DATE): Actual arrival date of a serial issue.
+file_title (TEXT): Judul file.
 
-seq_number (VARCHAR): Sequence number of the issue.
+file_name (TEXT): Nama file asli.
 
-notes (TEXT): Any notes about the issue.
+file_url (TEXT): URL file (jika file disimpan di lokasi eksternal).
 
-serial_id (INT): ID of the serial publication. Foreign key referencing the serial table.
+file_dir (TEXT): Direktori penyimpanan file (jika file disimpan secara lokal).
 
-input_date (DATE): Date of entry.
+mime_type (VARCHAR(100)): Tipe MIME file.
 
-last_update (DATE): Last update date.
+file_desc (TEXT): Deskripsi file.
 
-loan:
+file_key (TEXT): Kata kunci terkait file.
 
-loan_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each loan.
+uploader_id (INT): ID pengguna yang mengunggah file. Terhubung dengan tabel user.
 
-item_code (VARCHAR): Unique code of the loaned item. Foreign key referencing the item table.
+input_date (DATETIME): Tanggal input data.
 
-member_id (VARCHAR): ID of the member who borrowed the item. Foreign key referencing the member table.
+last_update (DATETIME): Tanggal terakhir diperbarui.
 
-loan_date (DATE): Date the item was borrowed.
+Index dan Key:
 
-due_date (DATE): Due date for returning the item.
+PRIMARY KEY (file_id)
 
-renewed (INT): Number of times the loan has been renewed.
+FULLTEXT KEY file_name (file_name): Fulltext index untuk pencarian cepat pada nama file.
 
-loan_rules_id (INT): ID of the loan rules applied. Foreign key referencing mst_loan_rules.
+FULLTEXT KEY file_dir (file_dir): Fulltext index untuk pencarian cepat pada direktori file.
 
-actual (DATE): Actual return date of the item.
+fines
 
-is_lent (INT): Flag indicating if the item is currently on loan (1 = on loan, 0 = not on loan).
+Deskripsi: Mencatat transaksi denda anggota perpustakaan.
 
-is_return (INT): Flag indicating if the item has been returned (1 = returned, 0 = not returned).
+Kolom:
 
-return_date (DATE): Date the item was returned.
+fines_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik transaksi denda.
 
-input_date (DATETIME): Timestamp indicating when the loan was recorded.
+fines_date (DATE): Tanggal transaksi denda.
 
-last_update (DATETIME): Timestamp indicating when the loan information was last updated.
+member_id (VARCHAR(20)): ID anggota. FOREIGN KEY ke tabel member.
 
-uid (INT): ID of the user who last updated the record.
+debet (INT, DEFAULT '0'): Jumlah denda yang dikenakan (debit).
 
-member:
+credit (INT, DEFAULT '0'): Jumlah denda yang dibayarkan (kredit).
 
-member_id (VARCHAR, PRIMARY KEY): Unique identifier for each member (e.g., membership number).
+description (VARCHAR(255)): Deskripsi transaksi denda.
 
-member_name (VARCHAR): Name of the member.
+Index dan Key:
 
-gender (INT): Gender of the member.
+PRIMARY KEY (fines_id)
 
-birth_date (DATE): Birth date of the member.
+KEY member_id (member_id)
 
-member_type_id (INT): ID of the member type. Foreign key referencing the mst_member_type table.
+group_access
 
-member_address (VARCHAR): Address of the member.
+Deskripsi: Mengatur hak akses pengguna (berdasarkan grup pengguna) ke berbagai modul dan menu dalam sistem.
 
-member_mail_address (VARCHAR): Mailing address of the member.
+Kolom:
 
-member_email (VARCHAR): Email address of the member.
+group_id (INT): ID grup pengguna. FOREIGN KEY ke tabel user_group.
 
-postal_code (VARCHAR): Postal code of the member's address.
+module_id (INT): ID modul sistem. FOREIGN KEY ke tabel mst_module.
 
-inst_name (VARCHAR): Name of the institution the member belongs to (if applicable).
+menus (JSON): Data JSON yang menyimpan konfigurasi menu yang diakses oleh grup (detail menu yang diizinkan).
 
-is_new (INT): Flag indicating if the member is new.
+r (INT(1), DEFAULT '0'): Hak baca (read) untuk modul. (1 = diizinkan, 0 = tidak diizinkan).
 
-member_image (VARCHAR): Filename of the member's image.
+w (INT(1), DEFAULT '0'): Hak tulis (write/edit) untuk modul. (1 = diizinkan, 0 = tidak diizinkan).
 
-pin (VARCHAR): Personal Identification Number (PIN) for the member.
+Index dan Key:
 
-member_phone (VARCHAR): Phone number of the member.
+PRIMARY KEY (group_id, module_id) (Composite Primary Key)
 
-member_fax (VARCHAR): Fax number of the member.
+holiday
 
-member_since_date (DATE): Date the member joined.
+Deskripsi: Daftar hari libur perpustakaan. Digunakan untuk perhitungan tanggal jatuh tempo pinjaman dan denda.
 
-register_date (DATE): Date the member registered.
+Kolom:
 
-expire_date (DATE): Expiry date of the membership.
+holiday_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik hari libur.
 
-member_notes (TEXT): Any additional notes about the member.
+holiday_dayname (VARCHAR(20)): Nama hari libur (misalnya "Natal", "Idul Fitri").
 
-is_pending (SMALLINT): Flag indicating if the membership is pending approval (0=not pending, 1=pending).
+holiday_date (DATE): Tanggal hari libur.
 
-mpasswd (VARCHAR): Member's password (hashed).
+description (VARCHAR(100)): Deskripsi hari libur.
 
-last_login (DATETIME): Timestamp of the member's last login.
+Index dan Key:
 
-last_login_ip (VARCHAR): IP address of the member's last login.
+PRIMARY KEY (holiday_id)
 
-input_date (DATE): Date the member record was created.
+UNIQUE KEY holiday_dayname (holiday_dayname, holiday_date): Memastikan kombinasi nama hari libur dan tanggal unik.
 
-last_update (DATE): Date the member record was last updated.
+item
 
-mst_author:
+Deskripsi: Menyimpan data item koleksi (salinan fisik) dari suatu judul bibliografi. Setiap baris mewakili satu salinan buku, majalah, dll.
 
-author_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each author.
+Kolom:
 
-author_name (VARCHAR): Name of the author.
+item_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik item.
 
-author_year (VARCHAR): Year related to the author (possibly birth year or year of activity).
+biblio_id (INT): ID bibliografi terkait. FOREIGN KEY ke tabel biblio.
 
-authority_type (ENUM): Type of author (p=personal, o=organizational, c=conference).
+call_number (VARCHAR(50)): Nomor panggil item (jika berbeda dari bibliografi).
 
-auth_list (VARCHAR): Authority list (source of the author information).
+coll_type_id (INT(3)): ID jenis koleksi (collection type). Terhubung dengan tabel mst_coll_type.
 
-input_date (DATE): Date of entry.
+item_code (VARCHAR(20)): Kode item unik (barcode atau kode inventaris). Harus unik.
 
-last_update (DATE): Last update date.
+inventory_code (VARCHAR(200)): Kode inventaris (mungkin lebih panjang atau format berbeda dari item_code).
 
-mst_coll_type:
+received_date (DATE): Tanggal diterima (tanggal item masuk inventaris).
 
-coll_type_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each collection type.
+supplier_id (VARCHAR(6)): ID pemasok. Terhubung dengan tabel mst_supplier.
 
-coll_type_name (VARCHAR): Name of the collection type (e.g., "Reference," "Textbook"). Unique key.
+order_no (VARCHAR(20)): Nomor pesanan.
 
-input_date (DATE): Date of entry.
+location_id (VARCHAR(3)): ID lokasi penyimpanan. Terhubung dengan tabel mst_location.
 
-last_update (DATE): Last update date.
+order_date (DATE): Tanggal pemesanan.
 
-mst_frequency:
+item_status_id (CHAR(3)): ID status item (misalnya "Tersedia", "Dipinjam", "Rusak"). Terhubung dengan tabel mst_item_status.
 
-frequency_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each publication frequency.
+site (VARCHAR(50)): Lokasi fisik spesifik (misalnya rak, lemari).
 
-frequency (VARCHAR): Name of the publication frequency (e.g., "Weekly," "Monthly").
+source (INT(1), DEFAULT '0'): Sumber item (misalnya pembelian, hadiah).
 
-language_prefix (VARCHAR): Language prefix.
+invoice (VARCHAR(20)): Nomor faktur pembelian.
 
-time_increment (SMALLINT): Numerical value representing the increment.
+price (INT): Harga item.
 
-time_unit (ENUM): Unit of time for the increment (day, week, month, year).
+price_currency (VARCHAR(10)): Mata uang harga.
 
-input_date (DATE): Date of entry.
+invoice_date (DATE): Tanggal faktur.
 
-last_update (DATE): Last update date.
+input_date (DATETIME): Tanggal input data.
 
-mst_gmd:
+last_update (DATETIME): Tanggal terakhir diperbarui.
 
-gmd_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each GMD.
+uid (INT): ID pengguna yang terakhir memperbarui data. Terhubung dengan tabel user.
 
-gmd_code (VARCHAR): Short code for the GMD. Unique key.
+Index dan Key:
 
-gmd_name (VARCHAR): Name of the General Material Designation (e.g., "Book," "Journal"). Unique key.
+PRIMARY KEY (item_id)
 
-icon_image (VARCHAR): Filename of an icon representing the GMD.
+UNIQUE KEY item_code (item_code): Memastikan item_code unik.
 
-input_date (DATE): Date of entry.
+KEY uid (uid)
 
-last_update (DATE): Last update date.
+KEY item_references_idx (coll_type_id, location_id, item_status_id): Index untuk mempercepat pencarian berdasarkan jenis koleksi, lokasi, dan status item.
 
-mst_item_status:
+KEY biblio_id_idx (biblio_id): Index untuk mempercepat pencarian berdasarkan biblio_id.
 
-item_status_id (CHAR, PRIMARY KEY): Unique code for the item status.
+kardex
 
-item_status_name (VARCHAR): Name of the item status (e.g., "Available," "On Loan," "Lost"). Unique key.
+Deskripsi: Mengelola kardeks untuk terbitan berseri. Mencatat perkiraan dan penerimaan setiap edisi terbitan berseri.
 
-rules (VARCHAR): Serialized array defining rules associated with this status.
+Kolom:
 
-no_loan (SMALLINT): Flag (0/1) indicating whether this status prevents an item from being loaned.
+kardex_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik entri kardeks.
 
-skip_stock_take (SMALLINT): Flag (0/1) indicating whether this status causes the item to be skipped during stocktaking.
+date_expected (DATE): Tanggal perkiraan terbitan diterima.
 
-input_date (DATE): Date of entry.
+date_received (DATE): Tanggal terbitan sebenarnya diterima.
 
-last_update (DATE): Last update date.
+seq_number (VARCHAR(25)): Nomor urut atau identifikasi edisi terbitan.
 
-mst_label:
+notes (TEXT): Catatan tentang edisi terbitan.
 
-label_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each label.
+serial_id (INT): ID langganan terbitan berseri. FOREIGN KEY ke tabel serial.
 
-label_name (VARCHAR): Name of the label (e.g., "New Title"). Unique key.
+input_date (DATE): Tanggal input data.
 
-label_desc (VARCHAR): Description of the label.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-label_image (VARCHAR): Filename of the image associated with the label.
+Index dan Key:
 
-input_date (DATE): Date of entry.
+PRIMARY KEY (kardex_id)
 
-last_update (DATE): Last update date.
+KEY fk_serial (serial_id)
 
-mst_language:
+loan
 
-language_id (CHAR, PRIMARY KEY): Language code (e.g., "en," "id").
+Deskripsi: Mencatat transaksi peminjaman dan pengembalian item koleksi.
 
-language_name (VARCHAR): Name of the language. Unique key.
+Kolom:
 
-input_date (DATE): Date of entry.
+loan_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik transaksi peminjaman.
 
-last_update (DATE): Last update date.
+item_code (VARCHAR(20)): Kode item yang dipinjam. FOREIGN KEY ke tabel item.
 
-mst_loan_rules:
+member_id (VARCHAR(20)): ID anggota yang meminjam. FOREIGN KEY ke tabel member.
 
-loan_rules_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each set of loan rules.
+loan_date (DATE): Tanggal peminjaman.
 
-member_type_id (INT): ID of the member type these rules apply to. Foreign key referencing mst_member_type.
+due_date (DATE): Tanggal jatuh tempo pengembalian.
 
-coll_type_id (INT): ID of the collection type these rules apply to. Foreign key referencing mst_coll_type.
+renewed (INT, DEFAULT '0'): Jumlah perpanjangan pinjaman.
 
-gmd_id (INT): ID of the GMD these rules apply to. Foreign key referencing mst_gmd.
+loan_rules_id (INT, DEFAULT '0'): ID aturan peminjaman yang berlaku. Terhubung dengan tabel mst_loan_rules.
 
-loan_limit (INT): Maximum number of items a member of this type can borrow.
+actual (DATE): Tanggal pengembalian aktual (jika sudah dikembalikan).
 
-loan_periode (INT): Loan period in days.
+is_lent (INT, DEFAULT '0'): Bendera status peminjaman (1 = sedang dipinjam, 0 = tidak).
 
-reborrow_limit (INT): Number of times a loan can be renewed.
+is_return (INT, DEFAULT '0'): Bendera status pengembalian (1 = sudah dikembalikan, 0 = belum).
 
-fine_each_day (INT): Fine amount per overdue day.
+return_date (DATE): Tanggal pengembalian (dicatat saat pengembalian).
 
-grace_periode (INT): Grace period (in days) before fines are applied.
+input_date (DATETIME): Tanggal input data.
 
-input_date (DATE): Date of entry.
+last_update (DATETIME): Tanggal terakhir diperbarui.
 
-last_update (DATE): Last update date.
+uid (INT): ID pengguna yang terakhir memperbarui data. Terhubung dengan tabel user.
 
-mst_location:
+Index dan Key:
 
-location_id (VARCHAR, PRIMARY KEY): Unique code for the location.
+PRIMARY KEY (loan_id)
 
-location_name (VARCHAR): Name of the location (e.g., "Main Library," "Science Library"). Unique key.
+KEY item_code (item_code)
 
-input_date (DATE): Date of entry.
+KEY member_id (member_id)
 
-last_update (DATE): Last update date.
+KEY input_date (input_date, last_update, uid)
 
-mst_member_type:
+member
 
-member_type_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each member type.
+Deskripsi: Menyimpan informasi anggota perpustakaan.
 
-member_type_name (VARCHAR): Name of the member type (e.g., "Student," "Faculty"). Unique key.
+Kolom:
 
-loan_limit (INT): Maximum number of items this member type can borrow.
+member_id (VARCHAR(20), PRIMARY KEY): ID anggota unik (bisa berupa nomor anggota, kartu identitas, dll.).
 
-loan_periode (INT): Loan period in days for this member type.
+member_name (VARCHAR(100)): Nama lengkap anggota.
 
-enable_reserve (INT): Flag (0/1) indicating if reservations are allowed for this member type.
+gender (INT(1)): Jenis kelamin anggota (misalnya 1=Pria, 2=Wanita).
 
-reserve_limit (INT): Maximum number of reservations allowed for this member type.
+birth_date (DATE): Tanggal lahir anggota.
 
-member_periode (INT): Membership period in days.
+member_type_id (INT(6)): ID jenis keanggotaan. Terhubung dengan tabel mst_member_type.
 
-reborrow_limit (INT): Number of renewals allowed for this member type.
+member_address (VARCHAR(255)): Alamat anggota.
 
-fine_each_day (INT): Fine amount per overdue day for this member type.
+member_mail_address (VARCHAR(255)): Alamat surat anggota.
 
-grace_periode (INT): Grace period (in days) before fines are applied for this member type.
+member_email (VARCHAR(100)): Alamat email anggota.
 
-input_date (DATE): Date of entry.
+postal_code (VARCHAR(20)): Kode pos anggota.
 
-last_update (DATE): Last update date.
+inst_name (VARCHAR(100)): Nama institusi/lembaga anggota (jika ada).
 
-mst_module:
+is_new (INT(1), NULL DEFAULT NULL): Bendera untuk menandai anggota baru.
 
-module_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each module.
+member_image (VARCHAR(200)): Nama file foto anggota.
 
-module_name (VARCHAR): Name of the module.
+pin (VARCHAR(50)): PIN untuk akses mandiri anggota (misalnya untuk OPAC).
 
-module_path (VARCHAR): Path to the module's files.
+member_phone (VARCHAR(50)): Nomor telepon anggota.
 
-module_desc (VARCHAR): Description of the module.
+member_fax (VARCHAR(50)): Nomor fax anggota.
 
-mst_place:
+member_since_date (DATE): Tanggal menjadi anggota.
 
-place_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each place.
+register_date (DATE): Tanggal pendaftaran anggota.
 
-place_name (VARCHAR): Name of the place (e.g., "London," "New York"). Unique key.
+expire_date (DATE): Tanggal kadaluarsa keanggotaan.
 
-input_date (DATE): Date of entry.
+member_notes (TEXT): Catatan tentang anggota.
 
-last_update (DATE): Last update date.
+is_pending (SMALLINT(1), DEFAULT '0'): Bendera untuk menandai anggota dalam status pending (belum aktif).
 
-mst_publisher:
+mpasswd (VARCHAR(64)): Kata sandi anggota (untuk akses sistem jika diperlukan).
 
-publisher_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each publisher.
+last_login (DATETIME): Waktu login terakhir anggota.
 
-publisher_name (VARCHAR): Name of the publisher. Unique key.
+last_login_ip (VARCHAR(20)): IP address login terakhir anggota.
 
-input_date (DATE): Date of entry.
+input_date (DATE): Tanggal input data.
 
-last_update (DATE): Last update date.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-mst_supplier:
+Index dan Key:
 
-supplier_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each supplier.
+PRIMARY KEY (member_id)
 
-supplier_name (VARCHAR): Name of the supplier. Unique key.
+KEY member_name (member_name): Index untuk pencarian cepat berdasarkan nama anggota.
 
-address (VARCHAR): Address of the supplier.
+KEY member_type_id (member_type_id): Index untuk pencarian cepat berdasarkan jenis keanggotaan.
 
-postal_code (CHAR): Postal code of the supplier's address.
+mst_author
 
-phone (CHAR): Phone number of the supplier.
+Deskripsi: Daftar master pengarang (authors). Digunakan untuk standarisasi nama pengarang.
 
-contact (CHAR): Contact person at the supplier.
+Kolom:
 
-fax (CHAR): Fax number of the supplier.
+author_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik pengarang.
 
-account (CHAR): Account number (if applicable).
+author_name (VARCHAR(100)): Nama pengarang. Harus unik untuk setiap authority_type.
 
-e_mail (CHAR): Email address of the supplier.
+author_year (VARCHAR(20)): Tahun lahir/aktif pengarang.
 
-input_date (DATE): Date of entry.
+authority_type (ENUM('p', 'o', 'c'), DEFAULT 'p'): Jenis otoritas pengarang (p=Person, o=Organization, c=Conference/Meeting).
 
-last_update (DATE): Last update date.
+auth_list (VARCHAR(20)): Kode daftar otoritas (jika menggunakan daftar otoritas eksternal).
 
-mst_topic:
+input_date (DATE): Tanggal input data.
 
-topic_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each topic.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-topic (VARCHAR): Name of the subject/topic.
+Index dan Key:
 
-topic_type (ENUM): Type of topic (t=topical, g=geographic, n=name, tm=temporal, gr=genre, oc=occupation).
+PRIMARY KEY (author_id)
 
-auth_list (VARCHAR): Authority list (source of the topic).
+UNIQUE KEY author_name (author_name, authority_type): Memastikan kombinasi nama dan jenis otoritas pengarang unik.
 
-classification (VARCHAR): Classification code.
+mst_coll_type
 
-input_date (DATE): Date of entry.
+Deskripsi: Daftar master jenis koleksi (collection types) seperti "Buku Referensi", "Fiksi", "Teksbook".
 
-last_update (DATE): Last update date.
+Kolom:
 
-reserve:
+coll_type_id (INT(3), PRIMARY KEY, AUTO_INCREMENT): ID unik jenis koleksi.
 
-reserve_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each reservation.
+coll_type_name (VARCHAR(30)): Nama jenis koleksi. Harus unik.
 
-member_id (VARCHAR): ID of the member who made the reservation. Foreign key referencing the member table.
+input_date (DATE): Tanggal input data.
 
-biblio_id (INT): ID of the bibliographic record reserved. Foreign key referencing the biblio table.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-item_code (VARCHAR): Unique code of the reserved item.
+Index dan Key:
 
-reserve_date (DATETIME): Date and time the reservation was made.
+PRIMARY KEY (coll_type_id)
 
-serial:
+UNIQUE KEY coll_type_name (coll_type_name): Memastikan nama jenis koleksi unik.
 
-serial_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each serial publication.
+mst_frequency
 
-date_start (DATE): Start date of the subscription.
+Deskripsi: Daftar master frekuensi terbitan (untuk terbitan berseri) seperti "Bulanan", "Mingguan", "Tahunan".
 
-date_end (DATE): End date of the subscription (can be NULL).
+Kolom:
 
-period (VARCHAR): Publication period (e.g., "Monthly," "Quarterly").
+frequency_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik frekuensi.
 
-notes (TEXT): Any notes about the serial publication.
+frequency (VARCHAR(25)): Nama frekuensi (misalnya "Bulanan"). Harus unik.
 
-biblio_id (INT): ID of the bibliographic record for the serial. Foreign key referencing the biblio table.
+language_prefix (VARCHAR(5)): Awalan bahasa (misalnya "en" untuk bahasa Inggris).
 
-gmd_id (INT): ID of the GMD. Foreign key referencing the mst_gmd table.
+time_increment (SMALLINT(6)): Interval waktu frekuensi (misalnya 1 untuk bulanan, 7 untuk mingguan).
 
-input_date (DATE): Date of entry.
+time_unit (ENUM('day', 'week', 'month', 'year'), DEFAULT 'day'): Satuan waktu interval (hari, minggu, bulan, tahun).
 
-last_update (DATE): Last update date.
+input_date (DATE): Tanggal input data.
 
-setting:
+last_update (DATE): Tanggal terakhir diperbarui.
 
-setting_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each setting.
+Index dan Key:
 
-setting_name (VARCHAR): Name of the setting. Unique key.
+PRIMARY KEY (frequency_id)
 
-setting_value (TEXT): Value of the setting (can be serialized data).
+mst_gmd
 
-user:
+Deskripsi: Daftar master jenis bahan pustaka (General Material Designation - GMD) seperti "Teks", "Video", "Peta".
 
-user_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each user.
+Kolom:
 
-username (VARCHAR): Username for logging in. Unique key.
+gmd_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik GMD.
 
-realname (VARCHAR): Real name of the user.
+gmd_code (VARCHAR(3)): Kode GMD (misalnya "TE" untuk Teks). Harus unik.
 
-passwd (VARCHAR): Hashed password for the user.
+gmd_name (VARCHAR(30)): Nama GMD (misalnya "Teks"). Harus unik.
 
-2fa (TEXT): Two-factor authentication settings (if enabled).
+icon_image (VARCHAR(100)): Nama file gambar icon GMD.
 
-email (VARCHAR): Email address of the user.
+input_date (DATE): Tanggal input data.
 
-user_type (SMALLINT): Type of user (e.g., administrator, librarian).
+last_update (DATE): Tanggal terakhir diperbarui.
 
-user_image (VARCHAR): Filename of the user's image.
+Index dan Key:
 
-social_media (TEXT): Social media links (if provided).
+PRIMARY KEY (gmd_id)
 
-last_login (DATETIME): Timestamp of the user's last login.
+UNIQUE KEY gmd_name (gmd_name): Memastikan nama GMD unik.
 
-last_login_ip (CHAR): IP address of the user's last login.
+UNIQUE KEY gmd_code (gmd_code): Memastikan kode GMD unik.
 
-groups (VARCHAR): Serialized array of group IDs the user belongs to.
+mst_item_status
 
-admin_template (TEXT): Serialized array of custom template settings for the administrator.
+Deskripsi: Daftar master status item koleksi seperti "Tersedia", "Dipinjam", "Rusak", "Hilang".
 
-forgot (VARCHAR): Forgot password token.
+Kolom:
 
-input_date (DATE): Date the user record was created.
+item_status_id (CHAR(3), PRIMARY KEY): ID status item (kode status). Harus unik.
 
-last_update (DATE): Date the user record was last updated.
+item_status_name (VARCHAR(30)): Nama status item (misalnya "Tersedia"). Harus unik.
 
-user_group:
+rules (VARCHAR(255)): Aturan terkait status item (misalnya aturan peminjaman). Mungkin dalam format serialized array PHP.
 
-group_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each user group.
+no_loan (SMALLINT(1), DEFAULT '0'): Bendera untuk menandai item dengan status ini tidak boleh dipinjam.
 
-group_name (VARCHAR): Name of the user group (e.g., "Administrators," "Librarians"). Unique key.
+skip_stock_take (SMALLINT(1), DEFAULT '0'): Bendera untuk menandai item dengan status ini diabaikan saat stock opname.
 
-input_date (DATE): Date of entry.
+input_date (DATE): Tanggal input data.
 
-last_update (DATE): Last update date.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-visitor_count:
+Index dan Key:
 
-visitor_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each visitor record.
+PRIMARY KEY (item_status_id)
 
-member_id (VARCHAR): ID of the member (if logged in). Foreign key referencing the member table.
+UNIQUE KEY item_status_name (item_status_name): Memastikan nama status item unik.
 
-member_name (VARCHAR): Name of the visitor (member or guest).
+mst_label
 
-institution (VARCHAR): Institution name (for guest visitors).
+Deskripsi: Daftar master label koleksi (misalnya "Baru", "Favorit", "Multimedia"). Digunakan untuk menandai koleksi dengan label tertentu.
 
-room_code (VARCHAR): Code of the room the visitor is in.
+Kolom:
 
-checkin_date (DATETIME): Timestamp of the visitor's check-in.
+label_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik label.
 
-biblio_custom:
+label_name (VARCHAR(20)): Nama label (misalnya "label-new"). Harus unik.
 
-biblio_id (INT): ID of the bibliographic record. Foreign key referencing biblio. Primary key. This table is designed for one-to-one relationship with biblio. It likely holds additional, custom fields not included in the standard biblio table.
+label_desc (VARCHAR(50)): Deskripsi label (misalnya "Judul Baru").
 
-search_biblio: This is a denormalized table used for speeding up searches. It contains many of the same fields as biblio, but with some differences:
+label_image (VARCHAR(200)): Nama file gambar label.
 
-biblio_id (INT): ID of the bibliographic record. Unique key, although not a primary key.
+input_date (DATE): Tanggal input data.
 
-title, edition, isbn_issn, author, topic, gmd, publisher, publish_place, language, classification, spec_detail_info, carrier_type, content_type, media_type, location, publish_year, notes, series_title, items, collection_types, call_number, opac_hide, promoted, labels, collation, image, input_date, last_update (various data types): These columns mirror fields from biblio and related tables, but are stored directly within this table for faster querying. Many columns are fulltext indexed.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-member_custom: Similar to biblio_custom, this table likely stores custom fields for members, allowing for additional member-specific information beyond the standard fields in the member table.
+Index dan Key:
 
-member_id (VARCHAR): Member ID. Primary Key.
+PRIMARY KEY (label_id)
 
-comment:
+UNIQUE KEY label_name (label_name): Memastikan nama label unik.
 
-comment_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each comment.
+mst_language
 
-biblio_id (INT): ID of the bibliographic record the comment is associated with. Foreign key referencing the biblio table.
+Deskripsi: Daftar master bahasa.
 
-member_id (VARCHAR): ID of the member who posted the comment. Foreign key referencing the member table.
+Kolom:
 
-comment (TEXT): The comment text.
+language_id (CHAR(5), PRIMARY KEY): ID bahasa (kode bahasa ISO, misalnya "id", "en"). Harus unik.
 
-input_date (DATETIME): Timestamp indicating when the comment was posted.
+language_name (VARCHAR(20)): Nama bahasa (misalnya "Indonesia", "English"). Harus unik.
 
-last_update (DATETIME): Timestamp indicating when the comment was last updated.
+input_date (DATE): Tanggal input data.
 
-mst_carrier_type:
+last_update (DATE): Tanggal terakhir diperbarui.
 
-id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each carrier type.
+Index dan Key:
 
-carrier_type (VARCHAR): Name of the carrier type.
+PRIMARY KEY (language_id)
 
-code (VARCHAR): Code for the carrier type.
+UNIQUE KEY language_name (language_name): Memastikan nama bahasa unik.
 
-code2 (CHAR): Short code for the carrier type.
+mst_loan_rules
 
-input_date (DATETIME): Date and time the record was created.
+Deskripsi: Aturan peminjaman yang fleksibel. Menentukan batasan peminjaman, periode pinjam, denda, dll. berdasarkan kombinasi jenis anggota, jenis koleksi, dan GMD.
 
-last_update (DATETIME): Date and time the record was last updated.
+Kolom:
 
-mst_content_type:
+loan_rules_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik aturan peminjaman.
 
-id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each content type.
+member_type_id (INT, DEFAULT '0'): ID jenis keanggotaan yang aturan ini berlaku. Terhubung dengan tabel mst_member_type.
 
-content_type (VARCHAR): Name of the content type.
+coll_type_id (INT, DEFAULT '0'): ID jenis koleksi yang aturan ini berlaku. Terhubung dengan tabel mst_coll_type.
 
-code (VARCHAR): Code for the content type.
+gmd_id (INT, DEFAULT '0'): ID GMD yang aturan ini berlaku. Terhubung dengan tabel mst_gmd.
 
-code2 (CHAR): Short code for the content type.
+loan_limit (INT(3), DEFAULT '0'): Batas jumlah item yang boleh dipinjam.
 
-input_date (DATETIME): Date and time the record was created.
+loan_periode (INT(3), DEFAULT '0'): Periode pinjam (dalam hari, minggu, atau bulan - satuan waktu implisit dari sistem).
 
-last_update (DATETIME): Date and time the record was last updated.
+reborrow_limit (INT(3), DEFAULT '0'): Batas perpanjangan pinjaman.
 
-mst_media_type:
+fine_each_day (INT(3), DEFAULT '0'): Denda per hari keterlambatan.
 
-id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each media type.
+grace_periode (INT(2), DEFAULT '0'): Masa tenggang sebelum denda berlaku.
 
-media_type (VARCHAR): Name of the media type.
+input_date (DATE): Tanggal input data.
 
-code (VARCHAR): Code for the media type.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-code2 (CHAR): Short code for the media type.
+Index dan Key:
 
-input_date (DATETIME): Date and time the record was created.
+PRIMARY KEY (loan_rules_id)
 
-last_update (DATETIME): Date and time the record was last updated.
+mst_location
 
-mst_relation_term:
+Deskripsi: Daftar master lokasi penyimpanan koleksi (misalnya "Rak Referensi", "Ruang Baca").
 
-ID (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each relation term.
+Kolom:
 
-rt_id (VARCHAR): Relation term ID.
+location_id (VARCHAR(3), PRIMARY KEY): ID lokasi (kode lokasi). Harus unik.
 
-rt_desc (VARCHAR): Description of the relation term.
+location_name (VARCHAR(100)): Nama lokasi. Harus unik.
 
-mst_voc_ctrl:
+input_date (DATE): Tanggal input data.
 
-vocabolary_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each vocabulary control record.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-topic_id (INT): ID of the topic.
+Index dan Key:
 
-rt_id (VARCHAR): ID of the relation term. Foreign Key referencing mst_relation_term.
+PRIMARY KEY (location_id)
 
-related_topic_id (VARCHAR): IDs of related topics (serialized).
+UNIQUE KEY location_name (location_name): Memastikan nama lokasi unik.
 
-scope (TEXT): Scope of the vocabulary control.
+mst_member_type
 
-biblio_relation:
+Deskripsi: Daftar master jenis keanggotaan (member types) seperti "Mahasiswa", "Dosen", "Umum". Menentukan aturan peminjaman default untuk setiap jenis anggota.
 
-biblio_id (INT): ID of the bibliographic record. Foreign key to biblio. Composite Primary Key.
+Kolom:
 
-rel_biblio_id (INT): ID of the related bibliographic record. Foreign key to biblio. Composite Primary Key.
+member_type_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik jenis keanggotaan.
 
-rel_type (INT): Type of relationship between the records.
+member_type_name (VARCHAR(50)): Nama jenis keanggotaan (misalnya "Mahasiswa"). Harus unik.
 
-loan_history: This table stores a historical record of loan transactions. It's populated by triggers on the loan table. The columns largely mirror those in the loan table and related tables to provide a complete historical snapshot without requiring joins for querying.
+loan_limit (INT): Batas jumlah item yang boleh dipinjam untuk jenis anggota ini.
 
-loan_id (INT): Loan ID (Primary Key)
+loan_periode (INT): Periode pinjam default (dalam hari).
 
-item_code (VARCHAR): Item code
+enable_reserve (INT(1), DEFAULT '0'): Bendera untuk mengaktifkan fitur reservasi bagi jenis anggota ini.
 
-biblio_id (INT): Bibliographic ID
+reserve_limit (INT): Batas jumlah reservasi yang boleh dilakukan.
 
-title (VARCHAR): Title of the book
+member_periode (INT): Masa berlaku keanggotaan (dalam hari).
 
-call_number (VARCHAR): Call number
+reborrow_limit (INT): Batas perpanjangan pinjaman default.
 
-classification (VARCHAR): Classification code
+fine_each_day (INT): Denda per hari keterlambatan default.
 
-gmd_name (VARCHAR): General Material Designation
+grace_periode (INT(2), DEFAULT '0'): Masa tenggang sebelum denda berlaku default.
 
-language_name (VARCHAR): Language name
+input_date (DATE): Tanggal input data.
 
-location_name (VARCHAR): Location name
+last_update (DATE): Tanggal terakhir diperbarui.
 
-collection_type_name (VARCHAR): Collection type name
+Index dan Key:
 
-member_id (VARCHAR): Member ID
+PRIMARY KEY (member_type_id)
 
-member_name (VARCHAR): Member name
+UNIQUE KEY member_type_name (member_type_name): Memastikan nama jenis keanggotaan unik.
 
-member_type_name (VARCHAR): Member type name
+mst_module
 
-loan_date (DATE): Loan date
+Deskripsi: Daftar master modul sistem (misalnya "Bibliografi", "Sirkulasi", "Keanggotaan").
 
-due_date (DATE): Due date
+Kolom:
 
-renewed (INT): Number of renewals
+module_id (INT(3), PRIMARY KEY, AUTO_INCREMENT): ID unik modul.
 
-is_lent (INT): Lent status (0/1)
+module_name (VARCHAR(50)): Nama modul (misalnya "bibliography"). Harus unik dalam kombinasi dengan module_path.
 
-is_return (INT): Return status (0/1)
+module_path (VARCHAR(200)): Path modul (digunakan untuk URL atau routing). Harus unik dalam kombinasi dengan module_name.
 
-return_date (DATE): Return date
+module_desc (VARCHAR(255)): Deskripsi modul.
 
-input_date (DATETIME): Input date and time
+Index dan Key:
 
-last_update (DATETIME): Last update date and time
+PRIMARY KEY (module_id)
 
-mst_custom_field:
+UNIQUE KEY module_name (module_name, module_path): Memastikan kombinasi nama dan path modul unik.
 
-field_id (INT, AUTO_INCREMENT): Unique identifier for each custom field.
+mst_place
 
-primary_table (VARCHAR): The primary table this custom field belongs to.
+Deskripsi: Daftar master tempat terbit (misalnya "Jakarta", "Bandung", "New York").
 
-dbfield (VARCHAR): The database field name for this custom field (Primary Key).
+Kolom:
 
-label (VARCHAR): The user-friendly label for this custom field.
+place_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik tempat terbit.
 
-type (ENUM): The data type of the custom field ('text', 'checklist', 'numeric', 'dropdown', 'longtext', 'choice', 'date').
+place_name (VARCHAR(30)): Nama tempat terbit. Harus unik.
 
-default (VARCHAR): The default value for this custom field.
+input_date (DATE): Tanggal input data.
 
-max (INT): Maximum length or value for this custom field (depending on the type).
+last_update (DATE): Tanggal terakhir diperbarui.
 
-data (TEXT): Serialized data, potentially containing options for dropdown or choice type fields.
+Index dan Key:
 
-indexed (TINYINT): Flag indicating whether this field should be included in search indexes (0/1).
+PRIMARY KEY (place_id)
 
-class (VARCHAR): CSS class for this custom field.
+UNIQUE KEY place_name (place_name): Memastikan nama tempat terbit unik.
 
-is_public (TINYINT): Flag indicating if the field should be visible in the OPAC (0/1).
+mst_publisher
 
-width (INT): Width of the field for display purposes.
+Deskripsi: Daftar master penerbit (publishers).
 
-note (TEXT): Notes or description of the custom field.
+Kolom:
 
-files_read:
+publisher_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik penerbit.
 
-filelog_id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each file download log entry.
+publisher_name (VARCHAR(100)): Nama penerbit. Harus unik.
 
-file_id (INT): ID of the downloaded file. Foreign key referencing the files table.
+input_date (DATE): Tanggal input data.
 
-date_read (TIMESTAMP): Timestamp indicating when the file was downloaded. Automatically updated on each access.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-member_id (VARCHAR): ID of the member who downloaded the file (if applicable).
+Index dan Key:
 
-user_id (INT): ID of the staff user who downloaded the file (if applicable).
+PRIMARY KEY (publisher_id)
 
-client_ip (VARCHAR): IP address of the client who downloaded the file.
+UNIQUE KEY publisher_name (publisher_name): Memastikan nama penerbit unik.
 
-plugins:
+mst_supplier
 
-id (VARCHAR, UNIQUE): Unique identifier for the plugin (usually an MD5 hash of the plugin's path). Primary Key.
+Deskripsi: Daftar master pemasok (suppliers) koleksi perpustakaan.
 
-options (JSON): Serialized plugin options (settings).
+Kolom:
 
-path (TEXT): The path to the plugin's directory.
+supplier_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik pemasok.
 
-created_at (DATETIME): Timestamp indicating when the plugin was registered.
+supplier_name (VARCHAR(100)): Nama pemasok. Harus unik.
 
-updated_at (DATETIME): Timestamp indicating when the plugin information was last updated.
+address (VARCHAR(100)): Alamat pemasok.
 
-deleted_at (DATETIME): Timestamp indicating when the plugin was deleted (NULL if not deleted).
+postal_code (CHAR(10)): Kode pos pemasok.
 
-uid (INT): User ID of who installed or updated the plugin.
+phone (CHAR(14)): Nomor telepon pemasok.
 
-index_words: This table is part of a custom full-text search index.
+contact (CHAR(30)): Nama kontak pemasok.
 
-id (BIGINT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each word in the index.
+fax (CHAR(14)): Nomor fax pemasok.
 
-word (VARCHAR): The indexed word.
+account (CHAR(12)): Nomor rekening pemasok.
 
-num_hits (INT): Total number of times the word appears in the indexed documents.
+e_mail (CHAR(80)): Alamat email pemasok.
 
-doc_hits (INT): Number of unique documents containing the word.
+input_date (DATE): Tanggal input data.
 
-index_documents: This table is also part of the custom full-text search index, linking documents to words.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-document_id (INT): ID of the document (likely a bibliographic record ID). Composite Primary Key.
+Index dan Key:
 
-word_id (BIGINT): ID of the word from the index_words table. Composite Primary Key.
+PRIMARY KEY (supplier_id)
 
-location (VARCHAR): The location of the word within the document (e.g., title, abstract). Composite Primary Key.
+UNIQUE KEY supplier_name (supplier_name): Memastikan nama pemasok unik.
 
-hit_count (INT): Number of times the word appears in this specific location within the document.
+mst_topic
 
-biblio_mark: This table stores bibliographic records marked/bookmarked by members.
+Deskripsi: Daftar master topik/subjek (topics). Digunakan untuk pengindeksan subjek koleksi.
 
-id (VARCHAR, PRIMARY KEY): Unique identifier for the bookmark entry (likely a UUID).
+Kolom:
 
-member_id (VARCHAR): Member ID. Foreign key to member.
+topic_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik topik.
 
-biblio_id (INT): Bibliographic record ID. Foreign key to biblio.
+topic (VARCHAR(50)): Nama topik. Harus unik untuk setiap topic_type.
 
-created_at (DATETIME): Timestamp indicating when the bookmark was created.
+topic_type (ENUM('t', 'g', 'n', 'tm', 'gr', 'oc')): Jenis topik (t=topic, g=geographic, n=name, tm=time period, gr=genre, oc=occupation).
 
-mst_visitor_room: This table stores visitor room information.
+auth_list (VARCHAR(20)): Kode daftar otoritas topik (jika menggunakan daftar otoritas eksternal).
 
-id (INT, AUTO_INCREMENT, PRIMARY KEY): Unique identifier for each room.
+classification (VARCHAR(50)): Kode klasifikasi topik.
 
-name (VARCHAR): Name of the visitor room.
+input_date (DATE): Tanggal input data.
 
-unique_code (VARCHAR): Unique code to identify the room. Unique key and index.
+last_update (DATE): Tanggal terakhir diperbarui.
 
-created_at (DATETIME): Timestamp indicating when the room was created.
+Index dan Key:
 
-updated_at (DATETIME): Timestamp indicating when the room information was last updated.
+PRIMARY KEY (topic_id)
 
-cache: This table is used for storing cached data within the database.
+UNIQUE KEY topic (topic, topic_type): Memastikan kombinasi nama topik dan jenis topik unik.
 
-name (VARCHAR, UNIQUE): Name or key of the cached data item. Unique Key.
+reserve
 
-contents (TEXT): The cached data (serialized).
+Deskripsi: Mengelola reservasi koleksi oleh anggota.
 
-created_at (DATETIME): Timestamp indicating when the data was cached.
+Kolom:
 
-updated_at (DATETIME): Timestamp indicating when the cached data was last updated.
+reserve_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik reservasi.
 
-expired_at (DATETIME): Timestamp indicating when the cached data expires (NULL if it doesn't expire).
+member_id (VARCHAR(20)): ID anggota yang melakukan reservasi. FOREIGN KEY ke tabel member.
 
-------
-Triggers:
+biblio_id (INT): ID bibliografi yang direservasi. FOREIGN KEY ke tabel biblio.
 
-Three triggers are defined to maintain the loan_history table, ensuring it reflects changes in the loan table:
+item_code (VARCHAR(20)): Kode item spesifik yang direservasi (opsional, bisa reservasi judul secara umum). FOREIGN KEY ke tabel item.
 
-delete_loan_history: Deletes entries from loan_history when a corresponding entry in loan is deleted.
+reserve_date (DATETIME): Tanggal dan waktu reservasi dilakukan.
 
-update_loan_history: Updates entries in loan_history when a corresponding entry in loan is updated.
+Index dan Key:
 
-insert_loan_history: Inserts new entries into loan_history when new entries are added to loan. Note this trigger performs subqueries to populate several columns with data from related tables. This increases the complexity of the trigger, and potentially affects performance.
+PRIMARY KEY (reserve_id)
 
--------
-Summary:
-This schema shows a well-structured database designed for a comprehensive library management system. The use of full-text indexing and triggers highlights a focus on efficient searching and data integrity. The inclusion of custom fields and plugins points toward flexibility and extensibility.
+KEY references_idx (member_id, biblio_id)
+
+KEY item_code_idx (item_code)
+
+serial
+
+Deskripsi: Mengelola data langganan terbitan berseri (majalah, jurnal, dll.).
+
+Kolom:
+
+serial_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik langganan terbitan berseri.
+
+date_start (DATE): Tanggal mulai berlangganan.
+
+date_end (DATE): Tanggal berakhir langganan (opsional).
+
+period (VARCHAR(100)): Periode langganan (misalnya "1 tahun", "2 tahun").
+
+notes (TEXT): Catatan tentang langganan.
+
+biblio_id (INT): ID bibliografi induk untuk terbitan berseri (misalnya judul majalah utama). FOREIGN KEY ke tabel biblio.
+
+gmd_id (INT): ID GMD terbitan berseri. FOREIGN KEY ke tabel mst_gmd.
+
+input_date (DATE): Tanggal input data.
+
+last_update (DATE): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (serial_id)
+
+KEY fk_serial_biblio (biblio_id)
+
+KEY fk_serial_gmd (gmd_id)
+
+setting
+
+Deskripsi: Menyimpan konfigurasi sistem secara umum.
+
+Kolom:
+
+setting_id (INT(3), PRIMARY KEY, AUTO_INCREMENT): ID unik setting.
+
+setting_name (VARCHAR(30)): Nama setting (misalnya "library_name", "template"). Harus unik.
+
+setting_value (TEXT): Nilai setting (bisa berupa string, serialized array PHP, dll.).
+
+Index dan Key:
+
+PRIMARY KEY (setting_id)
+
+UNIQUE KEY setting_name (setting_name): Memastikan nama setting unik.
+
+stock_take
+
+Deskripsi: Mengelola proses stock opname (inventarisasi koleksi).
+
+Kolom:
+
+stock_take_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik sesi stock opname.
+
+stock_take_name (VARCHAR(200)): Nama sesi stock opname.
+
+start_date (DATETIME): Tanggal dan waktu mulai stock opname.
+
+end_date (DATETIME): Tanggal dan waktu selesai stock opname (opsional).
+
+init_user (VARCHAR(50)): Nama pengguna yang memulai stock opname.
+
+total_item_stock_taked (INT): Total item yang sudah di-stock opname.
+
+total_item_lost (INT): Total item yang dinyatakan hilang.
+
+total_item_exists (INT, DEFAULT '0'): Total item yang ditemukan ada.
+
+total_item_loan (INT): Total item yang sedang dipinjam saat stock opname.
+
+stock_take_users (MEDIUMTEXT): Daftar pengguna yang terlibat dalam stock opname (mungkin serialized array PHP).
+
+is_active (INT(1), DEFAULT '0'): Bendera untuk menandai sesi stock opname aktif.
+
+report_file (VARCHAR(255)): Nama file laporan stock opname yang dihasilkan.
+
+Index dan Key:
+
+PRIMARY KEY (stock_take_id)
+
+stock_take_item
+
+Deskripsi: Detail item yang di-stock opname dalam suatu sesi stock opname.
+
+Kolom:
+
+stock_take_id (INT): ID sesi stock opname. FOREIGN KEY ke tabel stock_take.
+
+item_id (INT): ID item yang di-stock opname. FOREIGN KEY ke tabel item.
+
+item_code (VARCHAR(20)): Kode item yang di-stock opname.
+
+title (VARCHAR(255)): Judul item (diambil dari bibliografi).
+
+gmd_name (VARCHAR(30)): Nama GMD item (diambil dari bibliografi).
+
+classification (VARCHAR(30)): Klasifikasi item (diambil dari bibliografi atau item).
+
+coll_type_name (VARCHAR(30)): Nama jenis koleksi item (diambil dari item).
+
+call_number (VARCHAR(50)): Nomor panggil item (diambil dari bibliografi atau item).
+
+location (VARCHAR(100)): Lokasi item (diambil dari item).
+
+status (ENUM('e', 'm', 'u', 'l'), DEFAULT 'm'): Status item saat stock opname (e=exists, m=missing, u=unknown, l=loaned).
+
+checked_by (VARCHAR(50)): Nama pengguna yang memeriksa item saat stock opname.
+
+last_update (DATETIME): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (stock_take_id, item_id) (Composite Primary Key)
+
+UNIQUE KEY item_code (item_code): Memastikan item_code unik dalam tabel ini.
+
+KEY status (status): Index untuk mempercepat pencarian berdasarkan status stock opname item.
+
+KEY item_properties_idx (gmd_name, classification, coll_type_name, location): Index untuk mempercepat pencarian berdasarkan properti item.
+
+system_log
+
+Deskripsi: Mencatat log aktivitas sistem (misalnya login pengguna, perubahan data, kesalahan sistem).
+
+Kolom:
+
+log_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik log.
+
+log_type (ENUM('staff', 'member', 'system'), DEFAULT 'staff'): Jenis log (staff/pustakawan, member/anggota, sistem).
+
+id (VARCHAR(50)): ID pengguna atau entitas yang terkait dengan log (misalnya user_id atau member_id).
+
+log_location (VARCHAR(50)): Lokasi dalam sistem tempat log dicatat (misalnya nama modul, fungsi).
+
+sub_module (VARCHAR(50)): Sub-modul atau bagian lebih spesifik dari lokasi log.
+
+action (VARCHAR(50)): Aksi yang dilakukan (misalnya "login", "create", "update", "delete").
+
+log_msg (TEXT): Pesan log detail.
+
+log_date (DATETIME): Tanggal dan waktu log dicatat.
+
+Index dan Key:
+
+PRIMARY KEY (log_id)
+
+KEY log_type (log_type)
+
+KEY id (id)
+
+user
+
+Deskripsi: Menyimpan informasi pengguna sistem (pustakawan/staff perpustakaan).
+
+Kolom:
+
+user_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik pengguna.
+
+username (VARCHAR(50)): Username untuk login. Harus unik.
+
+realname (VARCHAR(100)): Nama lengkap pengguna.
+
+passwd (VARCHAR(64)): Kata sandi pengguna (dalam format hash).
+
+2fa (TEXT): Konfigurasi Two-Factor Authentication (2FA).
+
+email (VARCHAR(200)): Alamat email pengguna.
+
+user_type (SMALLINT(2)): Jenis pengguna (misalnya administrator, pustakawan).
+
+user_image (VARCHAR(250)): Nama file foto pengguna.
+
+social_media (TEXT): Informasi akun media sosial pengguna (mungkin JSON atau serialized array).
+
+last_login (DATETIME): Waktu login terakhir pengguna.
+
+last_login_ip (CHAR(15)): IP address login terakhir pengguna.
+
+groups (VARCHAR(200)): Grup pengguna tempat pengguna tergabung (mungkin serialized array PHP). Terhubung dengan tabel user_group.
+
+admin_template (TEXT): Template admin yang digunakan pengguna (jika ada preferensi khusus).
+
+forgot (VARCHAR(80)): Token untuk fitur lupa kata sandi.
+
+input_date (DATE): Tanggal input data.
+
+last_update (DATE): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (user_id)
+
+UNIQUE KEY username (username): Memastikan username unik.
+
+KEY realname (realname): Index untuk pencarian cepat berdasarkan nama pengguna.
+
+user_group
+
+Deskripsi: Daftar grup pengguna (user groups) untuk mengelola hak akses (misalnya "Administrator", "Pustakawan Sirkulasi", "Pustakawan Katalog").
+
+Kolom:
+
+group_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik grup pengguna.
+
+group_name (VARCHAR(30)): Nama grup pengguna (misalnya "Administrator"). Harus unik.
+
+input_date (DATE): Tanggal input data.
+
+last_update (DATE): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (group_id)
+
+UNIQUE KEY group_name (group_name): Memastikan nama grup pengguna unik.
+
+visitor_count
+
+Deskripsi: Mencatat data pengunjung perpustakaan (check-in).
+
+Kolom:
+
+visitor_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik kunjungan.
+
+member_id (VARCHAR(20)): ID anggota yang berkunjung (jika anggota). FOREIGN KEY ke tabel member.
+
+member_name (VARCHAR(255)): Nama pengunjung (jika bukan anggota).
+
+institution (VARCHAR(100)): Institusi/lembaga pengunjung (jika bukan anggota).
+
+room_code (VARCHAR(5)): Kode ruangan yang dikunjungi. Terhubung dengan tabel mst_visitor_room.
+
+checkin_date (DATETIME): Tanggal dan waktu check-in pengunjung.
+
+Index dan Key:
+
+PRIMARY KEY (visitor_id)
+
+KEY member_id (member_id)
+
+KEY room_code (room_code)
+
+biblio_custom
+
+Deskripsi: Tabel untuk menyimpan kolom kustom/tambahan untuk data bibliografi. Memiliki relasi one-to-one dengan tabel biblio.
+
+Kolom:
+
+biblio_id (INT, PRIMARY KEY): ID bibliografi. FOREIGN KEY ke tabel biblio.
+
+(Kolom kustom tambahan akan ditambahkan di sini berdasarkan konfigurasi)
+
+Index dan Key:
+
+PRIMARY KEY (biblio_id)
+
+search_biblio
+
+Deskripsi: Tabel indexed untuk pencarian cepat bibliografi. Berisi data yang didenormalisasi dari tabel biblio dan tabel terkait untuk mempercepat pencarian.
+
+Kolom:
+
+biblio_id (INT, UNIQUE KEY): ID bibliografi. FOREIGN KEY ke tabel biblio.
+
+title (TEXT): Judul koleksi.
+
+edition (VARCHAR(50)): Edisi koleksi.
+
+isbn_issn (VARCHAR(32)): ISBN/ISSN.
+
+author (TEXT): Nama pengarang (dari tabel mst_author).
+
+topic (TEXT): Topik koleksi (dari tabel mst_topic).
+
+gmd (VARCHAR(30)): Nama GMD (dari tabel mst_gmd).
+
+publisher (VARCHAR(100)): Nama penerbit (dari tabel mst_publisher).
+
+publish_place (VARCHAR(30)): Nama tempat terbit (dari tabel mst_place).
+
+language (VARCHAR(20)): Nama bahasa (dari tabel mst_language).
+
+classification (VARCHAR(40)): Klasifikasi.
+
+spec_detail_info (TEXT): Informasi detail spesifik.
+
+carrier_type (VARCHAR(100)): Tipe pembawa RDA (dari tabel mst_carrier_type).
+
+content_type (VARCHAR(100)): Tipe konten RDA (dari tabel mst_content_type).
+
+media_type (VARCHAR(100)): Tipe media RDA (dari tabel mst_media_type).
+
+location (TEXT): Lokasi penyimpanan (dari tabel mst_location).
+
+publish_year (VARCHAR(20)): Tahun terbit.
+
+notes (TEXT): Catatan.
+
+series_title (TEXT): Judul seri.
+
+items (TEXT): Informasi item (mungkin serialized array atau JSON).
+
+collection_types (TEXT): Jenis koleksi (mungkin serialized array atau JSON).
+
+call_number (VARCHAR(50)): Nomor panggil.
+
+opac_hide (SMALLINT(1), DEFAULT '0'): Status opac_hide.
+
+promoted (SMALLINT(1), DEFAULT '0'): Status promoted.
+
+labels (TEXT): Label koleksi.
+
+collation (VARCHAR(100)): Kolasi.
+
+image (VARCHAR(100)): Nama file gambar sampul.
+
+input_date (DATETIME): Tanggal input data.
+
+last_update (DATETIME): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+UNIQUE KEY biblio_id (biblio_id)
+
+KEY add_indexes (gmd, publisher, publish_place, language, classification, publish_year, call_number): Index untuk mempercepat pencarian berdasarkan properti bibliografi.
+
+KEY add_indexes2 (opac_hide, promoted): Index untuk mempercepat pencarian berdasarkan opac_hide dan promoted.
+
+KEY rda_indexes (carrier_type, media_type, content_type): Index untuk mempercepat pencarian berdasarkan elemen RDA.
+
+FULLTEXT KEY title (title, series_title): Fulltext index untuk pencarian cepat pada judul dan judul seri.
+
+FULLTEXT KEY author (author): Fulltext index untuk pencarian cepat pada pengarang.
+
+FULLTEXT KEY topic (topic): Fulltext index untuk pencarian cepat pada topik.
+
+FULLTEXT KEY location (location): Fulltext index untuk pencarian cepat pada lokasi.
+
+FULLTEXT KEY items (items): Fulltext index untuk pencarian cepat pada informasi item.
+
+FULLTEXT KEY collection_types (collection_types): Fulltext index untuk pencarian cepat pada jenis koleksi.
+
+FULLTEXT KEY labels (labels): Fulltext index untuk pencarian cepat pada label.
+
+member_custom
+
+Deskripsi: Tabel untuk menyimpan kolom kustom/tambahan untuk data anggota. Memiliki relasi one-to-one dengan tabel member.
+
+Kolom:
+
+member_id (VARCHAR(20), PRIMARY KEY): ID anggota. FOREIGN KEY ke tabel member.
+
+(Kolom kustom tambahan akan ditambahkan di sini berdasarkan konfigurasi)
+
+Index dan Key:
+
+PRIMARY KEY (member_id)
+
+comment
+
+Deskripsi: Menyimpan komentar anggota terhadap koleksi bibliografi.
+
+Kolom:
+
+comment_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik komentar.
+
+biblio_id (INT): ID bibliografi yang dikomentari. FOREIGN KEY ke tabel biblio.
+
+member_id (VARCHAR(20)): ID anggota yang memberikan komentar. FOREIGN KEY ke tabel member.
+
+comment (TEXT): Isi komentar.
+
+input_date (DATETIME): Tanggal input data.
+
+last_update (DATETIME): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (comment_id)
+
+mst_carrier_type
+
+Deskripsi: Daftar master tipe pembawa RDA (Resource Description and Access).
+
+Kolom:
+
+id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik tipe pembawa.
+
+carrier_type (VARCHAR(100)): Nama tipe pembawa. Harus unik.
+
+code (VARCHAR(5)): Kode tipe pembawa.
+
+code2 (CHAR(1)): Kode alternatif tipe pembawa.
+
+input_date (DATETIME): Tanggal input data.
+
+last_update (DATETIME): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (id)
+
+UNIQUE KEY media_type (carrier_type): Memastikan nama tipe pembawa unik.
+
+KEY code (code)
+
+mst_content_type
+
+Deskripsi: Daftar master tipe konten RDA.
+
+Kolom:
+
+id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik tipe konten.
+
+content_type (VARCHAR(100)): Nama tipe konten. Harus unik.
+
+code (VARCHAR(5)): Kode tipe konten.
+
+code2 (CHAR(1)): Kode alternatif tipe konten.
+
+input_date (DATETIME): Tanggal input data.
+
+last_update (DATETIME): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (id)
+
+UNIQUE KEY content_type (content_type): Memastikan nama tipe konten unik.
+
+KEY code (code)
+
+mst_media_type
+
+Deskripsi: Daftar master tipe media RDA.
+
+Kolom:
+
+id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik tipe media.
+
+media_type (VARCHAR(100)): Nama tipe media. Harus unik.
+
+code (VARCHAR(5)): Kode tipe media.
+
+code2 (CHAR(1)): Kode alternatif tipe media.
+
+input_date (DATETIME): Tanggal input data.
+
+last_update (DATETIME): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (id)
+
+UNIQUE KEY media_type (media_type): Memastikan nama tipe media unik.
+
+KEY code (code)
+
+mst_relation_term
+
+Deskripsi: Daftar master istilah relasi untuk tesaurus/vocabolary control.
+
+Kolom:
+
+ID (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik istilah relasi.
+
+rt_id (VARCHAR(11)): Kode istilah relasi (misalnya "RT", "BT", "NT").
+
+rt_desc (VARCHAR(50)): Deskripsi istilah relasi (misalnya "Related Term", "Broader Term", "Narrower Term").
+
+Index dan Key:
+
+PRIMARY KEY (ID)
+
+mst_voc_ctrl
+
+Deskripsi: Mengelola vocabulary control (tesaurus) dengan menghubungkan topik dengan istilah relasi dan topik terkait.
+
+Kolom:
+
+vocabolary_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik entri vocabulary control.
+
+topic_id (INT): ID topik utama. FOREIGN KEY ke tabel mst_topic.
+
+rt_id (VARCHAR(11)): Kode istilah relasi (dari tabel mst_relation_term).
+
+related_topic_id (VARCHAR(250)): ID topik terkait (bisa daftar ID topik dipisahkan koma). FOREIGN KEY ke tabel mst_topic.
+
+scope (TEXT): Catatan lingkup atau definisi hubungan.
+
+Index dan Key:
+
+PRIMARY KEY (vocabolary_id)
+
+biblio_relation
+
+Deskripsi: Menghubungkan bibliografi dengan bibliografi lain yang terkait (misalnya "sekuel", "prekuel", "terjemahan").
+
+Kolom:
+
+biblio_id (INT, PRIMARY KEY): ID bibliografi utama. FOREIGN KEY ke tabel biblio.
+
+rel_biblio_id (INT, PRIMARY KEY): ID bibliografi terkait. FOREIGN KEY ke tabel biblio.
+
+rel_type (INT(1), DEFAULT '1'): Jenis relasi (misalnya 1=Related, 2=Sequel, 3=Prequel, dll. - jenis relasi perlu didefinisikan lebih lanjut).
+
+Index dan Key:
+
+PRIMARY KEY (biblio_id, rel_biblio_id) (Composite Primary Key)
+
+mst_servers
+
+Deskripsi: Daftar server eksternal (misalnya server Z39.50, server P2P) untuk pencarian katalog eksternal.
+
+Kolom:
+
+server_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik server.
+
+name (VARCHAR(255)): Nama server.
+
+uri (TEXT): URI/URL server.
+
+server_type (TINYINT(1), DEFAULT '1'): Jenis server (1=P2P, 2=Z39.50, 3=Z39.50 SRU).
+
+input_date (DATETIME): Tanggal input data.
+
+last_update (DATETIME): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (server_id)
+
+biblio_log
+
+Deskripsi: Mencatat log perubahan data bibliografi.
+
+Kolom:
+
+biblio_log_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik log bibliografi.
+
+biblio_id (INT): ID bibliografi yang diubah. FOREIGN KEY ke tabel biblio.
+
+user_id (INT): ID pengguna yang melakukan perubahan. FOREIGN KEY ke tabel user.
+
+realname (VARCHAR(100)): Nama lengkap pengguna yang melakukan perubahan.
+
+title (TEXT): Judul bibliografi (saat perubahan).
+
+ip (VARCHAR(200)): IP address pengguna yang melakukan perubahan.
+
+action (VARCHAR(50)): Jenis aksi (misalnya "CREATE", "UPDATE", "DELETE").
+
+affectedrow (VARCHAR(50)): Jumlah baris yang terpengaruh.
+
+rawdata (TEXT): Data mentah sebelum perubahan (mungkin serialized array atau JSON).
+
+additional_information (TEXT): Informasi tambahan tentang perubahan.
+
+date (DATETIME): Tanggal dan waktu perubahan.
+
+Index dan Key:
+
+PRIMARY KEY (biblio_log_id)
+
+KEY realname (realname)
+
+KEY biblio_id (biblio_id)
+
+KEY user_id (user_id)
+
+KEY ip (ip)
+
+KEY action (action)
+
+KEY affectedrow (affectedrow)
+
+KEY date (date)
+
+FULLTEXT KEY title (title): Fulltext index untuk pencarian cepat pada judul.
+
+FULLTEXT KEY rawdata (rawdata): Fulltext index untuk pencarian cepat pada data mentah.
+
+FULLTEXT KEY additional_information (additional_information): Fulltext index untuk pencarian cepat pada informasi tambahan.
+
+loan_history
+
+Deskripsi: Tabel untuk menyimpan history transaksi peminjaman. Data di tabel ini direplikasi dari tabel loan setiap ada perubahan (INSERT, UPDATE, DELETE) menggunakan TRIGGER. Ini berguna untuk pelaporan history peminjaman tanpa mengubah data loan yang aktif.
+
+Kolom:
+
+loan_id (INT, PRIMARY KEY): ID transaksi peminjaman (sama dengan loan.loan_id).
+
+item_code (VARCHAR(20)): Kode item.
+
+biblio_id (INT): ID bibliografi.
+
+title (VARCHAR(300)): Judul koleksi.
+
+call_number (VARCHAR(50)): Nomor panggil.
+
+classification (VARCHAR(40)): Klasifikasi.
+
+gmd_name (VARCHAR(30)): Nama GMD.
+
+language_name (VARCHAR(20)): Nama bahasa.
+
+location_name (VARCHAR(100)): Nama lokasi.
+
+collection_type_name (VARCHAR(100)): Nama jenis koleksi.
+
+member_id (VARCHAR(20)): ID anggota.
+
+member_name (VARCHAR(100)): Nama anggota.
+
+member_type_name (VARCHAR(64)): Nama jenis keanggotaan.
+
+loan_date (DATE): Tanggal pinjam.
+
+due_date (DATE): Tanggal jatuh tempo.
+
+renewed (INT, DEFAULT '0'): Jumlah perpanjangan.
+
+is_lent (INT, DEFAULT '0'): Status pinjam.
+
+is_return (INT, DEFAULT '0'): Status kembali.
+
+return_date (DATE): Tanggal kembali.
+
+input_date (DATETIME): Tanggal input data.
+
+last_update (DATETIME): Tanggal terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (loan_id)
+
+KEY member_name (member_name): Index untuk pencarian cepat berdasarkan nama anggota.
+
+mst_custom_field
+
+Deskripsi: Mengelola field kustom/tambahan untuk tabel biblio dan member. Memungkinkan penambahan field data spesifik perpustakaan.
+
+Kolom:
+
+field_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik field kustom.
+
+primary_table (VARCHAR(100)): Tabel utama yang terkait dengan field kustom ("biblio" atau "member").
+
+dbfield (VARCHAR(50), UNIQUE KEY): Nama field di database (digunakan sebagai kolom di tabel biblio_custom atau member_custom). Harus unik.
+
+label (VARCHAR(80)): Label field yang ditampilkan di UI.
+
+type (ENUM('text', 'checklist', 'numeric', 'dropdown', 'longtext', 'choice', 'date')): Tipe field (untuk form input).
+
+default (VARCHAR(80)): Nilai default field.
+
+max (INT): Panjang maksimum field (untuk tipe text).
+
+data (TEXT): Data tambahan untuk field (misalnya pilihan dropdown dalam format serialized array atau JSON).
+
+indexed (TINYINT(1)): Bendera untuk menandai field sebagai terindeks (untuk pencarian).
+
+class (VARCHAR(100)): CSS class untuk field (untuk styling).
+
+is_public (TINYINT(1)): Bendera untuk menandai field sebagai publik (ditampilkan di OPAC).
+
+width (INT(5), DEFAULT '100'): Lebar field (dalam persen).
+
+note (TEXT): Catatan atau deskripsi field.
+
+Index dan Key:
+
+PRIMARY KEY (dbfield)
+
+UNIQUE KEY field_id (field_id)
+
+files_read
+
+Deskripsi: Mencatat log pembacaan file digital (file yang dilampirkan pada bibliografi).
+
+Kolom:
+
+filelog_id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik log pembacaan file.
+
+file_id (INT): ID file yang dibaca. FOREIGN KEY ke tabel files.
+
+date_read (TIMESTAMP): Tanggal dan waktu file dibaca (timestamp otomatis).
+
+member_id (VARCHAR(20)): ID anggota yang membaca file (jika anggota). FOREIGN KEY ke tabel member.
+
+user_id (INT): ID pengguna (pustakawan) yang membaca file (jika pustakawan). FOREIGN KEY ke tabel user.
+
+client_ip (VARCHAR(50)): IP address klien yang membaca file.
+
+Index dan Key:
+
+PRIMARY KEY (filelog_id)
+
+plugins
+
+Deskripsi: Mengelola plugin sistem SLiMS.
+
+Kolom:
+
+id (VARCHAR(32), PRIMARY KEY, UNIQUE KEY): ID plugin unik.
+
+options (JSON): Opsi konfigurasi plugin (dalam format JSON).
+
+path (TEXT): Path direktori plugin.
+
+created_at (DATETIME): Tanggal dan waktu plugin diinstal.
+
+updated_at (DATETIME): Tanggal dan waktu terakhir diperbarui.
+
+deleted_at (DATETIME): Tanggal dan waktu plugin dihapus (untuk soft delete).
+
+uid (INT): ID pengguna yang mengelola plugin. FOREIGN KEY ke tabel user.
+
+Index dan Key:
+
+PRIMARY KEY (id)
+
+UNIQUE KEY id (id)
+
+index_words
+
+Deskripsi: Tabel untuk menyimpan daftar kata-kata yang diindeks untuk fulltext search.
+
+Kolom:
+
+id (BIGINT, PRIMARY KEY, AUTO_INCREMENT): ID unik kata.
+
+word (VARCHAR(50)): Kata yang diindeks. Harus unik.
+
+num_hits (INT): Total frekuensi kata muncul di seluruh dokumen yang diindeks.
+
+doc_hits (INT): Jumlah dokumen yang mengandung kata tersebut.
+
+Index dan Key:
+
+PRIMARY KEY (id)
+
+index_documents
+
+Deskripsi: Tabel penghubung antara index_words dan dokumen (bibliografi) yang diindeks. Menyimpan informasi lokasi kata dalam dokumen.
+
+Kolom:
+
+document_id (INT): ID dokumen (dalam konteks ini, biblio_id). FOREIGN KEY ke tabel biblio.
+
+word_id (BIGINT): ID kata yang diindeks. FOREIGN KEY ke tabel index_words.
+
+location (VARCHAR(50)): Lokasi kata dalam dokumen (misalnya "title", "notes").
+
+hit_count (INT): Frekuensi kata muncul dalam lokasi tertentu di dokumen.
+
+Index dan Key:
+
+PRIMARY KEY (document_id, word_id, location) (Composite Primary Key)
+
+KEY document_id (document_id)
+
+KEY word_id (word_id)
+
+KEY location (location)
+
+biblio_mark
+
+Deskripsi: Tabel untuk menandai (bookmark) koleksi bibliografi oleh anggota.
+
+Kolom:
+
+id (VARCHAR(32), PRIMARY KEY, UNIQUE KEY): ID unik bookmark.
+
+member_id (VARCHAR(20)): ID anggota yang menandai. FOREIGN KEY ke tabel member.
+
+biblio_id (INT): ID bibliografi yang ditandai. FOREIGN KEY ke tabel biblio.
+
+created_at (DATETIME, DEFAULT CURRENT_TIMESTAMP): Tanggal dan waktu bookmark dibuat.
+
+Index dan Key:
+
+PRIMARY KEY (id)
+
+UNIQUE KEY id (id)
+
+KEY member_id_idx (member_id)
+
+KEY biblio_id_idx (biblio_id)
+
+mst_visitor_room
+
+Deskripsi: Daftar master ruangan yang dapat dikunjungi di perpustakaan (misalnya "Ruang Baca", "Ruang Koleksi Referensi"). Digunakan untuk pencatatan pengunjung.
+
+Kolom:
+
+id (INT, PRIMARY KEY, AUTO_INCREMENT): ID unik ruangan.
+
+name (VARCHAR(50)): Nama ruangan.
+
+unique_code (VARCHAR(5)): Kode unik ruangan (misalnya "RBACA"). Harus unik.
+
+created_at (DATETIME): Tanggal dan waktu ruangan dibuat.
+
+updated_at (DATETIME, DEFAULT CURRENT_TIMESTAMP): Tanggal dan waktu terakhir diperbarui.
+
+Index dan Key:
+
+PRIMARY KEY (id)
+
+UNIQUE KEY unique_code_unq (unique_code): Memastikan kode ruangan unik.
+
+KEY unique_code_idx (unique_code)
+
+cache
+
+Deskripsi: Tabel untuk menyimpan data cache (misalnya hasil query yang sering diakses) untuk meningkatkan performa sistem.
+
+Kolom:
+
+name (VARCHAR(64), UNIQUE KEY): Nama cache. Harus unik.
+
+contents (TEXT): Isi data cache (bisa berupa string, serialized array PHP, JSON, dll.).
+
+created_at (DATETIME): Tanggal dan waktu cache dibuat.
+
+updated_at (DATETIME): Tanggal dan waktu terakhir diperbarui.
+
+expired_at (DATETIME): Tanggal dan waktu cache kadaluarsa (opsional).
+
+Index dan Key:
+
+UNIQUE KEY name (name): Memastikan nama cache unik.
+
+Triggers
+
+delete_loan_history: Setelah baris dihapus dari tabel loan, trigger ini akan menghapus baris terkait di tabel loan_history berdasarkan loan_id.
+
+update_loan_history: Setelah baris diupdate di tabel loan, trigger ini akan mengupdate baris terkait di tabel loan_history dengan nilai kolom is_lent, is_return, renewed, dan return_date dari tabel loan.
+
+insert_loan_history: Setelah baris baru dimasukkan ke tabel loan, trigger ini akan memasukkan baris baru ke tabel loan_history dengan data dari tabel loan dan data tambahan seperti judul buku, nama anggota, dll. dari tabel terkait (melalui JOIN).
+
+Hubungan Antar Tabel (Relational Diagram - Konseptual)
+
+Secara umum, hubungan antar tabel dalam database ini dapat digambarkan sebagai berikut:
+
+One-to-Many:
+
+mst_gmd -> biblio (Satu GMD bisa dimiliki banyak bibliografi)
+
+mst_publisher -> biblio (Satu Penerbit bisa menerbitkan banyak bibliografi)
+
+mst_language -> biblio (Satu Bahasa bisa digunakan di banyak bibliografi)
+
+mst_place -> biblio (Satu Tempat Terbit bisa menjadi tempat terbit banyak bibliografi)
+
+mst_frequency -> biblio (Satu Frekuensi bisa digunakan oleh banyak bibliografi - terbitan berseri)
+
+mst_content_type -> biblio
+
+mst_media_type -> biblio
+
+mst_carrier_type -> biblio
+
+biblio -> item (Satu bibliografi bisa memiliki banyak item/salinan)
+
+mst_coll_type -> item (Satu Jenis Koleksi bisa dimiliki banyak item)
+
+mst_location -> item (Satu Lokasi bisa menyimpan banyak item)
+
+mst_item_status -> item (Satu Status Item bisa diterapkan ke banyak item)
+
+biblio -> biblio_attachment (Satu bibliografi bisa memiliki banyak file lampiran)
+
+files -> biblio_attachment (Satu file bisa dilampirkan ke banyak bibliografi)
+
+biblio -> biblio_author (Satu bibliografi bisa memiliki banyak pengarang)
+
+mst_author -> biblio_author (Satu pengarang bisa mengarang banyak bibliografi)
+
+biblio -> biblio_topic (Satu bibliografi bisa memiliki banyak topik)
+
+mst_topic -> biblio_topic (Satu topik bisa terkait dengan banyak bibliografi)
+
+biblio -> reserve (Satu bibliografi bisa direservasi banyak kali)
+
+member -> reserve (Satu anggota bisa membuat banyak reservasi)
+
+item -> reserve (Satu item bisa direservasi banyak kali)
+
+biblio -> serial (Satu bibliografi bisa menjadi induk dari satu terbitan berseri)
+
+mst_gmd -> serial (Satu GMD bisa digunakan untuk banyak terbitan berseri)
+
+serial -> kardex (Satu terbitan berseri memiliki banyak entri kardeks)
+
+item -> loan (Satu item bisa dipinjam banyak kali - history transaksi)
+
+member -> loan (Satu anggota bisa melakukan banyak transaksi peminjaman)
+
+mst_loan_rules -> loan (Satu aturan peminjaman bisa diterapkan pada banyak transaksi peminjaman)
+
+member_type -> member (Satu jenis keanggotaan bisa dimiliki banyak anggota)
+
+user_group -> user (Satu grup pengguna bisa memiliki banyak pengguna)
+
+user -> backup_log (Satu pengguna bisa melakukan banyak backup)
+
+user -> files (Satu pengguna bisa mengunggah banyak file)
+
+user_group -> group_access (Satu grup pengguna memiliki banyak hak akses modul)
+
+mst_module -> group_access (Satu modul bisa diakses oleh banyak grup pengguna)
+
+stock_take -> stock_take_item (Satu sesi stock opname memiliki banyak item yang di-stock opname)
+
+user -> system_log (Satu pengguna bisa menghasilkan banyak log sistem)
+
+user_group -> user (Satu group bisa memiliki banyak user)
+
+member -> visitor_count (Satu member bisa melakukan banyak kunjungan)
+
+mst_visitor_room -> visitor_count (Satu ruangan bisa dikunjungi banyak visitor)
+
+biblio -> comment (Satu bibliografi bisa memiliki banyak komentar)
+
+member -> comment (Satu member bisa memberikan banyak komentar)
+
+mst_topic -> mst_voc_ctrl (Satu topik bisa memiliki banyak relasi vocabulary control)
+
+mst_relation_term -> mst_voc_ctrl (Satu istilah relasi bisa digunakan dalam banyak vocabulary control)
+
+mst_topic -> mst_voc_ctrl (Satu topik bisa menjadi topik terkait dalam banyak vocabulary control)
+
+biblio -> biblio_relation (Satu bibliografi bisa memiliki banyak relasi bibliografi lain)
+
+biblio -> biblio_log (Satu bibliografi bisa memiliki banyak log perubahan)
+
+user -> biblio_log (Satu user bisa membuat banyak log bibliografi)
+
+file -> files_read (Satu file bisa dibaca banyak kali)
+
+member -> files_read (Satu member bisa membaca banyak file)
+
+user -> files_read (Satu user bisa membaca banyak file)
+
+user -> plugins (Satu user bisa mengelola banyak plugin)
+
+biblio -> biblio_mark (Satu bibliografi bisa ditandai banyak kali)
+
+member -> biblio_mark (Satu member bisa menandai banyak bibliografi)
+
+One-to-One (dengan tabel _custom):
+
+biblio <-> biblio_custom
+
+member <-> member_custom
+
+Many-to-Many (melalui tabel penghubung):
+
+biblio <-> mst_author (melalui biblio_author)
+
+biblio <-> mst_topic (melalui biblio_topic)
+
+Catatan untuk Rag Chatbot:
+
+Fokus pada Tabel Utama: fokus utama mungkin pada tabel biblio, item, member, loan, dan tabel-tabel master (mst_*).
+
+Hubungan Kunci: Pahami hubungan kunci (foreign keys) untuk menjawab pertanyaan yang melibatkan data dari beberapa tabel (misalnya "Buku apa saja yang ditulis oleh pengarang X?", "Siapa saja anggota dengan jenis keanggotaan Y?").
+
+Deskripsi Kolom: Gunakan deskripsi kolom untuk memberikan informasi detail tentang data yang disimpan di setiap tabel.
+
+Contoh Penggunaan: Berikan contoh bagaimana setiap tabel digunakan dalam konteks operasional perpustakaan untuk membantu chatbot memahami tujuan setiap tabel.
+
+Kustomisasi: Jelaskan tabel biblio_custom dan member_custom sebagai tempat untuk menyimpan data tambahan yang spesifik untuk kebutuhan perpustakaan tertentu.
