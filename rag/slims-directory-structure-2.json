@@ -1,0 +1,982 @@
+{
+  "db": "SLiMS (Senayan Library Management System)",
+  "desc": "Open-source library system managing bibliographic data, circulation, membership, and operations.",
+  "tables": [
+    {
+      "name": "backup_log",
+      "desc": "Logs database backups.",
+      "cols": [
+        {"name": "backup_log_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "user_id", "type": "INT", "fk": "user.user_id"},
+        {"name": "backup_time", "type": "DATETIME"},
+        {"name": "backup_file", "type": "TEXT", "nullable": true}
+      ]
+    },
+    {
+      "name": "biblio",
+      "desc": "Bibliographic data for collections.",
+      "cols": [
+        {"name": "biblio_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "gmd_id", "type": "INT", "nullable": true, "fk": "mst_gmd.gmd_id"},
+        {"name": "title", "type": "TEXT"},
+        {"name": "sor", "type": "VARCHAR(200)", "nullable": true},
+        {"name": "edition", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "isbn_issn", "type": "VARCHAR(32)", "nullable": true},
+        {"name": "publisher_id", "type": "INT", "nullable": true, "fk": "mst_publisher.publisher_id"},
+        {"name": "publish_year", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "collation", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "series_title", "type": "VARCHAR(200)", "nullable": true},
+        {"name": "call_number", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "language_id", "type": "CHAR(5)", "default": "'en'", "nullable": true, "fk": "mst_language.language_id"},
+        {"name": "source", "type": "VARCHAR(3)", "nullable": true},
+        {"name": "publish_place_id", "type": "INT", "nullable": true, "fk": "mst_place.place_id"},
+        {"name": "classification", "type": "VARCHAR(40)", "nullable": true},
+        {"name": "notes", "type": "TEXT", "nullable": true},
+        {"name": "image", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "file_att", "type": "VARCHAR(255)", "nullable": true},
+        {"name": "opac_hide", "type": "SMALLINT(1)", "default": "'0'", "nullable": true},
+        {"name": "promoted", "type": "SMALLINT(1)", "default": "'0'", "nullable": true},
+        {"name": "labels", "type": "TEXT", "nullable": true},
+        {"name": "frequency_id", "type": "INT", "default": "'0'", "fk": "mst_frequency.frequency_id"},
+        {"name": "spec_detail_info", "type": "TEXT", "nullable": true},
+        {"name": "content_type_id", "type": "INT", "nullable": true, "fk": "mst_content_type.id"},
+        {"name": "media_type_id", "type": "INT", "nullable": true, "fk": "mst_media_type.id"},
+        {"name": "carrier_type_id", "type": "INT", "nullable": true, "fk": "mst_carrier_type.id"},
+        {"name": "input_date", "type": "DATETIME", "nullable": true},
+        {"name": "last_update", "type": "DATETIME", "nullable": true},
+        {"name": "uid", "type": "INT", "nullable": true, "fk": "user.user_id"}
+      ],
+       "rels": [
+        {"type": "1:n", "table": "biblio_attachment", "desc": "Multiple attachments."},
+        {"type": "1:n", "table": "biblio_author", "desc": "Multiple authors."},
+        {"type": "1:n", "table": "biblio_topic", "desc": "Multiple topics."},
+        {"type": "1:n", "table": "item", "desc": "Multiple items (copies)."},
+        {"type": "1:n", "table": "reserve", "desc": "Multiple reservations."},
+        {"type": "1:1", "table": "biblio_custom", "desc": "Custom fields."},
+        {"type": "1:n", "table": "comment", "desc": "Multiple comments."},
+        {"type": "1:n", "table": "biblio_log", "desc": "Multiple log entries."}
+      ]
+    },
+    {
+      "name": "biblio_attachment",
+      "desc": "Links biblio records to files.",
+      "cols": [
+        {"name": "biblio_id", "type": "INT", "fk": "biblio.biblio_id"},
+        {"name": "file_id", "type": "INT", "fk": "files.file_id"},
+        {"name": "placement", "type": "ENUM('link','popup','embed')", "nullable": true},
+        {"name": "access_type", "type": "ENUM('public','private')"},
+        {"name": "access_limit", "type": "TEXT", "nullable": true}
+      ]
+    },
+    {
+      "name": "biblio_author",
+      "desc": "Connects books to authors (many-to-many).",
+      "cols": [
+        {"name": "biblio_id", "type": "INT", "pk": true, "fk": "biblio.biblio_id"},
+        {"name": "author_id", "type": "INT", "pk": true, "fk": "mst_author.author_id"},
+        {"name": "level", "type": "INT(1)", "default": "'1'"}
+      ]
+    },
+     {
+      "name": "biblio_topic",
+      "desc": "Connects books to topics (many-to-many).",
+      "cols": [
+        {"name": "biblio_id", "type": "INT", "pk": true, "fk": "biblio.biblio_id"},
+        {"name": "topic_id", "type": "INT", "pk": true, "fk": "mst_topic.topic_id"},
+        {"name": "level", "type": "INT(1)", "default": "'1'"}
+      ]
+    },
+    {
+      "name": "content",
+      "desc": "Static website content.",
+      "cols": [
+        {"name": "content_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "content_title", "type": "VARCHAR(255)"},
+        {"name": "content_desc", "type": "TEXT"},
+        {"name": "content_path", "type": "VARCHAR(20)", "unique": true},
+        {"name": "is_news", "type": "SMALLINT(1)", "nullable": true},
+        {"name": "is_draft", "type": "SMALLINT(1)", "default": "0", "nullable": true},
+        {"name": "publish_date", "type": "DATE", "nullable": true},
+        {"name": "input_date", "type": "DATETIME"},
+        {"name": "last_update", "type": "DATETIME"},
+        {"name": "content_ownpage", "type": "ENUM('1','2')", "default": "'1'"}
+      ]
+    },
+    {
+      "name": "files",
+      "desc": "Uploaded digital files.",
+      "cols": [
+        {"name": "file_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "file_title", "type": "TEXT"},
+        {"name": "file_name", "type": "TEXT"},
+        {"name": "file_url", "type": "TEXT", "nullable": true},
+        {"name": "file_dir", "type": "TEXT", "nullable": true},
+        {"name": "mime_type", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "file_desc", "type": "TEXT", "nullable": true},
+        {"name": "file_key", "type": "TEXT", "nullable": true},
+        {"name": "uploader_id", "type": "INT", "fk": "user.user_id"},
+        {"name": "input_date", "type": "DATETIME"},
+        {"name": "last_update", "type": "DATETIME"}
+      ],
+       "rels": [
+        {"type": "1:n", "table": "biblio_attachment", "desc": "Attached to biblio records."},
+        {"type": "1:n", "table": "files_read", "desc": "Read logs."}
+      ]
+    },
+    {
+      "name": "fines",
+      "desc": "Member fines.",
+      "cols": [
+        {"name": "fines_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "fines_date", "type": "DATE"},
+        {"name": "member_id", "type": "VARCHAR(20)", "fk": "member.member_id"},
+        {"name": "debet", "type": "INT", "default": "'0'", "nullable": true},
+        {"name": "credit", "type": "INT", "default": "'0'", "nullable": true},
+        {"name": "description", "type": "VARCHAR(255)", "nullable": true}
+      ]
+    },
+    {
+      "name": "group_access",
+      "desc": "Permissions for user groups.",
+      "cols": [
+        {"name": "group_id", "type": "INT", "pk": true, "fk": "user_group.group_id"},
+        {"name": "module_id", "type": "INT", "pk": true, "fk": "mst_module.module_id"},
+        {"name": "menus", "type": "JSON", "nullable": true},
+        {"name": "r", "type": "INT(1)", "default": "'0'"},
+        {"name": "w", "type": "INT(1)", "default": "'0'"}
+      ]
+    },
+    {
+      "name": "holiday",
+      "desc": "Holiday dates.",
+      "cols": [
+        {"name": "holiday_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "holiday_dayname", "type": "VARCHAR(20)"},
+        {"name": "holiday_date", "type": "DATE", "nullable": true},
+        {"name": "description", "type": "VARCHAR(100)", "nullable": true}
+      ]
+    },
+    {
+      "name": "item",
+      "desc": "Physical copies of books.",
+      "cols": [
+        {"name": "item_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "biblio_id", "type": "INT", "nullable": true, "fk": "biblio.biblio_id"},
+        {"name": "call_number", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "coll_type_id", "type": "INT", "nullable": true, "fk": "mst_coll_type.coll_type_id"},
+        {"name": "item_code", "type": "VARCHAR(20)", "unique": true, "nullable": true},
+        {"name": "inventory_code", "type": "VARCHAR(200)", "nullable": true},
+        {"name": "received_date", "type": "DATE", "nullable": true},
+        {"name": "supplier_id", "type": "VARCHAR(6)", "nullable": true, "fk": "mst_supplier.supplier_id"},
+        {"name": "order_no", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "location_id", "type": "VARCHAR(3)", "nullable": true, "fk": "mst_location.location_id"},
+        {"name": "order_date", "type": "DATE", "nullable": true},
+        {"name": "item_status_id", "type": "CHAR(3)", "nullable": true, "fk": "mst_item_status.item_status_id"},
+        {"name": "site", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "source", "type": "INT(1)", "default": "'0'"},
+        {"name": "invoice", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "price", "type": "INT", "nullable": true},
+        {"name": "price_currency", "type": "VARCHAR(10)", "nullable": true},
+        {"name": "invoice_date", "type": "DATE", "nullable": true},
+        {"name": "input_date", "type": "DATETIME"},
+        {"name": "last_update", "type": "DATETIME", "nullable": true},
+        {"name": "uid", "type": "INT", "nullable": true, "fk": "user.user_id"}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "biblio", "desc": "Belongs to biblio record."},
+        {"type": "1:n", "table": "loan", "desc": "Involved in multiple loans."},
+        {"type": "1:n", "table": "reserve", "desc": "Reserved multiple times."},
+        {"type": "1:n", "table": "stock_take_item", "desc": "Part of stock take."}
+      ]
+    },
+    {
+      "name": "kardex",
+      "desc": "Records for serial publications.",
+      "cols": [
+        {"name": "kardex_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "date_expected", "type": "DATE"},
+        {"name": "date_received", "type": "DATE", "nullable": true},
+        {"name": "seq_number", "type": "VARCHAR(25)", "nullable": true},
+        {"name": "notes", "type": "TEXT", "nullable": true},
+        {"name": "serial_id", "type": "INT", "nullable": true, "fk": "serial.serial_id"},
+        {"name": "input_date", "type": "DATE"},
+        {"name": "last_update", "type": "DATE"}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "serial", "desc": "Belongs to one serial."}
+      ]
+    },
+    {
+      "name": "loan",
+      "desc": "Loan transactions.",
+      "cols": [
+        {"name": "loan_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "item_code", "type": "VARCHAR(20)", "nullable": true, "fk": "item.item_code"},
+        {"name": "member_id", "type": "VARCHAR(20)", "nullable": true, "fk": "member.member_id"},
+        {"name": "loan_date", "type": "DATE"},
+        {"name": "due_date", "type": "DATE"},
+        {"name": "renewed", "type": "INT", "default": "'0'"},
+        {"name": "loan_rules_id", "type": "INT", "default": "'0'", "fk": "mst_loan_rules.loan_rules_id"},
+        {"name": "actual", "type": "DATE", "nullable": true},
+        {"name": "is_lent", "type": "INT", "default": "'0'"},
+        {"name": "is_return", "type": "INT", "default": "'0'"},
+        {"name": "return_date", "type": "DATE", "nullable": true},
+        {"name": "input_date", "type": "DATETIME", "nullable": true},
+        {"name": "last_update", "type": "DATETIME", "nullable": true},
+        {"name": "uid", "type": "INT", "nullable": true, "fk": "user.user_id"}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "item", "desc": "Refers to one item."},
+        {"type": "n:1", "table": "member", "desc": "Associated with one member."},
+        {"type": "n:1", "table": "mst_loan_rules", "desc": "Follows one loan rule."},
+        {"type": "1:1", "table": "loan_history", "desc": "Historical data."}
+      ]
+    },
+    {
+      "name": "loan_history",
+      "desc": "Historical loan data.",
+      "cols": [
+        {"name": "loan_id", "type": "INT", "pk": true},
+        {"name": "item_code", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "biblio_id", "type": "INT"},
+        {"name": "title", "type": "VARCHAR(300)", "nullable": true},
+        {"name": "call_number", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "classification", "type": "VARCHAR(40)", "nullable": true},
+        {"name": "gmd_name", "type": "VARCHAR(30)", "nullable": true},
+        {"name": "language_name", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "location_name", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "collection_type_name", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "member_id", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "member_name", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "member_type_name", "type": "VARCHAR(64)", "nullable": true},
+        {"name": "loan_date", "type": "DATE", "nullable": true},
+        {"name": "due_date", "type": "DATE", "nullable": true},
+        {"name": "renewed", "type": "INT", "default": "'0'"},
+        {"name": "is_lent", "type": "INT", "default": "'0'"},
+        {"name": "is_return", "type": "INT", "default": "'0'"},
+        {"name": "return_date", "type": "DATE", "nullable": true},
+        {"name": "input_date", "type": "DATETIME", "nullable": true},
+        {"name": "last_update", "type": "DATETIME", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:1", "table": "loan", "desc": "Source of data."}
+      ]
+    },
+    {
+      "name": "member",
+      "desc": "Library member data.",
+      "cols": [
+        {"name": "member_id", "type": "VARCHAR(20)", "pk": true},
+        {"name": "member_name", "type": "VARCHAR(100)"},
+        {"name": "gender", "type": "INT(1)"},
+        {"name": "birth_date", "type": "DATE", "nullable": true},
+        {"name": "member_type_id", "type": "INT(6)", "nullable": true, "fk": "mst_member_type.member_type_id"},
+        {"name": "member_address", "type": "VARCHAR(255)", "nullable": true},
+        {"name": "member_mail_address", "type": "VARCHAR(255)", "nullable": true},
+        {"name": "member_email", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "postal_code", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "inst_name", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "is_new", "type": "INT(1)", "nullable": true},
+        {"name": "member_image", "type": "VARCHAR(200)", "nullable": true},
+        {"name": "pin", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "member_phone", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "member_fax", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "member_since_date", "type": "DATE", "nullable": true},
+        {"name": "register_date", "type": "DATE", "nullable": true},
+        {"name": "expire_date", "type": "DATE"},
+        {"name": "member_notes", "type": "TEXT", "nullable": true},
+        {"name": "is_pending", "type": "SMALLINT(1)", "default": "'0'"},
+        {"name": "mpasswd", "type": "VARCHAR(64)", "nullable": true},
+        {"name": "last_login", "type": "DATETIME", "nullable": true},
+        {"name": "last_login_ip", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "fines", "desc": "Multiple fines."},
+        {"type": "1:n", "table": "loan", "desc": "Multiple loans."},
+        {"type": "1:n", "table": "reserve", "desc": "Multiple reservations."},
+        {"type": "1:1", "table": "member_custom", "desc": "Custom fields."},
+        {"type": "1:n", "table": "comment", "desc": "Multiple comments."},
+        {"type": "1:n", "table": "files_read", "desc": "Read multiple files."},
+        {"type": "1:n", "table": "biblio_mark", "desc": "Mark multiple biblios."},
+        {"type": "1:n", "table": "visitor_count", "desc": "Multiple visit logs."}
+      ]
+    },
+    {
+      "name": "mst_author",
+      "desc": "List of authors.",
+      "cols": [
+        {"name": "author_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "author_name", "type": "VARCHAR(100)"},
+        {"name": "author_year", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "authority_type", "type": "ENUM('p','o','c')", "default": "'p'", "nullable": true},
+        {"name": "auth_list", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "input_date", "type": "DATE"},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio_author", "desc": "Associated with multiple biblio records."}
+      ]
+    },
+    {
+      "name": "mst_carrier_type",
+      "desc": "RDA carrier types.",
+      "cols": [
+        {"name": "id", "type": "INT", "pk": true, "auto": true},
+        {"name": "carrier_type", "type": "VARCHAR(100)", "unique": true},
+        {"name": "code", "type": "VARCHAR(5)"},
+        {"name": "code2", "type": "CHAR(1)"},
+        {"name": "input_date", "type": "DATETIME"},
+        {"name": "last_update", "type": "DATETIME"}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio", "desc": "Used in multiple biblio records."}
+      ]
+    },
+    {
+      "name": "mst_coll_type",
+      "desc": "Collection types.",
+      "cols": [
+        {"name": "coll_type_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "coll_type_name", "type": "VARCHAR(30)", "unique": true},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+       "rels": [
+        {"type": "1:n", "table": "biblio", "desc": "Used for multiple biblio records."},
+        {"type": "1:n", "table": "item", "desc": "Assigned to multiple items."}
+      ]
+    },
+    {
+      "name": "mst_content_type",
+      "desc": "RDA content types.",
+      "cols": [
+        {"name": "id", "type": "INT", "pk": true, "auto": true},
+        {"name": "content_type", "type": "VARCHAR(100)", "unique": true},
+        {"name": "code", "type": "VARCHAR(5)"},
+        {"name": "code2", "type": "CHAR(1)"},
+        {"name": "input_date", "type": "DATETIME"},
+        {"name": "last_update", "type": "DATETIME"}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio", "desc": "Used in multiple biblio records."}
+      ]
+    },
+    {
+      "name": "mst_custom_field",
+      "desc": "Custom fields for biblio/member.",
+      "cols": [
+        {"name": "field_id", "type": "INT", "unique": true, "auto": true},
+        {"name": "primary_table", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "dbfield", "type": "VARCHAR(50)", "pk": true},
+        {"name": "label", "type": "VARCHAR(80)"},
+        {"name": "type", "type": "ENUM('text','checklist','numeric','dropdown','longtext','choice','date')"},
+        {"name": "default", "type": "VARCHAR(80)", "nullable": true},
+        {"name": "max", "type": "INT", "nullable": true},
+        {"name": "data", "type": "TEXT", "nullable": true},
+        {"name": "indexed", "type": "TINYINT(1)", "nullable": true},
+        {"name": "class", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "is_public", "type": "TINYINT(1)", "nullable": true},
+        {"name": "width", "type": "INT(5)", "default": "'100'", "nullable": true},
+        {"name": "note", "type": "TEXT", "nullable": true}
+      ]
+    },
+    {
+      "name": "mst_frequency",
+      "desc": "Publication frequencies for serials.",
+      "cols": [
+        {"name": "frequency_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "frequency", "type": "VARCHAR(25)"},
+        {"name": "language_prefix", "type": "VARCHAR(5)", "nullable": true},
+        {"name": "time_increment", "type": "SMALLINT(6)", "nullable": true},
+        {"name": "time_unit", "type": "ENUM('day','week','month','year')", "default": "'day'", "nullable": true},
+        {"name": "input_date", "type": "DATE"},
+        {"name": "last_update", "type": "DATE"}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio", "desc": "Assigned to multiple biblio records (serials)."}
+      ]
+    },
+    {
+      "name": "mst_gmd",
+      "desc": "General Material Designations (GMDs).",
+      "cols": [
+        {"name": "gmd_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "gmd_code", "type": "VARCHAR(3)", "unique": true, "nullable": true},
+        {"name": "gmd_name", "type": "VARCHAR(30)", "unique": true},
+        {"name": "icon_image", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "input_date", "type": "DATE"},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio", "desc": "Used for multiple biblio records."},
+        {"type": "1:n", "table": "serial", "desc": "Assigned to multiple serial publications."},
+        {"type": "1:n", "table": "stock_take_item", "desc": "Referenced in stock_take_item."}
+      ]
+    },
+    {
+      "name": "mst_item_status",
+      "desc": "Item statuses (e.g., 'Available', 'Loaned').",
+      "cols": [
+        {"name": "item_status_id", "type": "CHAR(3)", "pk": true},
+        {"name": "item_status_name", "type": "VARCHAR(30)", "unique": true},
+        {"name": "rules", "type": "VARCHAR(255)", "nullable": true},
+        {"name": "no_loan", "type": "SMALLINT(1)", "default": "'0'"},
+        {"name": "skip_stock_take", "type": "SMALLINT(1)", "default": "'0'"},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "item", "desc": "Assigned to multiple items."}
+      ]
+    },
+    {
+      "name": "mst_label",
+      "desc": "Labels for biblio records.",
+      "cols": [
+        {"name": "label_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "label_name", "type": "VARCHAR(20)", "unique": true},
+        {"name": "label_desc", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "label_image", "type": "VARCHAR(200)"},
+        {"name": "input_date", "type": "DATE"},
+        {"name": "last_update", "type": "DATE"}
+      ]
+    },
+    {
+      "name": "mst_language",
+      "desc": "List of languages.",
+      "cols": [
+        {"name": "language_id", "type": "CHAR(5)", "pk": true},
+        {"name": "language_name", "type": "VARCHAR(20)", "unique": true},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio", "desc": "Used in multiple biblio records."},
+        {"type": "1:n", "table": "loan_history", "desc": "Referenced in loan_history."}
+      ]
+    },
+    {
+      "name": "mst_loan_rules",
+      "desc": "Loan rules based on member/collection/GMD.",
+      "cols": [
+        {"name": "loan_rules_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "member_type_id", "type": "INT", "default": "'0'", "fk": "mst_member_type.member_type_id"},
+        {"name": "coll_type_id", "type": "INT", "default": "'0'", "nullable": true, "fk": "mst_coll_type.coll_type_id"},
+        {"name": "gmd_id", "type": "INT", "default": "'0'", "nullable": true, "fk": "mst_gmd.gmd_id"},
+        {"name": "loan_limit", "type": "INT(3)", "nullable": true, "default": "'0'"},
+        {"name": "loan_periode", "type": "INT(3)", "nullable": true, "default": "'0'"},
+        {"name": "reborrow_limit", "type": "INT(3)", "nullable": true, "default": "'0'"},
+        {"name": "fine_each_day", "type": "INT(3)", "nullable": true, "default": "'0'"},
+        {"name": "grace_periode", "type": "INT(2)", "nullable": true, "default": "'0'"},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],     
+      "rels": [
+        {"type": "1:n", "table": "loan", "desc": "Multiple loan transactions follow this rule."}
+      ]
+    },
+    {
+      "name": "mst_location",
+      "desc": "Locations within the library.",
+      "cols": [
+        {"name": "location_id", "type": "VARCHAR(3)", "pk": true},
+        {"name": "location_name", "type": "VARCHAR(100)", "unique": true, "nullable": true},
+        {"name": "input_date", "type": "DATE"},
+        {"name": "last_update", "type": "DATE"}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "item", "desc": "Multiple items are stored here."},
+        {"type": "1:n", "table": "loan_history", "desc": "Referenced in loan_history."},
+        {"type": "1:n", "table": "stock_take_item", "desc": "Referenced in stock_take_item."}
+      ]
+    },
+    {
+      "name": "mst_media_type",
+      "desc": "RDA media types.",
+      "cols": [
+        {"name": "id", "type": "INT", "pk": true, "auto": true},
+        {"name": "media_type", "type": "VARCHAR(100)", "unique": true},
+        {"name": "code", "type": "VARCHAR(5)"},
+        {"name": "code2", "type": "CHAR(1)"},
+        {"name": "input_date", "type": "DATETIME"},
+        {"name": "last_update", "type": "DATETIME"}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio", "desc": "Used in multiple biblio records."}
+      ]
+    },
+    {
+      "name": "mst_member_type",
+      "desc": "Types of library members.",
+      "cols": [
+        {"name": "member_type_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "member_type_name", "type": "VARCHAR(50)", "unique": true},
+        {"name": "loan_limit", "type": "INT"},
+        {"name": "loan_periode", "type": "INT"},
+        {"name": "enable_reserve", "type": "INT(1)", "default": "'0'"},
+        {"name": "reserve_limit", "type": "INT", "default": "'0'"},
+        {"name": "member_periode", "type": "INT"},
+        {"name": "reborrow_limit", "type": "INT"},
+        {"name": "fine_each_day", "type": "INT"},
+        {"name": "grace_periode", "type": "INT(2)", "nullable": true, "default": "'0'"},
+        {"name": "input_date", "type": "DATE"},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "member", "desc": "Assigned to multiple members."},
+        {"type": "1:n", "table": "mst_loan_rules", "desc": "Associated with multiple loan rules."},
+        {"type": "1:n", "table": "loan_history", "desc": "Referenced in loan_history."}
+      ]
+    },
+    {
+      "name": "mst_module",
+      "desc": "System modules.",
+      "cols": [
+        {"name": "module_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "module_name", "type": "VARCHAR(50)"},
+        {"name": "module_path", "type": "VARCHAR(200)", "nullable": true},
+        {"name": "module_desc", "type": "VARCHAR(255)", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "group_access", "desc": "Access rules defined for user groups."}
+      ]
+    },
+    {
+      "name": "mst_place",
+      "desc": "Publication places.",
+      "cols": [
+        {"name": "place_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "place_name", "type": "VARCHAR(30)", "unique": true},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio", "desc": "Used in multiple biblio records."}
+      ]
+    },
+    {
+      "name": "mst_publisher",
+      "desc": "List of publishers.",
+      "cols": [
+        {"name": "publisher_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "publisher_name", "type": "VARCHAR(100)", "unique": true},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio", "desc": "Published multiple biblio records."}
+      ]
+    },
+    {
+      "name": "mst_relation_term",
+      "desc": "Relationship terms for vocabulary.",
+      "cols": [
+        {"name": "ID", "type": "INT", "pk": true, "auto": true},
+        {"name": "rt_id", "type": "VARCHAR(11)"},
+        {"name": "rt_desc", "type": "VARCHAR(50)"}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "mst_voc_ctrl", "desc": "Used in multiple vocabulary control entries."}
+      ]
+    },
+    {
+      "name": "mst_servers",
+      "desc": "External catalog servers (Z39.50, P2P).",
+      "cols": [
+        {"name": "server_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "name", "type": "VARCHAR(255)"},
+        {"name": "uri", "type": "TEXT"},
+        {"name": "server_type", "type": "TINYINT(1)", "default": "'1'"},
+        {"name": "input_date", "type": "DATETIME"},
+        {"name": "last_update", "type": "DATETIME", "nullable": true}
+      ]
+    },
+    {
+      "name": "mst_supplier",
+      "desc": "List of suppliers.",
+      "cols": [
+        {"name": "supplier_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "supplier_name", "type": "VARCHAR(100)", "unique": true},
+        {"name": "address", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "postal_code", "type": "CHAR(10)", "nullable": true},
+        {"name": "phone", "type": "CHAR(14)", "nullable": true},
+        {"name": "contact", "type": "CHAR(30)", "nullable": true},
+        {"name": "fax", "type": "CHAR(14)", "nullable": true},
+        {"name": "account", "type": "CHAR(12)", "nullable": true},
+        {"name": "e_mail", "type": "CHAR(80)", "nullable": true},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "item", "desc": "Supplied multiple items."}
+      ]
+    },
+    {
+      "name": "mst_topic",
+      "desc": "List of topics/subjects.",
+      "cols": [
+        {"name": "topic_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "topic", "type": "VARCHAR(50)"},
+        {"name": "topic_type", "type": "ENUM('t','g','n','tm','gr','oc')"},
+        {"name": "auth_list", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "classification", "type": "VARCHAR(50)"},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "biblio_topic", "desc": "Associated with multiple biblio records."},
+        {"type": "1:n", "table": "mst_voc_ctrl", "desc": "Main topic in vocabulary control."},
+        {"type": "1:n", "table": "mst_voc_ctrl", "desc": "Related topic in vocabulary control."},
+        {"type": "1:n", "table": "search_biblio", "desc": "Referenced in search_biblio."}
+      ]
+    },
+    {
+      "name": "mst_visitor_room",
+      "desc": "Visitor rooms within the library.",
+      "cols": [
+        {"name": "id", "type": "INT", "pk": true, "auto": true},
+        {"name": "name", "type": "VARCHAR(50)"},
+        {"name": "unique_code", "type": "VARCHAR(5)", "unique": true},
+        {"name": "created_at", "type": "DATETIME", "nullable": true},
+        {"name": "updated_at", "type": "DATETIME"}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "visitor_count", "desc": "Multiple visit logs."}
+      ]
+    },
+    {
+      "name": "plugins",
+      "desc": "System plugins.",
+      "cols": [
+        {"name": "id", "type": "VARCHAR(32)", "unique": true, "pk":true},
+        {"name": "options", "type": "JSON", "nullable": true},
+        {"name": "path", "type": "TEXT"},
+        {"name": "created_at", "type": "DATETIME"},
+        {"name": "updated_at", "type": "DATETIME", "nullable": true},
+        {"name": "deleted_at", "type": "DATETIME", "nullable": true},
+        {"name": "uid", "type": "INT", "fk": "user.user_id"}
+      ]
+    },
+    {
+      "name": "reserve",
+      "desc": "Item reservations.",
+      "cols": [
+        {"name": "reserve_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "member_id", "type": "VARCHAR(20)", "fk": "member.member_id"},
+        {"name": "biblio_id", "type": "INT", "fk": "biblio.biblio_id"},
+        {"name": "item_code", "type": "VARCHAR(20)", "fk": "item.item_code"},
+        {"name": "reserve_date", "type": "DATETIME"}
+      ]
+    },
+    {
+      "name": "search_biblio",
+      "desc": "Index table for advanced biblio searching.",
+      "cols": [
+        {"name": "biblio_id", "type": "INT", "unique": true, "fk": "biblio.biblio_id"},
+        {"name": "title", "type": "TEXT", "nullable": true},
+        {"name": "edition", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "isbn_issn", "type": "VARCHAR(32)", "nullable": true},
+        {"name": "author", "type": "TEXT", "nullable": true},
+        {"name": "topic", "type": "TEXT", "nullable": true},
+        {"name": "gmd", "type": "VARCHAR(30)", "nullable": true},
+        {"name": "publisher", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "publish_place", "type": "VARCHAR(30)", "nullable": true},
+        {"name": "language", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "classification", "type": "VARCHAR(40)", "nullable": true},
+        {"name": "spec_detail_info", "type": "TEXT", "nullable": true},
+        {"name": "carrier_type", "type": "VARCHAR(100)"},
+        {"name": "content_type", "type": "VARCHAR(100)"},
+        {"name": "media_type", "type": "VARCHAR(100)"},
+        {"name": "location", "type": "TEXT", "nullable": true},
+        {"name": "publish_year", "type": "VARCHAR(20)", "nullable": true},
+        {"name": "notes", "type": "TEXT", "nullable": true},
+        {"name": "series_title", "type": "TEXT", "nullable": true},
+        {"name": "items", "type": "TEXT", "nullable": true},
+        {"name": "collection_types", "type": "TEXT", "nullable": true},
+        {"name": "call_number", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "opac_hide", "type": "SMALLINT(1)", "default": "'0'"},
+        {"name": "promoted", "type": "SMALLINT(1)", "default": "'0'"},
+        {"name": "labels", "type": "TEXT", "nullable": true},
+        {"name": "collation", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "image", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "input_date", "type": "DATETIME", "nullable": true},
+        {"name": "last_update", "type": "DATETIME", "nullable": true}
+      ]
+    },
+    {
+      "name": "serial",
+      "desc": "Serial publication subscriptions.",
+      "cols": [
+        {"name": "serial_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "date_start", "type": "DATE"},
+        {"name": "date_end", "type": "DATE", "nullable": true},
+        {"name": "period", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "notes", "type": "TEXT", "nullable": true},
+        {"name": "biblio_id", "type": "INT", "nullable": true, "fk": "biblio.biblio_id"},
+        {"name": "gmd_id", "type": "INT", "nullable": true, "fk": "mst_gmd.gmd_id"},
+        {"name": "input_date", "type": "DATE"},
+        {"name": "last_update", "type": "DATE"}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "biblio", "desc": "Refers to parent title."},
+        {"type": "n:1", "table": "mst_gmd", "desc": "Has one GMD."},
+        {"type": "1:n", "table": "kardex", "desc": "Multiple kardex records."}
+      ]
+    },
+    {
+      "name": "setting",
+      "desc": "System-wide settings.",
+      "cols": [
+        {"name": "setting_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "setting_name", "type": "VARCHAR(30)", "unique": true},
+        {"name": "setting_value", "type": "TEXT", "nullable": true}
+      ]
+    },
+    {
+      "name": "stock_take",
+      "desc": "Stock take processes.",
+      "cols": [
+        {"name": "stock_take_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "stock_take_name", "type": "VARCHAR(200)"},
+        {"name": "start_date", "type": "DATETIME"},
+        {"name": "end_date", "type": "DATETIME", "nullable": true},
+        {"name": "init_user", "type": "VARCHAR(50)"},
+        {"name": "total_item_stock_taked", "type": "INT", "nullable": true},
+        {"name": "total_item_lost", "type": "INT", "nullable": true},
+        {"name": "total_item_exists", "type": "INT", "default": "'0'", "nullable": true},
+        {"name": "total_item_loan", "type": "INT", "nullable": true},
+        {"name": "stock_take_users", "type": "MEDIUMTEXT", "nullable": true},
+        {"name": "is_active", "type": "INT(1)", "default": "'0'"},
+        {"name": "report_file", "type": "VARCHAR(255)", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "stock_take_item", "desc": "Involves multiple items."}
+      ]
+    },
+    {
+      "name": "stock_take_item",
+      "desc": "Items in a stock take.",
+      "cols": [
+        {"name": "stock_take_id", "type": "INT", "pk": true, "fk": "stock_take.stock_take_id"},
+        {"name": "item_id", "type": "INT", "pk": true, "fk": "item.item_id"},
+        {"name": "item_code", "type": "VARCHAR(20)", "unique": true},
+        {"name": "title", "type": "VARCHAR(255)"},
+        {"name": "gmd_name", "type": "VARCHAR(30)", "nullable": true},
+        {"name": "classification", "type": "VARCHAR(30)", "nullable": true},
+        {"name": "coll_type_name", "type": "VARCHAR(30)", "nullable": true},
+        {"name": "call_number", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "location", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "status", "type": "ENUM('e','m','u','l')", "default": "'m'"},
+        {"name": "checked_by", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "last_update", "type": "DATETIME", "nullable": true}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "stock_take", "desc": "Belongs to one stock take process."},
+        {"type": "n:1", "table": "item", "desc": "Refers to one item."}
+      ]
+    },
+    {
+      "name": "system_log",
+      "desc": "Logs system activity.",
+      "cols": [
+        {"name": "log_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "log_type", "type": "ENUM('staff','member','system')", "default": "'staff'"},
+        {"name": "id", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "log_location", "type": "VARCHAR(50)"},
+        {"name": "sub_module", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "action", "type": "VARCHAR(50)", "nullable": true},
+        {"name": "log_msg", "type": "TEXT"},
+        {"name": "log_date", "type": "DATETIME"}
+      ]
+    },
+    {
+      "name": "user",
+      "desc": "Staff user accounts.",
+      "cols": [
+        {"name": "user_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "username", "type": "VARCHAR(50)", "unique": true},
+        {"name": "realname", "type": "VARCHAR(100)"},
+        {"name": "passwd", "type": "VARCHAR(64)"},
+         {"name": "2fa", "type": "TEXT", "nullable": true},
+        {"name": "email", "type": "VARCHAR(200)", "nullable": true},
+        {"name": "user_type", "type": "SMALLINT(2)", "nullable": true},
+        {"name": "user_image", "type": "VARCHAR(250)", "nullable": true},
+        {"name": "social_media", "type": "TEXT", "nullable": true},
+        {"name": "last_login", "type": "DATETIME", "nullable": true},
+        {"name": "last_login_ip", "type": "CHAR(15)", "nullable": true},
+        {"name": "groups", "type": "VARCHAR(200)", "nullable": true},
+        {"name": "admin_template", "type": "TEXT", "nullable": true},
+        {"name": "forgot", "type": "VARCHAR(80)", "nullable": true},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "backup_log", "desc": "Performed multiple backups."},
+        {"type": "1:n", "table": "files", "desc": "Uploaded multiple files."},
+        {"type": "1:n", "table": "item", "desc": "Last updater for multiple items."},
+        {"type": "1:n", "table": "loan", "desc": "Last updater for multiple loans."},
+        {"type": "1:n", "table": "plugins", "desc": "Manages multiple plugins."},
+        {"type": "1:n", "table": "biblio_log", "desc": "Generated multiple biblio logs."},
+         {"type": "1:n", "table": "files_read", "desc": "Read multiple files."}
+      ]
+    },
+    {
+      "name": "user_group",
+      "desc": "User groups for access control.",
+      "cols": [
+        {"name": "group_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "group_name", "type": "VARCHAR(30)", "unique": true},
+        {"name": "input_date", "type": "DATE", "nullable": true},
+        {"name": "last_update", "type": "DATE", "nullable": true}
+      ],
+      "rels": [
+        {"type": "1:n", "table": "group_access", "desc": "Multiple access rules defined."},
+        {"type": "1:n", "table": "user", "desc": "Multiple users."}
+      ]
+    },
+    {
+      "name": "visitor_count",
+      "desc": "Visitor check-in counts.",
+      "cols": [
+        {"name": "visitor_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "member_id", "type": "VARCHAR(20)", "nullable": true, "fk": "member.member_id"},
+        {"name": "member_name", "type": "VARCHAR(255)"},
+        {"name": "institution", "type": "VARCHAR(100)", "nullable": true},
+        {"name": "room_code", "type": "VARCHAR(5)", "nullable": true, "fk": "mst_visitor_room.unique_code"},
+        {"name": "checkin_date", "type": "DATETIME"}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "member", "desc": "Associated with one member."},
+        {"type": "n:1", "table": "mst_visitor_room", "desc": "For one visitor room."}
+      ]
+    },
+    {
+      "name": "vocabolary_control",
+      "desc": "Vocabulary control (thesaurus).",
+      "cols": [
+        {"name": "vocabolary_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "topic_id", "type": "INT", "fk": "mst_topic.topic_id"},
+        {"name": "rt_id", "type": "VARCHAR(11)", "fk": "mst_relation_term.rt_id"},
+        {"name": "related_topic_id", "type": "VARCHAR(250)", "fk": "mst_topic.topic_id"},
+        {"name": "scope", "type": "TEXT", "nullable": true}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "mst_topic", "desc": "Has one main topic."},
+        {"type": "n:1", "table": "mst_relation_term", "desc": "Uses one relation term."},
+        {"type": "n:1", "table": "mst_topic", "desc": "Has one related topic."}
+      ]
+    },
+    {
+      "name": "biblio_relation",
+      "desc": "Relationships between biblio records.",
+      "cols": [
+        {"name": "biblio_id", "type": "INT", "pk": true, "fk": "biblio.biblio_id"},
+        {"name": "rel_biblio_id", "type": "INT", "pk": true, "fk": "biblio.biblio_id"},
+        {"name": "rel_type", "type": "INT(1)", "default": "'1'", "nullable": true}
+      ]
+    },
+     {
+      "name": "cache",
+      "desc": "Cached data for performance.",
+      "cols": [
+        {"name": "name", "type": "VARCHAR(64)", "unique": true},
+        {"name": "contents", "type": "TEXT"},
+        {"name": "created_at", "type": "DATETIME"},
+        {"name": "updated_at", "type": "DATETIME"},
+        {"name": "expired_at", "type": "DATETIME", "nullable": true}
+      ]
+    },
+    {
+      "name": "biblio_custom",
+      "desc": "Custom fields data for bibliographic records.",
+      "cols": [
+        {"name": "biblio_id", "type": "INT", "pk": true, "fk": "biblio.biblio_id"}
+      ],
+      "rels": [
+        {"type": "1:1", "table": "biblio", "desc": "One-to-one relationship with biblio."}
+      ]
+    },
+    {
+      "name": "member_custom",
+      "desc": "Custom fields data for members.",
+      "cols": [
+        {"name": "member_id", "type": "VARCHAR(20)", "pk": true, "fk": "member.member_id"}
+      ],
+      "rels": [
+        {"type": "1:1", "table": "member", "desc": "One-to-one relationship with member."}
+      ]
+    },
+    {
+      "name": "comment",
+      "desc": "Comments on biblio records.",
+      "cols": [
+        {"name": "comment_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "biblio_id", "type": "INT", "fk": "biblio.biblio_id"},
+        {"name": "member_id", "type": "VARCHAR(20)", "fk": "member.member_id"},
+        {"name": "comment", "type": "TEXT"},
+        {"name": "input_date", "type": "DATETIME", "nullable": true},
+        {"name": "last_update", "type": "DATETIME", "nullable": true}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "biblio", "desc": "For one biblio record."},
+        {"type": "n:1", "table": "member", "desc": "Written by one member."}
+      ]
+    },
+    {
+      "name": "files_read",
+      "desc": "Logs of file reads.",
+      "cols": [
+        {"name": "filelog_id", "type": "INT", "pk": true, "auto": true},
+        {"name": "file_id", "type": "INT", "fk": "files.file_id"},
+        {"name": "date_read", "type": "TIMESTAMP"},
+        {"name": "member_id", "type": "VARCHAR(20)", "nullable": true, "fk": "member.member_id"},
+        {"name": "user_id", "type": "INT", "nullable": true, "fk": "user.user_id"},
+        {"name": "client_ip", "type": "VARCHAR(50)", "nullable": true}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "files", "desc": "Refers to one file."},
+        {"type": "n:1", "table": "member", "desc": "Associated with one member."},
+        {"type": "n:1", "table": "user", "desc": "Associated with one user."}
+      ]
+    },
+    {
+      "name": "index_documents",
+      "desc": "Links indexed words to documents.",
+      "cols": [
+        {"name": "document_id", "type": "INT", "pk": true, "fk": "biblio.biblio_id"},
+        {"name": "word_id", "type": "BIGINT", "pk": true, "fk": "index_words.id"},
+        {"name": "location", "type": "VARCHAR(50)", "pk": true},
+        {"name": "hit_count", "type": "INT"}
+      ]
+    },
+    {
+      "name": "index_words",
+      "desc": "Stores indexed words.",
+      "cols": [
+        {"name": "id", "type": "BIGINT", "pk": true, "auto": true},
+        {"name": "word", "type": "VARCHAR(50)"},
+        {"name": "num_hits", "type": "INT"},
+        {"name": "doc_hits", "type": "INT"}
+      ],
+      "rels": [
+         {"type": "1:n", "table": "index_documents", "desc": "Referenced by multiple index_documents records."}
+      ]
+    },
+     {
+      "name": "biblio_mark",
+      "desc": "Bookmarks of biblio records by members.",
+      "cols": [
+        {"name": "id", "type": "VARCHAR(32)", "unique": true, "pk": true},
+        {"name": "member_id", "type": "VARCHAR(20)", "fk": "member.member_id"},
+        {"name": "biblio_id", "type": "INT", "fk": "biblio.biblio_id"},
+        {"name": "created_at", "type": "DATETIME"}
+      ],
+      "rels": [
+        {"type": "n:1", "table": "member", "desc": "Associated with one member."},
+        {"type": "n:1", "table": "biblio", "desc": "Refers to one biblio record."}
+      ]
+    }
+  ]
+}
