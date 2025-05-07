@@ -1,0 +1,692 @@
+{
+  "slims9_bulian-9.6.1": {
+    "files": [
+      "chatserver.php",
+      "composer.json",
+      "oai2.php",
+      "oai.php",
+      "index.php",
+      "README.md",
+      "sysconfig.inc.php",
+      "ucnode.inc.php"
+    ],
+    "folders": {
+      "admin/": {
+        "files": [
+          "AJAX_check_id.php",
+          "AJAX_lookup_handler.php",
+          "AJAX_vocabolary_control.php",
+          "chat.php",
+          "help.php",
+          "index.php",
+          "logout.php",
+          "plugin_container.php",
+          "view.php"
+        ],
+        "folders": {
+          "admin_template/": {
+            "files": [
+              "barcodescanner.tpl.php",
+              "barcodescannermodal.tpl.php",
+              "duedateMail.php",
+              "notemplate_page_tpl.php",
+              "overdue-mail-tpl.php",
+              "overdueMail.php",
+              "pop_iframe_tpl.php",
+              "printed.tpl.php",
+              "printed_page_tpl.php",
+              "printed_settings.inc.php"
+            ],
+            "folders": {
+              "default/": {
+                "files": [
+                  "index_template.inc.php",
+                  "tinfo.inc.php"
+                ],
+                "folders": {
+                  "vendor/": {
+                    "folders": {
+                      "pace/": {
+                        "files": ["pace.min.js"]
+                      },
+                      "slimscroll/": {
+                        "files": [
+                          "jquery.slimscroll.js",
+                          "jquery.slimscroll.min.js",
+                          "README.md",
+                          "slimScroll.jquery.json"
+                        ]
+                      }
+                    }
+                  },
+                  "js/": "(3rd_party_code - excluded by user rule)"
+                }
+              },
+              "akasia/": "(3rd_party_code - theme folder)",
+              "akasia-dz/": "(3rd_party_code - theme folder)",
+              "nightmode/": "(3rd_party_code - theme folder)"
+            }
+          },
+          "default/": {
+            "files": [
+              "home.php",
+              "session.inc.php",
+              "session_check.inc.php",
+              "submenu.php"
+            ]
+          },
+          "modules/": {
+            "files": ["index.php"],
+            "folders": {
+              "bibliography/": {
+                "files": [
+                  "barcode_reader.php",
+                  "biblio.inc.php",
+                  "biblio_utils.inc.php",
+                  "checkout_item.php",
+                  "custom_fields.inc.php",
+                  "dl_print.php",
+                  "export.php",
+                  "iframe_attach.php",
+                  "iframe_author.php",
+                  "iframe_biblio_rel.php",
+                  "iframe_item_list.php",
+                  "iframe_topic.php",
+                  "import.php",
+                  "import_preview.php",
+                  "index.php",
+                  "item.php",
+                  "item_barcode_generator.php",
+                  "item_export.php",
+                  "item_import.php",
+                  "marcexport.php",
+                  "marcimport.php",
+                  "marcsru.php",
+                  "p2p.php",
+                  "pop_attach.php",
+                  "pop_author.php",
+                  "pop_author_edit.php",
+                  "pop_biblio.php",
+                  "pop_biblio_rel.php",
+                  "pop_item.php",
+                  "pop_p2p.php",
+                  "pop_pattern.php",
+                  "pop_print_settings.php",
+                  "pop_topic.php",
+                  "pop_topic_edit.php",
+                  "printed_card.php",
+                  "print_settings.php",
+                  "scrape_image.php",
+                  "submenu.php",
+                  "ucs_update.php",
+                  "ucs_upload.php",
+                  "ucs_upload.sh.php",
+                  "z3950.php",
+                  "z3950sru.php"
+                ],
+                "folders": {
+                  "File/": {
+                    "files": [
+                      "MARC.php",
+                      "MARCBASE.php",
+                      "MARCXML.php"
+                    ],
+                    "folders": {
+                      "MARC/": {
+                        "files": [
+                          "Control_Field.php",
+                          "Data_Field.php",
+                          "Exception.php",
+                          "Field.php",
+                          "Lint.php",
+                          "List.php",
+                          "Record.php",
+                          "Subfield.php"
+                        ],
+                        "folders": {
+                          "Lint/": {
+                            "files": ["CodeData.php"]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "circulation/": {
+                "files": [
+                  "ajax_action.php",
+                  "barcode_reader.php",
+                  "circulation_action.php",
+                  "circulation_base_lib.inc.php",
+                  "fines_list.php",
+                  "index.php",
+                  "item_AJAX_lookup_handler.php",
+                  "loan.php",
+                  "loan_date_AJAX_change.php",
+                  "loan_list.php",
+                  "loan_rules.php",
+                  "member_loan_hist.php",
+                  "pop_loan_receipt.php",
+                  "quick_return.php",
+                  "reserve_list.php",
+                  "submenu.php"
+                ]
+              },
+              "master_file/": {
+                "files": [
+                  "author.php",
+                  "coll_type.php",
+                  "cross_reference.php",
+                  "detail_comment.php",
+                  "doc_language.php",
+                  "frequency.php",
+                  "iframe_vocabolary_control.php",
+                  "index.php",
+                  "item_code_pattern.php",
+                  "item_status.php",
+                  "label.php",
+                  "location.php",
+                  "p2pservers.php",
+                  "place.php",
+                  "pop_scope_vocabolary.php",
+                  "pop_vocabolary_control.php",
+                  "publisher.php",
+                  "rda_cmc.php",
+                  "submenu.php",
+                  "supplier.php",
+                  "topic.php",
+                  "visitor_room.php"
+                ]
+              },
+              "membership/": {
+                "files": [
+                  "duedate_mail.php",
+                  "export.php",
+                  "import.php",
+                  "index.php",
+                  "member_AJAX_response.php",
+                  "member_base_lib.inc.php",
+                  "member_card_generator.php",
+                  "member_custom_fields.inc.php",
+                  "member_type.php",
+                  "overdue_mail.php",
+                  "submenu.php"
+                ]
+              },
+              "reporting/": {
+                "files": [
+                  "charts_report.php",
+                  "index.php",
+                  "loan_report.php",
+                  "member_report.php",
+                  "pop_chart.php",
+                  "report_dbgrid.inc.php",
+                  "spreadsheet.php",
+                  "submenu.php",
+                  "xlsoutput.php"
+                ],
+                "folders": {
+                  "customs/": {
+                    "files": [
+                      "class_recap.php",
+                      "customs_report_list.inc.php",
+                      "dl_counter.php",
+                      "dl_detail.php",
+                      "due_date_warning.php",
+                      "fines_report.php",
+                      "item_titles_list.php",
+                      "item_usage.php",
+                      "loan_by_class.php",
+                      "loan_history.php",
+                      "member_fines_list.csv.php",
+                      "member_fines_list.php",
+                      "member_list.php",
+                      "member_loan_list.php",
+                      "overdued_list.php",
+                      "pop_procurement_list.php",
+                      "procurement_report.php",
+                      "reserve_list.php",
+                      "staff_act.php",
+                      "visitor_list.php",
+                      "visitor_report.php",
+                      "visitor_report_day.php"
+                    ]
+                  }
+                }
+              },
+              "stock_take/": {
+                "files": [
+                  "current.php",
+                  "finish.php",
+                  "index.php",
+                  "init.php",
+                  "lost_item_list.php",
+                  "report_reader.php",
+                  "resync.php",
+                  "stock_take_action.php",
+                  "st_log.php",
+                  "st_report.php",
+                  "st_report_detail.php",
+                  "st_upload.php",
+                  "submenu.php"
+                ]
+              },
+              "system/": {
+                "files": [
+                  "app_user.php",
+                  "backup.php",
+                  "backup_config.php",
+                  "backup_proc.php",
+                  "barcode_generator.php",
+                  "biblio_indexer.inc.php",
+                  "biblio_indexer_es.inc.php",
+                  "biblio_indexes.php",
+                  "biblio_indexes_es.php",
+                  "captchasetting.php",
+                  "content.php",
+                  "currencysetting.php",
+                  "custom_field.php",
+                  "envinfo.php",
+                  "envsetting.php",
+                  "holiday.php",
+                  "index.php",
+                  "mailsetting.php",
+                  "membercard_theme.php",
+                  "module.php",
+                  "module_priv_form.inc.php",
+                  "module_priv_form_adv.inc.php",
+                  "p2pservers.php",
+                  "plugin_action.php",
+                  "plugins.php",
+                  "shortcut.php",
+                  "submenu.php",
+                  "sys_log.php",
+                  "theme.php",
+                  "ucsetting.php",
+                  "user_group.php"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "api/": {
+        "folders": {
+          "v1/": {
+            "files": ["routes.php"],
+            "folders": {
+              "controllers/": {
+                "files": [
+                  "BiblioController.php",
+                  "Controller.php",
+                  "HomeController.php",
+                  "ItemController.php",
+                  "LoanController.php",
+                  "MemberController.php",
+                  "SubjectController.php"
+                ]
+              },
+              "helpers/": {
+                "files": [
+                  "Cache.php",
+                  "Image.php"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "config/": {
+        "files": [
+          "cache.php",
+          "captcha.sample.php",
+          "class_alias.sample.php",
+          "csp.php",
+          "csv.php",
+          "database.sample.php",
+          "env.sample.php",
+          "filesystem.php",
+          "index.php",
+          "mail.sample.php",
+          "url.sample.php"
+        ]
+      },
+      "files/": {
+        "files": ["index.php"],
+        "folders": {
+          "backup/": {
+            "files": ["index.php"]
+          },
+          "chat/": {
+            "files": ["index.php"]
+          },
+          "membercard/": {
+            "folders": {
+              "classic/": {
+                "files": [
+                  "membercard.php",
+                  "tinfo.inc.php"
+                ]
+              },
+              "old/": {
+                "files": [
+                  "membercard.php",
+                  "tinfo.inc.php"
+                ]
+              }
+            }
+          },
+          "reports/": {
+            "files": ["index.php"]
+          },
+          "swfs/": {
+            "files": ["index.php"]
+          }
+        }
+      },
+      "images/": {
+        "files": ["index.php"],
+        "folders": {
+          "barcodes/": { "files": ["index.php"] },
+          "cache/": { "files": ["index.php"] },
+          "default/": { "files": ["index.php"] },
+          "docs/": { "files": ["index.php"] },
+          "labels/": { "files": ["index.php"] },
+          "persons/": { "files": ["index.php"] }
+        }
+      },
+      "indexing_engine/": {
+        "files": [
+          "elasticsearch_config.conf.php",
+          "index.php",
+          "soir_config.conf.php"
+        ]
+      },
+      "lib/": {
+        "files": [
+          "admin_logon.inc.php",
+          "AdvancedLogging.php",
+          "AlLibrarian.php",
+          "AltoRouter.php",
+          "api.inc.php",
+          "autoload.php",
+          "biblio_list.inc.php",
+          "biblio_list_elasticsearch.inc.php",
+          "biblio_list_index.inc.php",
+          "biblio_list_model.inc.php",
+          "biblio_list_mongodb.inc.php",
+          "biblio_list_sphinx.inc.php",
+          "biblio_list_sqlite.inc.php",
+          "Cache.php",
+          "circulation_api.inc.php",
+          "comment.inc.php",
+          "Config.php",
+          "content.inc.php",
+          "content_custom.inc.php",
+          "content_list.inc.php",
+          "Currency.php",
+          "DB.php",
+          "detail.inc.php",
+          "GroupMenu.php",
+          "GroupMenuOrder.php",
+          "helper.inc.php",
+          "http_request.inc.php",
+          "index.php",
+          "Ip.php",
+          "ip_based_access.inc.php",
+          "Jquery.php",
+          "Json.php",
+          "Mail.php",
+          "marcxmlsenayan.inc.php",
+          "member_api.inc.php",
+          "member_logon.inc.php",
+          "member_session.inc.php",
+          "modsxmlsenayan.inc.php",
+          "modsxmlslims.inc.php",
+          "module.inc.php",
+          "Number.php",
+          "oai-pmh.inc.php",
+          "Opac.php",
+          "phpwebsocket.php",
+          "Plugins.php",
+          "router.inc.php",
+          "Sanitizer.php",
+          "Url.php",
+          "utility.inc.php",
+          "VideoStream.php",
+          "Visitor.php"
+        ],
+        "folders": {
+          "bacon/": "(3rd_party_code - library)",
+          "Cache/": "(3rd_party_code - library)",
+          "Captcha/": "(3rd_party_code - library)",
+          "Cli/": "(3rd_party_code - library)",
+          "collection/": "(3rd_party_code - library)",
+          "contents/": "(3rd_party_code - library)",
+          "csrf/": "(3rd_party_code - library)",
+          "Csv/": "(3rd_party_code - library)",
+          "dasprid/": "(3rd_party_code - library)",
+          "ezyang/": "(3rd_party_code - library)",
+          "Filesystems/": "(3rd_party_code - library)",
+          "flex/": "(3rd_party_code - library)",
+          "guzzlehttp/": "(3rd_party_code - library)",
+          "Http/": "(3rd_party_code - library)",
+          "lang/": "(3rd_party_code - library)",
+          "league/": "(3rd_party_code - library)",
+          "maennchen/": "(3rd_party_code - library)",
+          "Mail/": "(3rd_party_code - library)",
+          "marc/": "(3rd_party_code - library)",
+          "markbaker/": "(3rd_party_code - library)",
+          "math/": "(3rd_party_code - library)",
+          "Migration/": "(3rd_party_code - library)",
+          "minigalnano/": "(3rd_party_code - library)",
+          "myclabs/": "(3rd_party_code - library)",
+          "mysqldump-php/": "(3rd_party_code - library)",
+          "nesbot/": "(3rd_party_code - library)",
+          "oaipmh/": "(3rd_party_code - library)",
+          "paragonie/": "(3rd_party_code - library)",
+          "Parcel/": "(3rd_party_code - library)",
+          "parsedown/": "(3rd_party_code - library)",
+          "phpbarcode/": "(3rd_party_code - library)",
+          "phplot/": "(3rd_party_code - library)",
+          "PHPMailer/": "(3rd_party_code - library)",
+          "phpoffice/": "(3rd_party_code - library)",
+          "phpseclib/": "(3rd_party_code - library)",
+          "psr/": "(3rd_party_code - library)",
+          "ralouphie/": "(3rd_party_code - library)",
+          "recaptcha/": "(3rd_party_code - library)",
+          "SearchEngine/": "(3rd_party_code - library)",
+          "Session/": "(3rd_party_code - library)",
+          "sphinx/": "(3rd_party_code - library)",
+          "spomky-labs/": "(3rd_party_code - library)",
+          "symfony/": "(3rd_party_code - library)",
+          "Table/": "(3rd_party_code - library)",
+          "uuid/": "(3rd_party_code - library)",
+          "Zend/": "(3rd_party_code - library)"
+        }
+      },
+      "m/": {
+        "files": ["index.php"]
+      },
+      "plugins/": {
+        "files": [
+          "biblio_adv_log.plugin.php",
+          "index.php",
+          "README.md"
+        ],
+        "folders": {
+          "csp-manager/": {
+            "files": [
+              "index.php",
+              "README.md",
+              "slims_csp.plugin.php"
+            ]
+          },
+          "label_barcode/": {
+            "files": [
+              "index.php",
+              "label.plugin.php"
+            ]
+          },
+          "read_counter/": {
+            "files": [
+              "index.php",
+              "read_counter_plugin.php",
+              "report.php"
+            ],
+            "folders": {
+              "migration/": {
+                "files": [
+                  "1_CreateReadCounterTable.php",
+                  "2_AddUIDColumn.php"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "repository/": {
+        "files": ["index.php"]
+      },
+      "sample/": {
+        "files": ["index.php"]
+      },
+      "simbio2/": {
+        "files": ["simbio.inc.php"],
+        "folders": {
+          "simbio_DB/": {
+            "files": ["datagrid/simbio_dbgrid.inc.php", "simbio_dbop.inc.php"],
+            "folders": {
+              "isis/": {
+                "files": ["simbio_isis.inc.php", "simbio_isis_result.inc.php"]
+              },
+              "mysql/": {
+                "files": ["simbio_mysql.inc.php", "simbio_mysql_result.inc.php"]
+              },
+              "pgsql/": {
+                "files": ["simbio_pgsql.inc.php", "simbio_pgsql_result.inc.php"]
+              },
+              "sqlite/": {
+                "files": ["simbio_sqlite.inc.php", "simbio_sqlite_result.inc.php"]
+              }
+            }
+          },
+          "simbio_FILE/": {
+            "files": ["simbio_directory.inc.php", "simbio_file_upload.inc.php"]
+          },
+          "simbio_GUI/": {
+            "folders": {
+              "form_maker/": {
+                "files": [
+                  "simbio_form_element.inc.php",
+                  "simbio_form_maker.inc.php",
+                  "simbio_form_table.inc.php",
+                  "simbio_form_table_AJAX.inc.php"
+                ]
+              },
+              "paging/": {
+                "files": ["simbio_paging.inc.php"]
+              },
+              "table/": {
+                "files": ["simbio_table.inc.php"]
+              },
+              "template_parser/": {
+                "files": ["simbio_template_parser.inc.php"]
+              }
+            }
+          },
+          "simbio_UTILS/": {
+            "files": [
+              "simbio_date.inc.php",
+              "simbio_qparser.inc.php",
+              "simbio_security.inc.php",
+              "simbio_tokenizecql.inc.php",
+              "simbio_tokenizecql.v2.inc.php"
+            ]
+          }
+        }
+      },
+      "src/": {
+        "folders": {
+          "Slims/": {
+            "folders": {
+              "Opac/": {
+                "files": ["Security.php"]
+              }
+            }
+          }
+        }
+      },
+      "template/": {
+        "files": [
+          "alert.php",
+          "index.php",
+          "reserveMail.php",
+          "serviceunavailable.php"
+        ],
+        "folders": {
+          "default/": {
+            "files": [
+              "biblio_list_template.php",
+              "classic.php",
+              "custom_frontpage_record.inc.php",
+              "detail_template.php",
+              "index_template.inc.php",
+              "login_template.inc.php",
+              "news_template.php",
+              "tinfo.inc.php",
+              "visitor_template.php"
+            ],
+            "folders": {
+              "assets/": {
+                "folders": {
+                  "plugin/": {
+                    "folders": {
+                      "vegas/": {
+                        "files": ["vegas.js", "vegas.min.js"]
+                      }
+                    }
+                  },
+                  "js/": "(3rd_party_code - excluded by user rule)"
+                }
+              },
+              "citation/": {
+                "files": [
+                  "apa_style_template.php",
+                  "chicago_style_template.php",
+                  "mla_style_template.php",
+                  "turabian_style_template.php"
+                ]
+              },
+              "parts/": {
+                "files": [
+                  "footer.php",
+                  "header.php",
+                  "_home.php",
+                  "_member.php",
+                  "_modal_advanced.php",
+                  "_modal_social_media.php",
+                  "_modal_topic.php",
+                  "_navbar.php",
+                  "_other.php",
+                  "_result-search.php",
+                  "_search-form.php"
+                ]
+              }
+            }
+          },
+          "akasia/": "(3rd_party_code - theme folder)",
+          "akasia-dz/": "(3rd_party_code - theme folder)",
+          "lightweight/": "(3rd_party_code - theme folder)"
+        }
+      },
+      "upgrade/": {
+        "files": [
+          "index.php",
+          "README.md"
+        ]
+      }
+    }
+  }
+}
