@@ -38,14 +38,15 @@ Manfaatkan dokumentasi resmi untuk panduan lengkap:
 
 Temukan plugin dan kontribusi lain dari pengembang SLiMS di repositori berikut:
 
-- [Waris Agung Widodo (idoalit)](https://github.com/idoalit?tab=repositories&q=slims)
-- [Drajat Hasan (drajathasan)](https://github.com/drajathasan?tab=repositories&q=slims)
-- [Ari Nugraha (dicarve)](https://github.com/dicarve?tab=repositories?q=slims)
-- [Hendro Wicaksono (hendrowicaksono)](https://github.com/hendrowicaksono?tab=repositories?q=slims)
-- [Purwoko (purwoko)](https://github.com/purwoko?tab=repositories?q=slims)
-- [Arif Syamsudin (buitenzorg812)](https://github.com/buitenzorg812?tab=repositories?q=slims)
-- [Heru Subekti (heroesoebekti)](https://github.com/heroesoebekti?tab=repositories?q=slims)
-- [Erwan Setyo Budi (erwansetyobudi)](https://github.com/erwansetyobudi?tab=repositories&q=slims)
+- [Waris Agung Widodo (idoalit)](https://github.com/idoalit)
+- [Erwan Setyo Budi (erwansetyobudi)](https://github.com/erwansetyobudi)
+- [Drajat Hasan (drajathasan)](https://github.com/drajathasan)
+- [Ari Nugraha (dicarve)](https://github.com/dicarve)
+- [Hendro Wicaksono (hendrowicaksono)](https://github.com/hendrowicaksono)
+- [Purwoko (purwoko)](https://github.com/purwoko)
+- [Arif Syamsudin (buitenzorg812)](https://github.com/buitenzorg812)
+- [Heru Subekti (heroesoebekti)](https://github.com/heroesoebekti)
+
 
 ## 🌟 Sumber Daya Komunitas SLiMS
 
