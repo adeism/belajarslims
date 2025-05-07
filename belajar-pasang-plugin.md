@@ -1,3 +1,7 @@
+> ⚠️ **Disclaimer**  
+> JANGAN langsung pasang Plugin di SLiMS yang Operasional. Selalu Tes Plugin di PC/SLiMS lain. Gunakan dengan risiko Anda sendiri.
+
+
 # 🧩 Panduan Pemasangan Plugin SLiMS 🚀
 
 Berikut adalah panduan dasar dan langkah-langkah umum untuk memasang plugin pada SLiMS (Senayan Library Management System).
