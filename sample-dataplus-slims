@@ -1,4 +1,4 @@
-Rencana untuk sample data lebih lengkap ketika awal installasi SLiMS:
+Diperlukan data lebih lengkap untuk preview fitur yang ada, berikut rencana untuk sample data lebih lengkap ketika awal installasi SLiMS 9.6.1:
 Add 3 visitor member types.
 Add 3 user groups.
 Add 3 loan rules.
@@ -26,6 +26,6 @@ Add 1 bibliography custom field (type: check list)
 Add 1 member custom field. (type: drop down)
 Add 1 content (news) scheduled for publishing.
 Set holiday settings. (sunday)
-Add 3 special holidays. (idul fitri, idul adha, kemerdekaan indonesia)
+Add 3 special holidays. (1 Mei: Hari Buruh Internasional, 1 Juni: Hari Lahir Pancasila, 17 Agustus: Proklamasi Kemerdekaan)
 Add 1 database backup entry.
 Add 3 files (1 public, 1 private, 1 URL).
