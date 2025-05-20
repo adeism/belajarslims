@@ -30,13 +30,10 @@ Sebagian besar plugin SLiMS melibatkan penyalinan file dan folder plugin ke dire
     *   Anda akan mendapatkan sebuah folder yang berisi file-file plugin.
     *   Jika plugin tidak bekerja, hapus sebagian nama folder misal slims-rekap-plus-lokasi-main. Bagian main di hapus. (ini biasanya terjadi ketika extract file download dari hasil download di github, seperti digambar) 
 
-3.  **📍 Identifikasi Lokasi Instalasi SLiMS Portabel Anda:**
+3.  **📍 Identifikasi Lokasi Instalasi SLiMS Anda:**
     *   **Jika menggunakan XAMPP:**
         *   Biasanya di ``C:\xampp\htdocs\nama_folder_slims_anda\``
         *   Contoh: ``C:\xampp\htdocs\slims9_bulian\``
-    *   **Jika menggunakan Paket SLiMS Portabel (misal SPOTS):**
-        *   Cari folder utama paket portabel Anda. Di dalamnya, cari folder SLiMS (bisa bernama `slims_version`, `htdocs`, atau `www`).
-        *   Contoh: ``D:\SPOTS_SLiMS9\slims9_bulian\`` atau ``D:\SLiMS_Portable\htdocs\``
 
 4.  **➡️ Salin Folder/File Plugin ke Direktori SLiMS yang Tepat:**
     *   **Lokasi Umum Penyalinan File Plugin:**
@@ -49,16 +46,12 @@ Sebagian besar plugin SLiMS melibatkan penyalinan file dan folder plugin ke dire
         3.  Buka File Explorer dan navigasi ke direktori `plugins` di dalam folder instalasi SLiMS portabel Anda (misal, ``C:\xampp\htdocs\slims9_bulian\plugins\``).
         4.  Tempel (Paste) folder `my_awesome_plugin` ke sana.
 
-5.  **🚀 Jalankan Server SLiMS Portabel Anda:**
-    *   **XAMPP:** Pastikan Apache dan MySQL berjalan dari XAMPP Control Panel.
-    *   **Paket Portabel:** Jalankan file starter server (`apache_start.bat`, `webserver_start.exe`, dll.).
-
-6.  **⚙️ Aktivasi atau Konfigurasi Plugin (Jika Perlu):**
+5.  **⚙️ Aktivasi atau Konfigurasi Plugin (Jika ada/perlu):**
     *   Buka SLiMS di browser Anda (misal `http://localhost/slims9_bulian/` atau `http://localhost:8089/`).
     *   Login ke area **Admin**.
-    *   **Cari menu plugin atau modul:**
-        *   Beberapa plugin akan muncul di menu "Sistem" ➡️ "Plugin" (atau "Modul"). Anda mungkin perlu mengaktifkannya di sana.
-        *   Plugin lain mungkin menambahkan menu baru di sidebar admin atau di dalam modul yang sudah ada (misalnya, plugin untuk "Sirkulasi" akan muncul di menu "Sirkulasi").
+    *   **Cari menu plugin**
+        *   klik "Sistem" ➡️ "Plugin". Anda perlu mengaktifkannya di sana.
+        *   Plugin mungkin menambahkan menu baru di sidebar admin atau di dalam modul yang sudah ada (misalnya, plugin untuk "Sirkulasi" akan muncul di menu "Sirkulasi").
     *   Ikuti instruksi konfigurasi spesifik dari plugin tersebut (jika ada).
 
 ---
