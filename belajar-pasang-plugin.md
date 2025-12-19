@@ -28,7 +28,7 @@ Sebagian besar plugin SLiMS melibatkan penyalinan file dan folder plugin ke dire
     *   Klik kanan pada file `.zip` plugin yang telah diunduh.
     *   Pilih "Extract All..." atau "Ekstrak Semua..." (atau gunakan aplikasi arsip seperti 7-Zip atau WinRAR untuk mengekstraknya).
     *   Anda akan mendapatkan sebuah folder yang berisi file-file plugin.
-    *   Jika plugin tidak bekerja, hapus sebagian nama folder misal slims-rekap-plus-lokasi-main. Bagian main di hapus. (ini biasanya terjadi ketika extract file download dari hasil download di github, seperti digambar) 
+    *   Jika plugin tidak bekerja, hapus sebagian nama folder misal slims-rekap-plus-lokasi-main. Rename ulang untuk teks "-main" di hapus. (ini biasanya terjadi ketika extract file download dari hasil download di github, seperti digambar) 
 
 3.  **📍 Identifikasi Lokasi Instalasi SLiMS Anda:**
     *   **Jika menggunakan XAMPP:**
