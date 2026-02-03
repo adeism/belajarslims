@@ -1,0 +1,1022 @@
+{
+  "database_info": {
+    "name": "SLiMS + Custom PSB",
+    "version": "9.x (Bulian)",
+    "total_tables": 70,
+    "description": "Complete database structure for SLiMS core and PSB custom module"
+  },
+  "tables": {
+    "core_slims": [
+      {
+        "table_name": "backup_log",
+        "description": "Log riwayat backup database",
+        "columns": [
+          {"field": "backup_log_id", "type": "int(11)", "key": "PRI"},
+          {"field": "user_id", "type": "int(11)"},
+          {"field": "backup_time", "type": "datetime"},
+          {"field": "backup_file", "type": "text"}
+        ]
+      },
+      {
+        "table_name": "biblio",
+        "description": "Data bibliografi/katalog koleksi perpustakaan",
+        "columns": [
+          {"field": "biblio_id", "type": "int(11)", "key": "PRI"},
+          {"field": "gmd_id", "type": "int(3)"},
+          {"field": "title", "type": "text"},
+          {"field": "sor", "type": "varchar(200)"},
+          {"field": "edition", "type": "varchar(50)"},
+          {"field": "isbn_issn", "type": "varchar(32)"},
+          {"field": "publisher_id", "type": "int(11)"},
+          {"field": "publish_year", "type": "varchar(20)"},
+          {"field": "collation", "type": "varchar(50)"},
+          {"field": "series_title", "type": "varchar(200)"},
+          {"field": "call_number", "type": "varchar(50)"},
+          {"field": "language_id", "type": "char(5)"},
+          {"field": "source", "type": "varchar(3)"},
+          {"field": "publish_place_id", "type": "int(11)"},
+          {"field": "classification", "type": "varchar(40)"},
+          {"field": "notes", "type": "text"},
+          {"field": "image", "type": "varchar(100)"},
+          {"field": "file_att", "type": "varchar(255)"},
+          {"field": "opac_hide", "type": "smallint(1)"},
+          {"field": "promoted", "type": "smallint(1)"},
+          {"field": "labels", "type": "text"},
+          {"field": "frequency_id", "type": "int(11)"},
+          {"field": "spec_detail_info", "type": "text"},
+          {"field": "content_type_id", "type": "int(11)"},
+          {"field": "media_type_id", "type": "int(11)"},
+          {"field": "carrier_type_id", "type": "int(11)"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"},
+          {"field": "uid", "type": "int(11)"}
+        ]
+      },
+      {
+        "table_name": "biblio_attachment",
+        "description": "Lampiran file untuk bibliografi",
+        "columns": [
+          {"field": "biblio_id", "type": "int(11)", "key": "MUL"},
+          {"field": "file_id", "type": "int(11)", "key": "MUL"},
+          {"field": "placement", "type": "enum('link','popup','embed')"},
+          {"field": "access_type", "type": "enum('public','private')"},
+          {"field": "access_limit", "type": "text"}
+        ]
+      },
+      {
+        "table_name": "biblio_author",
+        "description": "Relasi bibliografi dengan pengarang",
+        "columns": [
+          {"field": "biblio_id", "type": "int(11)", "key": "PRI"},
+          {"field": "author_id", "type": "int(11)", "key": "PRI"},
+          {"field": "level", "type": "int(1)"}
+        ]
+      },
+      {
+        "table_name": "biblio_topic",
+        "description": "Relasi bibliografi dengan subjek/topik",
+        "columns": [
+          {"field": "biblio_id", "type": "int(11)", "key": "PRI"},
+          {"field": "topic_id", "type": "int(11)", "key": "PRI"},
+          {"field": "level", "type": "int(1)"}
+        ]
+      },
+      {
+        "table_name": "biblio_custom",
+        "description": "Field kustom tambahan untuk bibliografi",
+        "columns": [
+          {"field": "biblio_id", "type": "int(11)", "key": "PRI"}
+        ]
+      },
+      {
+        "table_name": "biblio_relation",
+        "description": "Relasi antar bibliografi",
+        "columns": [
+          {"field": "biblio_id", "type": "int(11)", "key": "PRI"},
+          {"field": "rel_biblio_id", "type": "int(11)", "key": "PRI"},
+          {"field": "rel_type", "type": "int(1)"}
+        ]
+      },
+      {
+        "table_name": "biblio_log",
+        "description": "Log aktivitas perubahan data bibliografi",
+        "columns": [
+          {"field": "biblio_log_id", "type": "int(11)", "key": "PRI"},
+          {"field": "biblio_id", "type": "int(11)", "key": "MUL"},
+          {"field": "user_id", "type": "int(11)", "key": "MUL"},
+          {"field": "realname", "type": "varchar(100)", "key": "MUL"},
+          {"field": "title", "type": "text"},
+          {"field": "ip", "type": "varchar(200)", "key": "MUL"},
+          {"field": "action", "type": "varchar(50)", "key": "MUL"},
+          {"field": "affectedrow", "type": "varchar(50)", "key": "MUL"},
+          {"field": "rawdata", "type": "text"},
+          {"field": "additional_information", "type": "text"},
+          {"field": "date", "type": "datetime", "key": "MUL"}
+        ]
+      },
+      {
+        "table_name": "item",
+        "description": "Data eksemplar/item koleksi",
+        "columns": [
+          {"field": "item_id", "type": "int(11)", "key": "PRI"},
+          {"field": "biblio_id", "type": "int(11)", "key": "MUL"},
+          {"field": "call_number", "type": "varchar(50)"},
+          {"field": "coll_type_id", "type": "int(3)", "key": "MUL"},
+          {"field": "item_code", "type": "varchar(20)", "key": "UNI"},
+          {"field": "inventory_code", "type": "varchar(200)"},
+          {"field": "received_date", "type": "date"},
+          {"field": "supplier_id", "type": "varchar(6)"},
+          {"field": "order_no", "type": "varchar(20)"},
+          {"field": "location_id", "type": "varchar(3)", "key": "MUL"},
+          {"field": "order_date", "type": "date"},
+          {"field": "item_status_id", "type": "char(3)", "key": "MUL"},
+          {"field": "site", "type": "varchar(50)"},
+          {"field": "source", "type": "int(1)"},
+          {"field": "invoice", "type": "varchar(20)"},
+          {"field": "price", "type": "int(11)"},
+          {"field": "price_currency", "type": "varchar(10)"},
+          {"field": "invoice_date", "type": "date"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"},
+          {"field": "uid", "type": "int(11)", "key": "MUL"}
+        ]
+      },
+      {
+        "table_name": "item_custom",
+        "description": "Field kustom tambahan untuk item",
+        "columns": [
+          {"field": "item_id", "type": "int(11)", "key": "PRI"}
+        ]
+      },
+      {
+        "table_name": "member",
+        "description": "Data anggota perpustakaan",
+        "columns": [
+          {"field": "member_id", "type": "varchar(20)", "key": "PRI"},
+          {"field": "member_name", "type": "varchar(100)", "key": "MUL"},
+          {"field": "gender", "type": "int(1)"},
+          {"field": "birth_date", "type": "date"},
+          {"field": "member_type_id", "type": "int(6)", "key": "MUL"},
+          {"field": "member_address", "type": "varchar(255)"},
+          {"field": "member_mail_address", "type": "varchar(255)"},
+          {"field": "member_email", "type": "varchar(100)"},
+          {"field": "postal_code", "type": "varchar(20)"},
+          {"field": "inst_name", "type": "varchar(100)"},
+          {"field": "is_new", "type": "int(1)"},
+          {"field": "member_image", "type": "varchar(200)"},
+          {"field": "pin", "type": "varchar(50)"},
+          {"field": "member_phone", "type": "varchar(50)"},
+          {"field": "member_fax", "type": "varchar(50)"},
+          {"field": "member_since_date", "type": "date"},
+          {"field": "register_date", "type": "date"},
+          {"field": "expire_date", "type": "date"},
+          {"field": "member_notes", "type": "text"},
+          {"field": "is_pending", "type": "smallint(1)"},
+          {"field": "mpasswd", "type": "varchar(64)"},
+          {"field": "last_login", "type": "datetime"},
+          {"field": "last_login_ip", "type": "varchar(20)"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "member_custom",
+        "description": "Field kustom tambahan untuk member",
+        "columns": [
+          {"field": "member_id", "type": "varchar(20)", "key": "PRI"}
+        ]
+      },
+      {
+        "table_name": "loan",
+        "description": "Data peminjaman koleksi",
+        "columns": [
+          {"field": "loan_id", "type": "int(11)", "key": "PRI"},
+          {"field": "item_code", "type": "varchar(20)", "key": "MUL"},
+          {"field": "member_id", "type": "varchar(20)", "key": "MUL"},
+          {"field": "loan_date", "type": "date"},
+          {"field": "due_date", "type": "date"},
+          {"field": "renewed", "type": "int(11)"},
+          {"field": "loan_rules_id", "type": "int(11)"},
+          {"field": "actual", "type": "date"},
+          {"field": "is_lent", "type": "int(11)"},
+          {"field": "is_return", "type": "int(11)"},
+          {"field": "return_date", "type": "date"},
+          {"field": "input_date", "type": "datetime", "key": "MUL"},
+          {"field": "last_update", "type": "datetime", "key": "MUL"},
+          {"field": "uid", "type": "int(11)", "key": "MUL"}
+        ]
+      },
+      {
+        "table_name": "loan_history",
+        "description": "Histori peminjaman (auto-generated dari trigger)",
+        "columns": [
+          {"field": "loan_id", "type": "int(11)", "key": "PRI"},
+          {"field": "item_code", "type": "varchar(20)"},
+          {"field": "biblio_id", "type": "int(11)"},
+          {"field": "title", "type": "varchar(300)"},
+          {"field": "call_number", "type": "varchar(50)"},
+          {"field": "classification", "type": "varchar(40)"},
+          {"field": "gmd_name", "type": "varchar(30)"},
+          {"field": "language_name", "type": "varchar(20)"},
+          {"field": "location_name", "type": "varchar(100)"},
+          {"field": "collection_type_name", "type": "varchar(100)"},
+          {"field": "member_id", "type": "varchar(20)"},
+          {"field": "member_name", "type": "varchar(100)", "key": "MUL"},
+          {"field": "member_type_name", "type": "varchar(64)"},
+          {"field": "loan_date", "type": "date"},
+          {"field": "due_date", "type": "date"},
+          {"field": "renewed", "type": "int(11)"},
+          {"field": "is_lent", "type": "int(11)"},
+          {"field": "is_return", "type": "int(11)"},
+          {"field": "return_date", "type": "date"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "fines",
+        "description": "Data denda anggota",
+        "columns": [
+          {"field": "fines_id", "type": "int(11)", "key": "PRI"},
+          {"field": "fines_date", "type": "date"},
+          {"field": "member_id", "type": "varchar(20)", "key": "MUL"},
+          {"field": "debet", "type": "int(11)"},
+          {"field": "credit", "type": "int(11)"},
+          {"field": "description", "type": "varchar(255)"}
+        ]
+      },
+      {
+        "table_name": "reserve",
+        "description": "Data reservasi koleksi",
+        "columns": [
+          {"field": "reserve_id", "type": "int(11)", "key": "PRI"},
+          {"field": "member_id", "type": "varchar(20)", "key": "MUL"},
+          {"field": "biblio_id", "type": "int(11)", "key": "MUL"},
+          {"field": "item_code", "type": "varchar(20)", "key": "MUL"},
+          {"field": "reserve_date", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "serial",
+        "description": "Data terbitan berseri/serial",
+        "columns": [
+          {"field": "serial_id", "type": "int(11)", "key": "PRI"},
+          {"field": "date_start", "type": "date"},
+          {"field": "date_end", "type": "date"},
+          {"field": "period", "type": "varchar(100)"},
+          {"field": "notes", "type": "text"},
+          {"field": "biblio_id", "type": "int(11)", "key": "MUL"},
+          {"field": "gmd_id", "type": "int(11)", "key": "MUL"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "kardex",
+        "description": "Data kardex untuk serial control",
+        "columns": [
+          {"field": "kardex_id", "type": "int(11)", "key": "PRI"},
+          {"field": "date_expected", "type": "date"},
+          {"field": "date_received", "type": "date"},
+          {"field": "seq_number", "type": "varchar(25)"},
+          {"field": "notes", "type": "text"},
+          {"field": "serial_id", "type": "int(11)", "key": "MUL"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "files",
+        "description": "Data file/dokumen digital",
+        "columns": [
+          {"field": "file_id", "type": "int(11)", "key": "PRI"},
+          {"field": "file_title", "type": "text"},
+          {"field": "file_name", "type": "text"},
+          {"field": "file_url", "type": "text"},
+          {"field": "file_dir", "type": "text"},
+          {"field": "mime_type", "type": "varchar(100)"},
+          {"field": "file_desc", "type": "text"},
+          {"field": "file_key", "type": "text"},
+          {"field": "uploader_id", "type": "int(11)"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "files_read",
+        "description": "Log pembacaan/download file",
+        "columns": [
+          {"field": "filelog_id", "type": "int(11)", "key": "PRI"},
+          {"field": "file_id", "type": "int(11)"},
+          {"field": "date_read", "type": "timestamp"},
+          {"field": "member_id", "type": "varchar(20)"},
+          {"field": "user_id", "type": "int(11)"},
+          {"field": "client_ip", "type": "varchar(50)"}
+        ]
+      },
+      {
+        "table_name": "content",
+        "description": "Konten halaman statis website",
+        "columns": [
+          {"field": "content_id", "type": "int(11)", "key": "PRI"},
+          {"field": "content_title", "type": "varchar(255)"},
+          {"field": "content_desc", "type": "text"},
+          {"field": "content_path", "type": "varchar(20)", "key": "UNI"},
+          {"field": "is_news", "type": "smallint(1)"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"},
+          {"field": "content_ownpage", "type": "enum('1','2')"}
+        ]
+      },
+      {
+        "table_name": "comment",
+        "description": "Komentar anggota pada bibliografi",
+        "columns": [
+          {"field": "comment_id", "type": "int(11)", "key": "PRI"},
+          {"field": "biblio_id", "type": "int(11)"},
+          {"field": "member_id", "type": "varchar(20)"},
+          {"field": "comment", "type": "text"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "visitor_count",
+        "description": "Data kunjungan pengunjung perpustakaan",
+        "columns": [
+          {"field": "visitor_id", "type": "int(11)", "key": "PRI"},
+          {"field": "member_id", "type": "varchar(20)", "key": "MUL"},
+          {"field": "member_name", "type": "varchar(255)"},
+          {"field": "institution", "type": "varchar(100)"},
+          {"field": "checkin_date", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "stock_take",
+        "description": "Data stock opname/inventarisasi",
+        "columns": [
+          {"field": "stock_take_id", "type": "int(11)", "key": "PRI"},
+          {"field": "stock_take_name", "type": "varchar(200)"},
+          {"field": "start_date", "type": "datetime"},
+          {"field": "end_date", "type": "datetime"},
+          {"field": "init_user", "type": "varchar(50)"},
+          {"field": "total_item_stock_taked", "type": "int(11)"},
+          {"field": "total_item_lost", "type": "int(11)"},
+          {"field": "total_item_exists", "type": "int(11)"},
+          {"field": "total_item_loan", "type": "int(11)"},
+          {"field": "stock_take_users", "type": "mediumtext"},
+          {"field": "is_active", "type": "int(1)"},
+          {"field": "report_file", "type": "varchar(255)"}
+        ]
+      },
+      {
+        "table_name": "stock_take_item",
+        "description": "Detail item yang di-stock opname",
+        "columns": [
+          {"field": "stock_take_id", "type": "int(11)", "key": "PRI"},
+          {"field": "item_id", "type": "int(11)", "key": "PRI"},
+          {"field": "item_code", "type": "varchar(20)", "key": "UNI"},
+          {"field": "title", "type": "varchar(255)"},
+          {"field": "gmd_name", "type": "varchar(30)", "key": "MUL"},
+          {"field": "classification", "type": "varchar(30)", "key": "MUL"},
+          {"field": "coll_type_name", "type": "varchar(30)", "key": "MUL"},
+          {"field": "call_number", "type": "varchar(50)"},
+          {"field": "location", "type": "varchar(100)", "key": "MUL"},
+          {"field": "status", "type": "enum('e','m','u','l')", "key": "MUL"},
+          {"field": "checked_by", "type": "varchar(50)"},
+          {"field": "last_update", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "holiday",
+        "description": "Data hari libur perpustakaan",
+        "columns": [
+          {"field": "holiday_id", "type": "int(11)", "key": "PRI"},
+          {"field": "holiday_dayname", "type": "varchar(20)", "key": "UNI"},
+          {"field": "holiday_date", "type": "date", "key": "UNI"},
+          {"field": "description", "type": "varchar(100)"}
+        ]
+      },
+      {
+        "table_name": "user",
+        "description": "Data pengguna/pustakawan sistem",
+        "columns": [
+          {"field": "user_id", "type": "int(11)", "key": "PRI"},
+          {"field": "username", "type": "varchar(50)", "key": "UNI"},
+          {"field": "realname", "type": "varchar(100)", "key": "MUL"},
+          {"field": "passwd", "type": "varchar(64)"},
+          {"field": "2fa", "type": "text"},
+          {"field": "email", "type": "varchar(200)"},
+          {"field": "user_type", "type": "smallint(2)"},
+          {"field": "user_image", "type": "varchar(250)"},
+          {"field": "social_media", "type": "text"},
+          {"field": "last_login", "type": "datetime"},
+          {"field": "last_login_ip", "type": "char(15)"},
+          {"field": "groups", "type": "varchar(200)"},
+          {"field": "forgot", "type": "varchar(80)"},
+          {"field": "admin_template", "type": "text"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "user_group",
+        "description": "Grup pengguna",
+        "columns": [
+          {"field": "group_id", "type": "int(11)", "key": "PRI"},
+          {"field": "group_name", "type": "varchar(30)", "key": "UNI"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "group_access",
+        "description": "Hak akses grup ke modul",
+        "columns": [
+          {"field": "group_id", "type": "int(11)", "key": "PRI"},
+          {"field": "module_id", "type": "int(11)", "key": "PRI"},
+          {"field": "menus", "type": "json"},
+          {"field": "r", "type": "int(1)"},
+          {"field": "w", "type": "int(1)"}
+        ]
+      },
+      {
+        "table_name": "system_log",
+        "description": "Log sistem aktivitas pengguna",
+        "columns": [
+          {"field": "log_id", "type": "int(11)", "key": "PRI"},
+          {"field": "log_type", "type": "enum('staff','member','system')", "key": "MUL"},
+          {"field": "id", "type": "varchar(50)", "key": "MUL"},
+          {"field": "log_location", "type": "varchar(50)"},
+          {"field": "sub_module", "type": "varchar(50)"},
+          {"field": "action", "type": "varchar(50)"},
+          {"field": "log_msg", "type": "text"},
+          {"field": "log_date", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "setting",
+        "description": "Pengaturan sistem aplikasi",
+        "columns": [
+          {"field": "setting_id", "type": "int(3)", "key": "PRI"},
+          {"field": "setting_name", "type": "varchar(30)", "key": "UNI"},
+          {"field": "setting_value", "type": "text"}
+        ]
+      },
+      {
+        "table_name": "search_biblio",
+        "description": "Tabel index untuk pencarian bibliografi cepat",
+        "columns": [
+          {"field": "biblio_id", "type": "int(11)", "key": "UNI"},
+          {"field": "title", "type": "text"},
+          {"field": "edition", "type": "varchar(50)"},
+          {"field": "isbn_issn", "type": "varchar(20)"},
+          {"field": "author", "type": "text"},
+          {"field": "topic", "type": "text"},
+          {"field": "gmd", "type": "varchar(30)", "key": "MUL"},
+          {"field": "publisher", "type": "varchar(100)", "key": "MUL"},
+          {"field": "publish_place", "type": "varchar(30)", "key": "MUL"},
+          {"field": "language", "type": "varchar(20)", "key": "MUL"},
+          {"field": "classification", "type": "varchar(40)", "key": "MUL"},
+          {"field": "spec_detail_info", "type": "text"},
+          {"field": "carrier_type", "type": "varchar(100)", "key": "MUL"},
+          {"field": "content_type", "type": "varchar(100)", "key": "MUL"},
+          {"field": "media_type", "type": "varchar(100)", "key": "MUL"},
+          {"field": "location", "type": "text"},
+          {"field": "publish_year", "type": "varchar(20)", "key": "MUL"},
+          {"field": "notes", "type": "text"},
+          {"field": "series_title", "type": "text"},
+          {"field": "items", "type": "text"},
+          {"field": "collection_types", "type": "text"},
+          {"field": "call_number", "type": "varchar(50)", "key": "MUL"},
+          {"field": "opac_hide", "type": "smallint(1)", "key": "MUL"},
+          {"field": "promoted", "type": "smallint(1)", "key": "MUL"},
+          {"field": "labels", "type": "text"},
+          {"field": "collation", "type": "varchar(100)"},
+          {"field": "image", "type": "varchar(100)"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "index_words",
+        "description": "Daftar kata untuk full-text indexing",
+        "columns": [
+          {"field": "id", "type": "bigint(20)", "key": "PRI"},
+          {"field": "word", "type": "varchar(50)"},
+          {"field": "num_hits", "type": "int(11)"},
+          {"field": "doc_hits", "type": "int(11)"}
+        ]
+      },
+      {
+        "table_name": "index_documents",
+        "description": "Mapping dokumen dengan kata untuk full-text indexing",
+        "columns": [
+          {"field": "document_id", "type": "int(11)", "key": "PRI"},
+          {"field": "word_id", "type": "bigint(20)", "key": "PRI"},
+          {"field": "location", "type": "varchar(50)", "key": "PRI"},
+          {"field": "hit_count", "type": "int(11)"}
+        ]
+      },
+      {
+        "table_name": "plugins",
+        "description": "Daftar plugin yang terinstall",
+        "columns": [
+          {"field": "id", "type": "varchar(32)"},
+          {"field": "path", "type": "text"},
+          {"field": "created_at", "type": "datetime"},
+          {"field": "uid", "type": "int(11)"}
+        ]
+      }
+    ],
+    "master_files": [
+      {
+        "table_name": "mst_author",
+        "description": "Master data pengarang/penulis",
+        "columns": [
+          {"field": "author_id", "type": "int(11)", "key": "PRI"},
+          {"field": "author_name", "type": "varchar(100)", "key": "UNI"},
+          {"field": "author_year", "type": "varchar(20)"},
+          {"field": "authority_type", "type": "enum('p','o','c')"},
+          {"field": "auth_list", "type": "varchar(20)"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_topic",
+        "description": "Master data subjek/topik",
+        "columns": [
+          {"field": "topic_id", "type": "int(11)", "key": "PRI"},
+          {"field": "topic", "type": "varchar(50)", "key": "UNI"},
+          {"field": "topic_type", "type": "enum('t','g','n','tm','gr','oc')"},
+          {"field": "auth_list", "type": "varchar(20)"},
+          {"field": "classification", "type": "varchar(50)"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_publisher",
+        "description": "Master data penerbit",
+        "columns": [
+          {"field": "publisher_id", "type": "int(11)", "key": "PRI"},
+          {"field": "publisher_name", "type": "varchar(100)", "key": "UNI"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_place",
+        "description": "Master data tempat terbit",
+        "columns": [
+          {"field": "place_id", "type": "int(11)", "key": "PRI"},
+          {"field": "place_name", "type": "varchar(30)", "key": "UNI"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_language",
+        "description": "Master data bahasa",
+        "columns": [
+          {"field": "language_id", "type": "char(5)", "key": "PRI"},
+          {"field": "language_name", "type": "varchar(20)", "key": "UNI"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_gmd",
+        "description": "Master data GMD (General Material Designation)",
+        "columns": [
+          {"field": "gmd_id", "type": "int(11)", "key": "PRI"},
+          {"field": "gmd_code", "type": "varchar(3)", "key": "UNI"},
+          {"field": "gmd_name", "type": "varchar(30)", "key": "UNI"},
+          {"field": "icon_image", "type": "varchar(100)"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_coll_type",
+        "description": "Master data tipe koleksi",
+        "columns": [
+          {"field": "coll_type_id", "type": "int(3)", "key": "PRI"},
+          {"field": "coll_type_name", "type": "varchar(30)", "key": "UNI"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_location",
+        "description": "Master data lokasi/rak koleksi",
+        "columns": [
+          {"field": "location_id", "type": "varchar(3)", "key": "PRI"},
+          {"field": "location_name", "type": "varchar(100)", "key": "UNI"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_supplier",
+        "description": "Master data supplier/pemasok",
+        "columns": [
+          {"field": "supplier_id", "type": "int(11)", "key": "PRI"},
+          {"field": "supplier_name", "type": "varchar(100)", "key": "UNI"},
+          {"field": "address", "type": "varchar(100)"},
+          {"field": "postal_code", "type": "char(10)"},
+          {"field": "phone", "type": "char(14)"},
+          {"field": "contact", "type": "char(30)"},
+          {"field": "fax", "type": "char(14)"},
+          {"field": "account", "type": "char(12)"},
+          {"field": "e_mail", "type": "char(80)"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_item_status",
+        "description": "Master data status item",
+        "columns": [
+          {"field": "item_status_id", "type": "char(3)", "key": "PRI"},
+          {"field": "item_status_name", "type": "varchar(30)", "key": "UNI"},
+          {"field": "rules", "type": "varchar(255)"},
+          {"field": "no_loan", "type": "smallint(1)"},
+          {"field": "skip_stock_take", "type": "smallint(1)"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_member_type",
+        "description": "Master data tipe keanggotaan",
+        "columns": [
+          {"field": "member_type_id", "type": "int(11)", "key": "PRI"},
+          {"field": "member_type_name", "type": "varchar(50)", "key": "UNI"},
+          {"field": "loan_limit", "type": "int(11)"},
+          {"field": "loan_periode", "type": "int(11)"},
+          {"field": "enable_reserve", "type": "int(1)"},
+          {"field": "reserve_limit", "type": "int(11)"},
+          {"field": "member_periode", "type": "int(11)"},
+          {"field": "reborrow_limit", "type": "int(11)"},
+          {"field": "fine_each_day", "type": "int(11)"},
+          {"field": "grace_periode", "type": "int(2)"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_loan_rules",
+        "description": "Master aturan peminjaman",
+        "columns": [
+          {"field": "loan_rules_id", "type": "int(11)", "key": "PRI"},
+          {"field": "member_type_id", "type": "int(11)"},
+          {"field": "coll_type_id", "type": "int(11)"},
+          {"field": "gmd_id", "type": "int(11)"},
+          {"field": "loan_limit", "type": "int(3)"},
+          {"field": "loan_periode", "type": "int(3)"},
+          {"field": "reborrow_limit", "type": "int(3)"},
+          {"field": "fine_each_day", "type": "int(3)"},
+          {"field": "grace_periode", "type": "int(2)"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_frequency",
+        "description": "Master data frekuensi terbit serial",
+        "columns": [
+          {"field": "frequency_id", "type": "int(11)", "key": "PRI"},
+          {"field": "frequency", "type": "varchar(25)"},
+          {"field": "language_prefix", "type": "varchar(5)"},
+          {"field": "time_increment", "type": "smallint(6)"},
+          {"field": "time_unit", "type": "enum('day','week','month','year')"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_label",
+        "description": "Master data label koleksi",
+        "columns": [
+          {"field": "label_id", "type": "int(11)", "key": "PRI"},
+          {"field": "label_name", "type": "varchar(20)", "key": "UNI"},
+          {"field": "label_desc", "type": "varchar(50)"},
+          {"field": "label_image", "type": "varchar(200)"},
+          {"field": "input_date", "type": "date"},
+          {"field": "last_update", "type": "date"}
+        ]
+      },
+      {
+        "table_name": "mst_module",
+        "description": "Master data modul sistem",
+        "columns": [
+          {"field": "module_id", "type": "int(3)", "key": "PRI"},
+          {"field": "module_name", "type": "varchar(50)", "key": "UNI"},
+          {"field": "module_path", "type": "varchar(200)", "key": "UNI"},
+          {"field": "module_desc", "type": "varchar(255)"}
+        ]
+      },
+      {
+        "table_name": "mst_carrier_type",
+        "description": "Master data tipe media pembawa (RDA)",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "carrier_type", "type": "varchar(100)", "key": "UNI"},
+          {"field": "code", "type": "varchar(5)", "key": "MUL"},
+          {"field": "code2", "type": "char(1)"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "mst_content_type",
+        "description": "Master data tipe konten (RDA)",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "content_type", "type": "varchar(100)", "key": "UNI"},
+          {"field": "code", "type": "varchar(5)", "key": "MUL"},
+          {"field": "code2", "type": "char(1)"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "mst_media_type",
+        "description": "Master data tipe media (RDA)",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "media_type", "type": "varchar(100)", "key": "UNI"},
+          {"field": "code", "type": "varchar(5)", "key": "MUL"},
+          {"field": "code2", "type": "char(1)"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "mst_relation_term",
+        "description": "Master data istilah relasi (thesaurus)",
+        "columns": [
+          {"field": "ID", "type": "int(11)", "key": "PRI"},
+          {"field": "rt_id", "type": "varchar(11)"},
+          {"field": "rt_desc", "type": "varchar(50)"}
+        ]
+      },
+      {
+        "table_name": "mst_voc_ctrl",
+        "description": "Master data kontrol vocabulary/thesaurus",
+        "columns": [
+          {"field": "vocabolary_id", "type": "int(11)", "key": "PRI"},
+          {"field": "topic_id", "type": "int(11)"},
+          {"field": "rt_id", "type": "varchar(11)"},
+          {"field": "related_topic_id", "type": "varchar(250)"},
+          {"field": "scope", "type": "text"}
+        ]
+      },
+      {
+        "table_name": "mst_servers",
+        "description": "Master data server eksternal (Z39.50, P2P, dll)",
+        "columns": [
+          {"field": "server_id", "type": "int(11)", "key": "PRI"},
+          {"field": "name", "type": "varchar(255)"},
+          {"field": "uri", "type": "text"},
+          {"field": "server_type", "type": "tinyint(1)"},
+          {"field": "input_date", "type": "datetime"},
+          {"field": "last_update", "type": "datetime"}
+        ]
+      },
+      {
+        "table_name": "mst_custom_field",
+        "description": "Master data field kustom dinamis",
+        "columns": [
+          {"field": "field_id", "type": "int(11)", "key": "PRI"},
+          {"field": "primary_table", "type": "varchar(100)"},
+          {"field": "dbfield", "type": "varchar(50)", "key": "PRI"},
+          {"field": "label", "type": "varchar(80)"},
+          {"field": "type", "type": "enum('text','checklist','numeric','dropdown','longtext','choice','date')"},
+          {"field": "default", "type": "varchar(80)"},
+          {"field": "max", "type": "int(11)"},
+          {"field": "data", "type": "text"},
+          {"field": "indexed", "type": "tinyint(1)"},
+          {"field": "class", "type": "varchar(100)"},
+          {"field": "is_public", "type": "tinyint(1)"},
+          {"field": "width", "type": "int(5)"},
+          {"field": "note", "type": "text"}
+        ]
+      }
+    ],
+    "custom_psb": [
+      {
+        "table_name": "psb_calon_siswa",
+        "description": "Data calon siswa pendaftar PSB",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "no_pendaftaran", "type": "varchar(20)", "key": "UNI"},
+          {"field": "nisn", "type": "varchar(20)"},
+          {"field": "nama_lengkap", "type": "varchar(100)"},
+          {"field": "tempat_lahir", "type": "varchar(50)"},
+          {"field": "tanggal_lahir", "type": "date"},
+          {"field": "jenis_kelamin", "type": "enum('L','P')"},
+          {"field": "agama", "type": "varchar(20)"},
+          {"field": "alamat", "type": "text"},
+          {"field": "kota", "type": "varchar(50)"},
+          {"field": "kode_pos", "type": "varchar(10)"},
+          {"field": "telepon", "type": "varchar(15)"},
+          {"field": "email", "type": "varchar(100)"},
+          {"field": "asal_sekolah", "type": "varchar(100)"},
+          {"field": "tahun_lulus", "type": "year(4)"},
+          {"field": "foto", "type": "varchar(255)"},
+          {"field": "status_pendaftaran", "type": "enum('Pending','Diterima','Ditolak')"},
+          {"field": "tanggal_daftar", "type": "datetime"},
+          {"field": "created_at", "type": "timestamp"},
+          {"field": "updated_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_orang_tua",
+        "description": "Data orang tua/wali calon siswa",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "calon_siswa_id", "type": "int(11)", "key": "MUL"},
+          {"field": "nama_ayah", "type": "varchar(100)"},
+          {"field": "pekerjaan_ayah", "type": "varchar(50)"},
+          {"field": "telepon_ayah", "type": "varchar(15)"},
+          {"field": "nama_ibu", "type": "varchar(100)"},
+          {"field": "pekerjaan_ibu", "type": "varchar(50)"},
+          {"field": "telepon_ibu", "type": "varchar(15)"},
+          {"field": "nama_wali", "type": "varchar(100)"},
+          {"field": "pekerjaan_wali", "type": "varchar(50)"},
+          {"field": "telepon_wali", "type": "varchar(15)"},
+          {"field": "alamat_wali", "type": "text"},
+          {"field": "created_at", "type": "timestamp"},
+          {"field": "updated_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_dokumen",
+        "description": "Dokumen pendukung pendaftaran",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "calon_siswa_id", "type": "int(11)", "key": "MUL"},
+          {"field": "jenis_dokumen", "type": "enum('Ijazah','Raport','KK','Akte','Foto')"},
+          {"field": "nama_file", "type": "varchar(255)"},
+          {"field": "path_file", "type": "varchar(500)"},
+          {"field": "keterangan", "type": "text"},
+          {"field": "created_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_nilai",
+        "description": "Data nilai calon siswa",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "calon_siswa_id", "type": "int(11)", "key": "MUL"},
+          {"field": "mata_pelajaran", "type": "varchar(50)"},
+          {"field": "semester", "type": "int(1)"},
+          {"field": "nilai", "type": "decimal(5,2)"},
+          {"field": "tahun_ajaran", "type": "varchar(10)"},
+          {"field": "created_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_jadwal_tes",
+        "description": "Jadwal tes seleksi masuk",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "nama_tes", "type": "varchar(100)"},
+          {"field": "jenis_tes", "type": "enum('Tulis','Wawancara','Praktek')"},
+          {"field": "tanggal_tes", "type": "date"},
+          {"field": "waktu_mulai", "type": "time"},
+          {"field": "waktu_selesai", "type": "time"},
+          {"field": "tempat", "type": "varchar(100)"},
+          {"field": "keterangan", "type": "text"},
+          {"field": "created_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_peserta_tes",
+        "description": "Daftar peserta yang mengikuti tes",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "jadwal_tes_id", "type": "int(11)", "key": "MUL"},
+          {"field": "calon_siswa_id", "type": "int(11)", "key": "MUL"},
+          {"field": "status_kehadiran", "type": "enum('Hadir','Tidak Hadir','Izin')"},
+          {"field": "created_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_hasil_tes",
+        "description": "Hasil tes seleksi calon siswa",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "peserta_tes_id", "type": "int(11)", "key": "MUL"},
+          {"field": "nilai", "type": "decimal(5,2)"},
+          {"field": "keterangan", "type": "text"},
+          {"field": "created_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_gelombang",
+        "description": "Gelombang pendaftaran PSB",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "nama_gelombang", "type": "varchar(100)"},
+          {"field": "tanggal_mulai", "type": "date"},
+          {"field": "tanggal_selesai", "type": "date"},
+          {"field": "kuota", "type": "int(11)"},
+          {"field": "biaya_pendaftaran", "type": "decimal(10,2)"},
+          {"field": "status", "type": "enum('Aktif','Nonaktif')"},
+          {"field": "tahun_ajaran", "type": "varchar(10)"},
+          {"field": "created_at", "type": "timestamp"},
+          {"field": "updated_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_pembayaran",
+        "description": "Data pembayaran pendaftaran",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "calon_siswa_id", "type": "int(11)", "key": "MUL"},
+          {"field": "gelombang_id", "type": "int(11)", "key": "MUL"},
+          {"field": "jumlah", "type": "decimal(10,2)"},
+          {"field": "tanggal_bayar", "type": "datetime"},
+          {"field": "metode_pembayaran", "type": "enum('Tunai','Transfer','EDC')"},
+          {"field": "bukti_bayar", "type": "varchar(255)"},
+          {"field": "status", "type": "enum('Pending','Lunas','Gagal')"},
+          {"field": "created_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_pengumuman",
+        "description": "Pengumuman hasil seleksi PSB",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "calon_siswa_id", "type": "int(11)", "key": "MUL"},
+          {"field": "gelombang_id", "type": "int(11)", "key": "MUL"},
+          {"field": "hasil_seleksi", "type": "enum('Lulus','Tidak Lulus','Cadangan')"},
+          {"field": "tanggal_pengumuman", "type": "datetime"},
+          {"field": "catatan", "type": "text"},
+          {"field": "created_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_setting",
+        "description": "Pengaturan konfigurasi PSB",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "setting_key", "type": "varchar(100)", "key": "UNI"},
+          {"field": "setting_value", "type": "text"},
+          {"field": "description", "type": "varchar(255)"},
+          {"field": "updated_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_jurusan",
+        "description": "Data jurusan/program studi yang tersedia",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "kode_jurusan", "type": "varchar(20)", "key": "UNI"},
+          {"field": "nama_jurusan", "type": "varchar(100)"},
+          {"field": "deskripsi", "type": "text"},
+          {"field": "kuota", "type": "int(11)"},
+          {"field": "status", "type": "enum('Aktif','Nonaktif')"},
+          {"field": "created_at", "type": "timestamp"},
+          {"field": "updated_at", "type": "timestamp"}
+        ]
+      },
+      {
+        "table_name": "psb_pilihan_jurusan",
+        "description": "Pilihan jurusan calon siswa",
+        "columns": [
+          {"field": "id", "type": "int(11)", "key": "PRI"},
+          {"field": "calon_siswa_id", "type": "int(11)", "key": "MUL"},
+          {"field": "jurusan_id", "type": "int(11)", "key": "MUL"},
+          {"field": "prioritas", "type": "int(1)"},
+          {"field": "created_at", "type": "timestamp"}
+        ]
+      }
+    ]
+  },
+  "relationships": {
+    "biblio_to_item": "biblio.biblio_id -> item.biblio_id (ONE-TO-MANY)",
+    "biblio_to_author": "biblio.biblio_id -> biblio_author.biblio_id -> mst_author.author_id (MANY-TO-MANY)",
+    "biblio_to_topic": "biblio.biblio_id -> biblio_topic.biblio_id -> mst_topic.topic_id (MANY-TO-MANY)",
+    "member_to_loan": "member.member_id -> loan.member_id (ONE-TO-MANY)",
+    "item_to_loan": "item.item_code -> loan.item_code (ONE-TO-MANY)",
+    "user_to_group": "user.groups -> user_group.group_id (MANY-TO-MANY)",
+    "group_to_module": "user_group.group_id -> group_access.group_id -> mst_module.module_id (MANY-TO-MANY)",
+    "psb_calon_siswa_to_orang_tua": "psb_calon_siswa.id -> psb_orang_tua.calon_siswa_id (ONE-TO-ONE)",
+    "psb_calon_siswa_to_dokumen": "psb_calon_siswa.id -> psb_dokumen.calon_siswa_id (ONE-TO-MANY)",
+    "psb_calon_siswa_to_nilai": "psb_calon_siswa.id -> psb_nilai.calon_siswa_id (ONE-TO-MANY)",
+    "psb_calon_siswa_to_pembayaran": "psb_calon_siswa.id -> psb_pembayaran.calon_siswa_id (ONE-TO-MANY)",
+    "psb_calon_siswa_to_jurusan": "psb_calon_siswa.id -> psb_pilihan_jurusan.calon_siswa_id -> psb_jurusan.id (MANY-TO-MANY)"
+  },
+  "notes": {
+    "indexing": "Tabel index_words dan index_documents digunakan untuk full-text search yang lebih cepat",
+    "custom_tables": "Tabel dengan suffix _custom (biblio_custom, item_custom, member_custom) dapat diperluas dengan field dinamis melalui mst_custom_field",
+    "rda_support": "SLiMS mendukung RDA (Resource Description and Access) melalui tabel mst_carrier_type, mst_content_type, dan mst_media_type",
+    "psb_workflow": "Alur PSB: Pendaftaran -> Dokumen -> Pembayaran -> Tes -> Pengumuman",
+    "triggers": "Database menggunakan trigger untuk auto-populate loan_history dari tabel loan"
+  }
+}
