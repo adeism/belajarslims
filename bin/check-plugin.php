@@ -77,6 +77,7 @@ class PluginValidator
         $this->checkSqlSafety();
         $this->checkFormAndUrls();
         $this->checkExportHandlers();
+        $this->checkFilterAndPagination();
 
         $this->printSummary();
 
@@ -378,6 +379,66 @@ class PluginValidator
 
         if (!$exportDetected) {
             $this->pass("Fitur Ekspor: Berkas plugin bersih atau tidak menggunakan handler ekspor kustom.");
+        }
+    }
+
+    private function checkFilterAndPagination(): void
+    {
+        $filterDetected = false;
+
+        foreach ($this->phpFiles as $file) {
+            $rel = $this->relative($file);
+            $content = file_get_contents($file);
+
+            // 1. Check simbio_paging include without class_exists guard
+            if (preg_match('/(?:require|include)(?:_once)?\s+.*simbio_paging\.inc\.php/i', $content)) {
+                if (!str_contains($content, "class_exists('simbio_paging')") && !str_contains($content, 'class_exists("simbio_paging")')) {
+                    $this->error("Pemuatan 'simbio_paging.inc.php' pada [{$rel}] harus dibungkus guard 'if (!class_exists(\\'simbio_paging\\'))' untuk mencegah redeclaration fatal error.");
+                } else {
+                    $this->pass("Paginasi Simbio: Guard 'class_exists(\\'simbio_paging\\')' terpasang pada [{$rel}].");
+                }
+            }
+
+            // 2. Check GET Form missing hidden mod and id inputs in Admin interface
+            if (preg_match('/<form[^>]+method=[\'"]GET[\'"]/i', $content)) {
+                $filterDetected = true;
+                if (!str_contains($file, 'opac')) {
+                    $hasMod = preg_match('/<input[^>]+name=[\'"]mod[\'"]/i', $content) || str_contains($content, "name=\"mod\"") || str_contains($content, "name='mod'");
+                    $hasId  = preg_match('/<input[^>]+name=[\'"]id[\'"]/i', $content) || str_contains($content, "name=\"id\"") || str_contains($content, "name='id'");
+                    
+                    if (!$hasMod || !$hasId) {
+                        $this->warn("Filter Form (GET) pada [{$rel}]: Tidak ditemukan input hidden 'mod' dan/atau 'id'. Form submission GET di admin SLiMS akan menghapus query string URL dan menyebabkan error 'Plugin not found / disabled!'. Tambahkan: <input type=\"hidden\" name=\"mod\" value=\"<?= htmlspecialchars(\$_GET['mod'] ?? '') ?>\" /> dan input hidden 'id'.");
+                    } else {
+                        $this->pass("Filter Form (GET): Hidden input 'mod' dan 'id' terpasang dengan benar pada [{$rel}].");
+                    }
+                }
+            }
+
+            // 3. Check SQL injection in LIKE query filter
+            if (preg_match('/LIKE\s*[\'"]%?\s*[\'"]\s*\.\s*\$_GET/i', $content) || 
+                preg_match('/LIKE\s*[\'"]%?\{\$_GET\[/i', $content) ||
+                preg_match('/WHERE\s+[a-zA-Z0-9_.]+\s*=\s*[\'"]\s*\.\s*\$_GET/i', $content)) {
+                $this->error("Potensi SQL Injection pada filter query di [{$rel}]: Penggabungan langsung variabel \$_GET ke query SQL. Gunakan \$dbs->escape_string() atau Prepared Statements.");
+            }
+
+            // 4. Check custom pagination page/offset safety
+            if (preg_match('/\$_GET\[[\'"]page[\'"]\]/i', $content) || preg_match('/\$_GET\[[\'"]paged[\'"]\]/i', $content)) {
+                $filterDetected = true;
+                if (!preg_match('/\(int\)\s*\$_GET\[[\'"]page/i', $content) && !preg_match('/intval\s*\(\s*\$_GET\[[\'"]page/i', $content) && !preg_match('/filter_var\s*\(\s*\$_GET\[[\'"]page/i', $content)) {
+                    $this->warn("Paginasi kustom pada [{$rel}]: Parameter \$_GET['page'] sebaiknya di-cast integer secara eksplisit: (int)(\$_GET['page'] ?? 1) untuk mencegah nilai negatif/injeksi.");
+                } else {
+                    $this->pass("Paginasi kustom pada [{$rel}]: Parameter halaman telah di-sanitize integer.");
+                }
+            }
+
+            // 5. Check Quick Filter button links missing query preservation
+            if (preg_match('/<a[^>]+href=[\'"]\?(?:status|filter|tab)=[^\'"]+[\'"]/i', $content, $m)) {
+                $this->warn("Tombol Quick Filter pada [{$rel}] menggunakan link statis '{$m[0]}'. Ini dapat memutus parameter 'mod' dan 'id' plugin. Seharusnya gunakan http_build_query(array_merge(\$_GET, ['status' => '...'])).");
+            }
+        }
+
+        if (!$filterDetected) {
+            $this->pass("Filter & Paginasi: Pemeriksaan filter dan paginasi selesai.");
         }
     }
 
