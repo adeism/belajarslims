@@ -38,7 +38,20 @@ Panduan lengkap pengembangan plugin mandiri, aman, dan mematuhi standar SLiMS 9 
 
 ---
 
-### 🛡️ 3. Keamanan Server & Penanganan Malware SLiMS
+### 🧪 3. Plugin Validation & Test Harness (CLI Tools)
+Tool otomatisasi CLI untuk mengaudit dan menguji plugin SLiMS sebelum deployment:
+- 🔍 **`bin/check-plugin.php`** — Linter & validator aturan SLiMS (keamanan, Simbio guard, migrasi, hook, sintaks PHP):
+  ```bash
+  php bin/check-plugin.php /path/to/plugins/nama_plugin
+  ```
+- 🗄️ **`bin/test-migration.php`** — Test runner eksekusi migrasi database plugin secara terisolasi via CLI:
+  ```bash
+  php bin/test-migration.php /path/to/plugins/nama_plugin [/path/to/slims_root]
+  ```
+
+---
+
+### 🛡️ 4. Keamanan Server & Penanganan Malware SLiMS
 Panduan proteksi server dan pembersihan insiden keamanan:
 - 🛡️ **[Konfigurasi Nginx Security Hardening](keamanan/nginx-configuration-security-hardening.md)**: Blokir eksekusi PHP liar, proteksi folder `/files/` dan `/images/`, serta proteksi path sensitif.
 - 🦠 **[Ciri & Cara Kerja Malware pada SLiMS](keamanan/ciri-dan-cara-kerja-malware-pada-slims-bulian-studi-kasus.md)**: Analisis backdoor, webshell, dan teknik injeksi skrip.

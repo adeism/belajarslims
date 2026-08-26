@@ -22,6 +22,23 @@ Dokumentasi lengkap untuk pengembangan plugin SLiMS 9.6.1 Bulian.
 | **context/01-slims-plugin-fundamentals.md** | Dasar Arsitektur Plugin | Registrasi plugin, menu scope, dan hook |
 | **context/02-slims-database-migration.md** | Migrasi Database Native | Standar migrasi SLiMS `SLiMS\Migration\Migration` |
 | **context/03-slims-security-best-practices.md** | Keamanan & CSRF | Prepared statements, token CSRF, dan validasi upload |
+| **context/04-slims-iframe-pattern.md** | Pola Iframe & Laporan | Template cetak dan filter laporan tanpa keluar iframe |
+| **context/05-slims-crud-operations.md** | Operasi CRUD Simbio | Pola CRUD aman & lazy loading guard |
+| **context/06-slims-common-errors.md** | Error Umum & Solusi | Katalog solusi error plugin SLiMS 9 |
+
+---
+
+### 🧪 **Automated Validation & Test Harness**
+
+Untuk menguji dan mengaudit plugin secara otomatis:
+
+```bash
+# 1. Validasi kepatuhan kode, keamanan, Simbio guard, dan migrasi
+php bin/check-plugin.php /path/to/plugins/nama_plugin
+
+# 2. Uji coba eksekusi migrasi database (up) secara mandiri
+php bin/test-migration.php /path/to/plugins/nama_plugin [/path/to/slims_root]
+```
 ### **Baru Mulai Development?**
 1. Baca: `PLUGIN-QUICK-REFERENCE.md` - Get started dengan checklist
 2. Study: Plugin reference (`rekap-plus-lokasi`) di direktori plugins
