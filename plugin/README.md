@@ -27,6 +27,7 @@ Dokumentasi lengkap untuk pengembangan plugin SLiMS 9.6.1 Bulian.
 | **context/06-slims-common-errors.md** | Error Umum & Solusi | Katalog solusi error plugin SLiMS 9 |
 | **context/07-slims-export-guide.md** | Panduan Ekspor Data | Panduan ekspor CSV, Excel, dan PDF/Cetak yang aman |
 | **context/08-slims-filter-pagination-guide.md** | Filter & Paginasi | Pencarian canggih, tab status, dan paginasi `simbio_paging` |
+| **context/09-slims-admin-navigation-redirect-guide.md** | Anti-Breakout Navigasi | Menjaga link, form & redirect tetap di container admin |
 
 ---
 

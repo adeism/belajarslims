@@ -33,6 +33,7 @@ Panduan lengkap pengembangan plugin mandiri, aman, dan mematuhi standar SLiMS 9 
 - 📊 **[Iframe Pattern untuk Laporan](plugin/context/04-slims-iframe-pattern.md)**: Mencegah menu admin hilang saat submit form filter laporan.
 - 🛠️ **[Operasi CRUD & Simbio Lazy Load](plugin/context/05-slims-crud-operations.md)**: Pola CRUD aman tanpa konflik redeclaration class.
 - 🔍 **[Filter, Advanced Filter, Quick Buttons & Paginasi](plugin/context/08-slims-filter-pagination-guide.md)**: Pencarian dinamis, filter status, dan paginasi aman.
+- 🧭 **[Anti-Breakout Navigasi & Redirect Admin](plugin/context/09-slims-admin-navigation-redirect-guide.md)**: Mencegah tombol/redirect terlempar ke dashboard utama admin SLiMS.
 - 📑 **[Panduan Ekspor Data (CSV, Excel, PDF)](plugin/context/07-slims-export-guide.md)**: Teknik ekspor data aman tanpa kebocoran buffer HTML.
 - 🚨 **[Troubleshooting & Error Guide](plugin/PLUGIN-ERROR-TROUBLESHOOTING-GUIDE.md)**: Solusi 50+ error umum plugin SLiMS.
 - 🎨 **[CSS Loading & Mobile Responsive Guide](plugin/CSS-LOADING-GUIDE.md)**: Path constants (`SWB`, `SB`) dan responsive UI.

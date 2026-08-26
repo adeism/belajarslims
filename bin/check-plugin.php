@@ -78,6 +78,7 @@ class PluginValidator
         $this->checkFormAndUrls();
         $this->checkExportHandlers();
         $this->checkFilterAndPagination();
+        $this->checkNavigationAndRedirects();
 
         $this->printSummary();
 
@@ -440,6 +441,72 @@ class PluginValidator
         if (!$filterDetected) {
             $this->pass("Filter & Paginasi: Pemeriksaan filter dan paginasi selesai.");
         }
+    }
+
+    private function checkNavigationAndRedirects(): void
+    {
+        foreach ($this->phpFiles as $file) {
+            $rel = $this->relative($file);
+            $content = file_get_contents($file);
+
+            // 1. PHP header('Location: ...') redirects breaking out of plugin
+            if (preg_match_all('/header\s*\(\s*[\'"]Location:\s*([^\'"]+)[\'"]\s*\)/i', $content, $matches)) {
+                foreach ($matches[1] as $redirectTarget) {
+                    $target = trim($redirectTarget);
+
+                    // Case A: Redirect to index.php directly
+                    if ($target === 'index.php' || str_starts_with($target, 'index.php?')) {
+                        if (!str_contains($target, 'mod=') && !str_contains($target, 'id=')) {
+                            $this->error("Redirect bahaya pada [{$rel}]: 'header(\"Location: {$target}\")' akan mengeluarkan user dari plugin dan melempar ke dashboard utama admin. Gunakan '\$_SERVER[\'PHP_SELF\'] . \\'?\\' . http_build_query(array_merge(\$_GET, [...]))'.");
+                        }
+                    }
+
+                    // Case B: Redirect to relative query string without mod and id
+                    if (str_starts_with($target, '?')) {
+                        if (!str_contains($target, 'mod=') && !str_contains($target, 'id=')) {
+                            $this->error("Redirect bahaya pada [{$rel}]: 'header(\"Location: {$target}\")' menghapus parameter mod/id plugin. Gunakan http_build_query(\$_GET).");
+                        }
+                    }
+                }
+            }
+
+            // 2. Anchor tags (<a href="...">) with broken relative links
+            if (preg_match_all('/<a[^>]+href=[\'"]([^\'"]+)[\'"]/i', $content, $linkMatches)) {
+                foreach ($linkMatches[1] as $href) {
+                    $h = trim($href);
+                    
+                    if (str_starts_with($h, '#') || str_starts_with($h, 'javascript:') || str_starts_with($h, 'mailto:') || str_starts_with($h, 'http') || str_contains($h, '<?=')) {
+                        continue;
+                    }
+
+                    // Link starting with ? but missing mod or id
+                    if (str_starts_with($h, '?') && !str_contains($h, 'mod=') && !str_contains($h, 'id=')) {
+                        $this->error("Link keluar halaman pada [{$rel}]: Tag '<a href=\"{$h}\">' menggunakan query string statis tanpa 'mod' & 'id'. Ini akan menyebabkan halaman kembali ke menu awal/error. Gunakan \$_SERVER['PHP_SELF'] . '?' . http_build_query(array_merge(\$_GET, [...])).");
+                    }
+
+                    // Link to index.php without mod
+                    if ((str_starts_with($h, 'index.php?') || $h === 'index.php') && !str_contains($h, 'mod=')) {
+                        $this->warn("Link pada [{$rel}]: '<a href=\"{$h}\">' mengarah langsung ke 'index.php' tanpa menyertakan modul plugin.");
+                    }
+                }
+            }
+
+            // 3. Breaking out of iframe using target="_top" or target="_parent"
+            if (preg_match('/<a[^>]+target=[\'"](?:_top|_parent)[\'"][^>]*>/i', $content, $targetMatches)) {
+                if (!str_contains($targetMatches[0], 'http') && !str_contains($targetMatches[0], 'logout')) {
+                    $this->warn("Link iframe breakout pada [{$rel}]: Penggunaan 'target=\"_top\"' atau 'target=\"_parent\"' pada '{$targetMatches[0]}' dapat memaksa halaman plugin keluar dari frame navigasi SLiMS.");
+                }
+            }
+
+            // 4. JavaScript navigation breaking out of container
+            if (preg_match('/(?:location\.href|window\.location)\s*=\s*[\'"]([^\'"]+)[\'"]/i', $content, $jsMatches)) {
+                $jsTarget = trim($jsMatches[1]);
+                if (str_starts_with($jsTarget, '?') && !str_contains($jsTarget, 'mod=')) {
+                    $this->error("JavaScript redirect pada [{$rel}]: 'location.href = \"{$jsTarget}\"' akan menghilangkan parameter modul plugin. Gunakan URL lengkap dengan query parameter yang di-preserve.");
+                }
+            }
+        }
+        $this->pass("Navigasi & Redirect: Pemeriksaan integritas tautan halaman dan redirect selesai.");
     }
 
     private function pass(string $msg): void
