@@ -623,37 +623,48 @@ $stmt->bind_param('ii', $per_page, $offset);
 
 ---
 
-## 🚨 **Common CRUD Errors**
+## 🛠️ **Simbio Datagrid CRUD Pattern (Native SLiMS)**
 
-### **Error 1: Column Mismatch**
+Untuk membuat tabel CRUD yang rapi, mendukung pencarian otomatis, sorting kolom, pagination bawaan SLiMS, dan tombol aksi tanpa menulis HTML manual:
 
+### **Pola Pemuatan Aman (Lazy Loading Guard)**:
 ```php
-// ❌ WRONG - Column name in query doesn't match table
-INSERT INTO library_equipment (name, cat) VALUES (?, ?)
-
-// ✅ CORRECT - Match exact column names
-INSERT INTO library_equipment (equipment_name, category) VALUES (?, ?)
+// Wajib gunakan guard class_exists untuk mencegah redeclaration fatal error
+if (!class_exists('simbio_table')) {
+    require_once SIMBIO . 'simbio_GUI/table/simbio_table.inc.php';
+}
+if (!class_exists('simbio_datagrid')) {
+    require_once SIMBIO . 'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+}
 ```
 
-### **Error 2: Parameter Binding Mismatch**
-
+### **Contoh Implementasi Simbio Datagrid**:
 ```php
-// ❌ WRONG - 3 placeholders, 2 parameters
-$stmt->bind_param('ss', $name, $category);
-$sql = "INSERT INTO table (col1, col2, col3) VALUES (?, ?, ?)";
+// 1. Inisialisasi Datagrid
+$datagrid = new simbio_datagrid();
+$datagrid->setSQLColumn(
+    "id",
+    "equipment_name AS 'Nama Peralatan'",
+    "category AS 'Kategori'",
+    "quantity AS 'Jumlah'",
+    "location AS 'Lokasi'",
+    "id AS 'Aksi'"
+);
+$datagrid->setSQLorder("equipment_name ASC");
 
-// ✅ CORRECT - Match parameter count
-$stmt->bind_param('ssi', $name, $category, $quantity);
-```
+// 2. Callback untuk Tombol Aksi
+function prActionCallback($obj_db, $data, $field_num) {
+    $id = (int)$data[$field_num];
+    $editUrl = prAdminRedirect('items', ['action' => 'edit', 'id' => $id]);
+    $deleteUrl = prAdminRedirect('items', ['action' => 'delete', 'id' => $id]);
+    
+    return '<a href="' . $editUrl . '" class="btn btn-sm btn-primary">Sunting</a> ' .
+           '<a href="' . $deleteUrl . '" class="btn btn-sm btn-danger" onclick="return confirm(\'Yakin hapus data ini?\')">Hapus</a>';
+}
+$datagrid->modifyColumnContent(5, 'callback{prActionCallback}');
 
-### **Error 3: Unescaped Output**
-
-```php
-// ❌ WRONG - XSS vulnerable
-echo '<td>' . $row['equipment_name'] . '</td>';
-
-// ✅ CORRECT - Always escape
-echo '<td>' . htmlspecialchars($row['equipment_name']) . '</td>';
+// 3. Render Tabel
+echo $datagrid->createDataGrid($dbs, 'library_equipment', 20, $can_read);
 ```
 
 ---

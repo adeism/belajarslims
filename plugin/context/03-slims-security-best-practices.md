@@ -262,34 +262,72 @@ json_encode($text)
 
 ---
 
-## 🛡️ **5. CSRF Protection**
+## 🛡️ **5. CSRF Protection (Token Based)**
 
-### **Use POST for State-Changing Operations**
+### **Implementasi Standar CSRF Token di SLiMS**
+
+Gunakan token acak berbasis session untuk memvalidasi bahwa request berasal dari form yang sah:
 
 ```php
-// ❌ WRONG - GET request for delete
-<a href="delete.php?id=5">Delete</a>
+/**
+ * 1. Helper Pembuatan Token CSRF
+ */
+function prGetCsrfToken(): string 
+{
+    if (session_status() === PHP_SESSION_NONE && !headers_sent()) { 
+        @session_start(); 
+    }
+    if (empty($_SESSION['pr_csrf_token'])) {
+        $_SESSION['pr_csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['pr_csrf_token'];
+}
 
-// ✅ CORRECT - POST request with form
-<form method="post" action="delete.php">
-    <input type="hidden" name="id" value="<?= htmlspecialchars($row['id']) ?>">
-    <button type="submit" name="action" value="delete">Delete</button>
-</form>
+/**
+ * 2. Helper Hidden Field untuk Form HTML
+ */
+function prCsrfField(): string 
+{
+    return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(prGetCsrfToken(), ENT_QUOTES, 'UTF-8') . '" />';
+}
+
+/**
+ * 3. Helper Validasi Token pada Handler POST
+ */
+function prValidateCsrf(): bool 
+{
+    if (session_status() === PHP_SESSION_NONE && !headers_sent()) { 
+        @session_start(); 
+    }
+    $token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
+    return !empty($token) && hash_equals($_SESSION['pr_csrf_token'] ?? '', $token);
+}
 ```
 
-### **Verify Request Method**
+### **Contoh Penggunaan pada Form & Handler POST**
 
 ```php
-// Only accept POST for write operations
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die('Invalid request method');
-}
+<!-- FORM VIEW -->
+<form method="POST" action="<?= prAdminRedirect('items') ?>">
+    <?= prCsrfField() ?>
+    <input type="hidden" name="action" value="delete_item" />
+    <input type="hidden" name="item_id" value="<?= (int)$row['id'] ?>" />
+    <button type="submit" class="btn btn-danger">Hapus Data</button>
+</form>
 
-// Only accept expected actions
-$allowed_actions = ['add', 'edit', 'delete'];
-if (!in_array($_POST['action'], $allowed_actions)) {
-    die('Invalid action');
+<!-- BACKEND CONTROLLER / HANDLER -->
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!prValidateCsrf()) {
+        die('<div class="errorBox">Token keamanan tidak valid (CSRF). Silakan refresh halaman dan coba lagi.</div>');
+    }
+    
+    $action = $_POST['action'] ?? '';
+    if ($action === 'delete_item') {
+        // Lanjutkan operasi delete dengan aman...
+    }
 }
+?>
 ```
 
 ---

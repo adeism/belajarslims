@@ -495,7 +495,59 @@ tail -f /path/to/slims/files/error_log/error.log
 
 ---
 
-## 🛠️ **Quick Fixes**
+## 6️⃣ **Modern SLiMS 9 Bulian Errors & Fixes**
+
+### **Error 1: Cannot declare class simbio_table_field**
+**Symptoms**:
+`Fatal error: Cannot declare class simbio_table_field, because the name is already in use in simbio_table.inc.php`
+
+**Cause**:
+Modul SLiMS core memanggil file tabel Simbio dengan `require` (bukan `require_once`), sehingga jika plugin memuat file ini secara global atau berulang, terjadi bentrok deklarasi class.
+
+**Fix**:
+Gunakan guard `class_exists()` sebelum memanggil file Simbio:
+```php
+if (!class_exists('simbio_table')) {
+    require_once SIMBIO . 'simbio_GUI/table/simbio_table.inc.php';
+}
+if (!class_exists('simbio_datagrid')) {
+    require_once SIMBIO . 'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+}
+```
+
+---
+
+### **Error 2: Class "Create...Table" not found**
+**Symptoms**:
+`Fatal error: Class "CreateEquipmentTable" not found in SLiMS migration runner`
+
+**Cause**:
+Nama class pada file migrasi di dalam folder `migration/` tidak sesuai dengan nama file setelah angka dan garis bawah dibuang.
+
+**Fix**:
+Pastikan nama file dan class turunan `SLiMS\Migration\Migration` sinkron:
+- Nama File: `1_CreateEquipmentTable.php`
+- Nama Class: `class CreateEquipmentTable extends \SLiMS\Migration\Migration`
+
+---
+
+### **Error 3: Form Blocked / CSRF Token Invalid**
+**Symptoms**:
+Form submit ditolak atau menampilkan pesan session expired / invalid security token.
+
+**Fix**:
+Pastikan form HTML menyertakan token CSRF dan controller memverifikasinya:
+```php
+<!-- FORM -->
+<input type="hidden" name="csrf_token" value="<?= prGetCsrfToken() ?>" />
+
+<!-- BACKEND -->
+if (!prValidateCsrf()) {
+    die('Invalid security token');
+}
+```
+
+---
 
 ### **Reset Plugin**
 

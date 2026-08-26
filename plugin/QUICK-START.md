@@ -1,217 +1,176 @@
-# ✅ Documentation Organization - COMPLETE
+# 🚀 Quick Start: Membuat Plugin SLiMS 9 Bulian dalam 5 Menit
 
-**Status**: ✅ **BERHASIL LENGKAP**  
-**Date**: 2025-01-10  
-**Total Files**: 9 files (156 KB)
+Panduan praktis langkah demi langkah untuk membuat plugin SLiMS 9 yang aman, modular, dan siap produksi.
 
 ---
 
-## 📁 **Struktur Final**
+## 📁 Langkah 1: Buat Struktur Folder Plugin
 
-```
-/var/www/html/slims/s951dev/plugins/plugin-guide/
-├── README.md (9.0 KB) ← DOKUMENTASI INDEX UTAMA
-├── PLUGIN-ERROR-TROUBLESHOOTING-GUIDE.md (56 KB) ← Guide terlengkap
-├── PLUGIN-QUICK-REFERENCE.md (7.8 KB) ← Quick reference
-├── CSS-LOADING-GUIDE.md (16 KB) ← CSS loading complete
-├── CSS-LOADING-UPDATE-SUMMARY.md (9.7 KB)
-├── INSTRUCTION-FILE-UPDATE-SUMMARY.md (8.5 KB)
-├── INSTRUCTION-FILE-FINAL-UPDATE.md (13 KB)
-├── INSTRUCTION-FILE-COMPLETE-STATUS.md (7.8 KB)
-└── DOCUMENTATION-ORGANIZATION-COMPLETE.md (13 KB)
-```
-
-**Total**: 156 KB dokumentasi lengkap
-
----
-
-## ✅ **Yang Sudah Dikerjakan**
-
-1. ✅ **Created plugin-guide folder**
-   - Location: `/var/www/html/slims/s951dev/plugins/plugin-guide/`
-   
-2. ✅ **Moved all 7 documentation files**
-   - PLUGIN-ERROR-TROUBLESHOOTING-GUIDE.md (56 KB)
-   - PLUGIN-QUICK-REFERENCE.md (7.8 KB)
-   - CSS-LOADING-GUIDE.md (16 KB)
-   - CSS-LOADING-UPDATE-SUMMARY.md (9.7 KB)
-   - INSTRUCTION-FILE-UPDATE-SUMMARY.md (8.5 KB)
-   - INSTRUCTION-FILE-FINAL-UPDATE.md (13 KB)
-   - INSTRUCTION-FILE-COMPLETE-STATUS.md (7.8 KB)
-
-3. ✅ **Created comprehensive README.md** (9.0 KB)
-   - Documentation index
-   - Quick navigation
-   - Learning paths (Beginner → Intermediate → Advanced)
-   - Common use cases with quick fixes
-   - Reference plugins
-   - Quick commands
-   - Security checklist
-   - Development workflow
-
-4. ✅ **Updated instruction file**
-   - File: `penting.instructions.md`
-   - Updated all file references: `PLUGIN-*.md` → `plugin-guide/PLUGIN-*.md`
-   - Added README.md reference
-   - Updated reference pattern
-
-5. ✅ **Created organization complete status**
-   - DOCUMENTATION-ORGANIZATION-COMPLETE.md (13 KB)
-   - Complete verification
-   - Impact assessment
-   - Next steps recommendations
-
----
-
-## 🎯 **Cara Menggunakan**
-
-### **Untuk Developer:**
+Masuk ke folder `plugins/` instalasi SLiMS Anda dan buat folder plugin baru:
 
 ```bash
-# Navigate to documentation
-cd /var/www/html/slims/s951dev/plugins/plugin-guide/
-
-# Read index
-cat README.md
-
-# Search specific topic
-grep -r "iframe pattern" .
-
-# Open in browser/editor
+mkdir -p plugins/halo_dunia/{migration,assets,inc}
 ```
 
-### **Untuk AI Chatbot:**
-
-Instruction file sudah updated dengan reference ke folder `plugin-guide/`:
-
-```markdown
-"Untuk detail lengkap tentang troubleshooting, lihat plugin-guide/PLUGIN-ERROR-TROUBLESHOOTING-GUIDE.md"
-"Untuk quick reference, lihat plugin-guide/PLUGIN-QUICK-REFERENCE.md"
-"Untuk CSS loading issues, lihat plugin-guide/CSS-LOADING-GUIDE.md"
-"Untuk overview semua dokumentasi, lihat plugin-guide/README.md"
+Struktur folder minimal:
+```
+plugins/halo_dunia/
+├── halo_dunia.plugin.php    # Entry point registrasi plugin
+├── admin_menu.php           # Tampilan & controller admin
+├── helper.php               # Fungsi helper & database (opsional)
+├── migration/               # Skrip migrasi tabel
+│   └── 1_CreateHaloTable.php
+└── assets/                  # CSS & JavaScript
 ```
 
 ---
 
-## 📊 **File Organization Benefits**
+## 🔌 Langkah 2: Registrasi Plugin (`halo_dunia.plugin.php`)
 
-### **Before:**
+Buat file `plugins/halo_dunia/halo_dunia.plugin.php`:
+
+```php
+<?php
+/**
+ * Plugin Name: Halo Dunia SLiMS
+ * Plugin URI: https://github.com/adeism/belajarslims
+ * Description: Plugin contoh cepat untuk belajar SLiMS 9 Bulian
+ * Version: 1.0.0
+ * Author: Adeism
+ */
+
+use SLiMS\Plugins;
+
+// ⚠️ JANGAN tulis define('INDEX_AUTH', 1) di file ini!
+
+$plugins = Plugins::getInstance();
+
+// Daftarkan menu ke modul 'system', 'reporting', 'membership', dsb.
+$plugins->registerMenu('system', 'Halo Dunia', __DIR__ . '/admin_menu.php');
+
+// Daftarkan route OPAC publik (opsional)
+$plugins->registerMenu('opac', 'halo_publik', __DIR__ . '/opac_menu.php');
 ```
-plugins/
-├── rekap-plus-lokasi/
-├── PLUGIN-ERROR-TROUBLESHOOTING-GUIDE.md  ← scattered
-├── PLUGIN-QUICK-REFERENCE.md              ← scattered
-├── CSS-LOADING-GUIDE.md                   ← scattered
-└── ... (mixed with plugins)
+
+---
+
+## 🛡️ Langkah 3: Buat Antarmuka Admin (`admin_menu.php`)
+
+Buat file `plugins/halo_dunia/admin_menu.php`:
+
+```php
+<?php
+defined('INDEX_AUTH') || die('Direct access not allowed');
+
+// 1. Session & Privilege Check
+require_once SB . 'admin/default/session.inc.php';
+require_once SB . 'admin/default/session_check.inc.php';
+
+$can_read  = utility::havePrivilege('system', 'r');
+$can_write = utility::havePrivilege('system', 'w');
+
+if (!$can_read) {
+    die('<div class="errorBox">' . __('Akses ditolak!') . '</div>');
+}
+
+// 2. Simbio Lazy Load Guard (Mencegah Class Redeclaration Error)
+if (!class_exists('simbio_table')) {
+    require_once SIMBIO . 'simbio_GUI/table/simbio_table.inc.php';
+}
+if (!class_exists('simbio_datagrid')) {
+    require_once SIMBIO . 'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+}
+
+// 3. Handler Form POST dengan CSRF Protection
+$msg = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['simpan']) && $can_write) {
+    $pesan = trim($_POST['pesan'] ?? '');
+    if (!empty($pesan)) {
+        $stmt = $dbs->prepare("INSERT INTO halo_dunia_data (pesan, created_at) VALUES (?, NOW())");
+        $stmt->bind_param("s", $pesan);
+        $stmt->execute();
+        $stmt->close();
+        $msg = 'Pesan berhasil disimpan!';
+    }
+}
+?>
+
+<div class="menuBox">
+    <div class="menuBoxInner">
+        <h3 style="margin-top:0;">👋 Selamat Datang di Plugin Halo Dunia</h3>
+        
+        <?php if (!empty($msg)): ?>
+            <div class="infoBox"><?= htmlspecialchars($msg, ENT_QUOTES, 'UTF-8') ?></div>
+        <?php endif; ?>
+
+        <!-- Form Input -->
+        <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>?mod=system&id=halo_dunia" style="margin-bottom:20px;">
+            <div style="margin-bottom:10px;">
+                <label><strong>Tulis Pesan:</strong></label><br />
+                <input type="text" name="pesan" class="form-control" placeholder="Ketik pesan..." required style="width:300px; padding:6px;" />
+            </div>
+            <button type="submit" name="simpan" value="1" class="btn btn-primary">Simpan Pesan</button>
+        </form>
+
+        <!-- Datagrid Tabel Data -->
+        <h4>📋 Daftar Pesan Tersimpan</h4>
+        <?php
+        $datagrid = new simbio_datagrid();
+        $datagrid->setSQLColumn("id", "pesan AS 'Isi Pesan'", "created_at AS 'Waktu'");
+        $datagrid->setSQLorder("id DESC");
+        echo $datagrid->createDataGrid($dbs, 'halo_dunia_data', 20, $can_read);
+        ?>
+    </div>
+</div>
 ```
-**Problem**: Documentation mixed with code
 
-### **After:**
+---
+
+## 🗄️ Langkah 4: Buat Database Migration (`migration/1_CreateHaloTable.php`)
+
+Buat file `plugins/halo_dunia/migration/1_CreateHaloTable.php`:
+
+```php
+<?php
+defined('INDEX_AUTH') || defined('PINJAM_RUANG_CONTEXT') || die('Direct access not allowed');
+
+use SLiMS\Migration\Migration;
+
+class CreateHaloTable extends Migration
+{
+    public function up()
+    {
+        global $dbs;
+        $db = $dbs ?? \SLiMS\DB::getInstance();
+
+        $sql = "CREATE TABLE IF NOT EXISTS halo_dunia_data (
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            pesan VARCHAR(255) NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+
+        $db->query($sql);
+    }
+
+    public function down()
+    {
+        global $dbs;
+        $db = $dbs ?? \SLiMS\DB::getInstance();
+        $db->query("DROP TABLE IF EXISTS halo_dunia_data");
+    }
+}
 ```
-plugins/
-├── plugin-guide/              ← CENTRALIZED
-│   ├── README.md
-│   ├── PLUGIN-ERROR-TROUBLESHOOTING-GUIDE.md
-│   ├── PLUGIN-QUICK-REFERENCE.md
-│   ├── CSS-LOADING-GUIDE.md
-│   └── ... (all docs)
-├── rekap-plus-lokasi/
-├── visitor-transaction-hour/
-└── monthly-collection-report/
-```
-**Solution**: Clear separation, professional structure
 
 ---
 
-## 🎓 **Quick Access Guide**
-
-### **Mengalami Error?**
-→ `plugin-guide/PLUGIN-ERROR-TROUBLESHOOTING-GUIDE.md`
-
-### **Butuh Quick Reference?**
-→ `plugin-guide/PLUGIN-QUICK-REFERENCE.md`
-
-### **CSS Tidak Load?**
-→ `plugin-guide/CSS-LOADING-GUIDE.md`
-
-### **Ingin Overview Semua Docs?**
-→ `plugin-guide/README.md`
-
-### **Belajar dari Case Study?**
-→ `plugin-guide/PLUGIN-QUICK-REFERENCE.md` (Section: Real-World Cases)
+## ✅ Langkah 5: Aktifkan & Uji Plugin
+1. Buka Admin Panel SLiMS: **System > Plugin**.
+2. Cari **Halo Dunia SLiMS** dan klik tombol **Aktifkan**.
+3. Buka menu **System > Halo Dunia** untuk mencoba menyimpan pesan dan melihat hasilnya di tabel Datagrid!
 
 ---
 
-## 📖 **README.md Highlights**
-
-File README.md contains:
-
-1. **📋 Document Overview**
-   - All files listed with descriptions
-   - When to use each file
-
-2. **🎯 Quick Navigation**
-   - For beginners
-   - For troubleshooting
-   - For CSS issues
-   - For learning
-
-3. **📊 Document Structure**
-   - Detailed breakdown of each major doc
-   - Section listings
-   - Content highlights
-
-4. **🎓 Learning Path**
-   - Beginner: 3-day quick start
-   - Intermediate: 3-week comprehensive
-   - Advanced: Long-term mastery
-
-5. **🔍 Common Use Cases**
-   - Plugin not found error → Quick fix
-   - Form opens new tab → Iframe pattern
-   - CSS 404 error → SWB constant
-   - Column mismatch → SQL aliases
-
-6. **📖 Reference Plugins**
-   - rekap-plus-lokasi (primary reference)
-   - visitor-transaction-hour (iframe)
-   - monthly-collection-report (complete)
-
-7. **🛠️ Quick Commands**
-   - Validation commands
-   - Debug mode
-   - Security checklist
-
-8. **🎯 Key Principles**
-   - 5 core development principles
-   - Must-follow rules
-
----
-
-## 🎉 **Completion Summary**
-
-**All documentation successfully organized!**
-
-- ✅ 9 files total (156 KB)
-- ✅ Professional folder structure
-- ✅ Comprehensive index (README.md)
-- ✅ Updated instruction file references
-- ✅ All files verified and validated
-- ✅ Clear learning paths
-- ✅ Quick access guides
-- ✅ Developer experience improved
-
-**Productivity Improvement**: Estimated **80% time savings** for finding and using documentation.
-
----
-
-## 📞 **Need Help?**
-
-**Start Here**: `/var/www/html/slims/s951dev/plugins/plugin-guide/README.md`
-
-All documentation is now centralized, indexed, and easy to find!
-
----
-
-**Prepared**: 2025-01-10  
-**Status**: ✅ PRODUCTION READY
+## 📚 Dokumen Lanjutan
+- [Instruksi Lengkap & Guardrails](penting.instructions.SIMPLIFIED.md)
+- [Pola Iframe Laporan](context/04-slims-iframe-pattern.md)
+- [Troubleshooting & Solusi Error](PLUGIN-ERROR-TROUBLESHOOTING-GUIDE.md)

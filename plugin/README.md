@@ -14,14 +14,18 @@ Dokumentasi lengkap untuk pengembangan plugin SLiMS 9.6.1 Bulian.
 | **PLUGIN-QUICK-REFERENCE.md** | Quick reference untuk development | Butuh checklist cepat atau command |
 | **CSS-LOADING-GUIDE.md** | Guide lengkap untuk loading CSS/JS | CSS tidak load atau 404 error |
 
-### **📖 Update History & Documentation**
+### **📖 Panduan Inti & Modul Konteks**
 
 | File | Purpose | Description |
 |------|---------|-------------|
-| **INSTRUCTION-FILE-COMPLETE-STATUS.md** | Status final update | Summary lengkap semua update yang dilakukan |
-| **INSTRUCTION-FILE-FINAL-UPDATE.md** | Update session 2 | Integrasi dengan quick reference |
-| **INSTRUCTION-FILE-UPDATE-SUMMARY.md** | Update session 1 | Integrasi dengan troubleshooting guide |
-| **CSS-LOADING-UPDATE-SUMMARY.md** | CSS loading update | Dokumentasi CSS loading improvements |
+| **QUICK-START.md** | Panduan Cepat 5 Menit | Langkah awal membuat plugin baru |
+| **penting.instructions.SIMPLIFIED.md** | Master Rule & AI Instruction | Standar guardrail, arsitektur, dan coding |
+| **context/01-slims-plugin-fundamentals.md** | Dasar Arsitektur Plugin | Registrasi plugin, menu scope, dan hook |
+| **context/02-slims-database-migration.md** | Migrasi Database Native | Standar migrasi SLiMS `SLiMS\Migration\Migration` |
+| **context/03-slims-security-best-practices.md** | Keamanan & CSRF | Prepared statements, token CSRF, dan validasi upload |
+| **context/04-slims-iframe-pattern.md** | Pola Iframe Laporan | Mencegah hilangnya menu navigasi admin saat submit |
+| **context/05-slims-crud-operations.md** | Operasi CRUD & Simbio Guard | Pola CRUD aman tanpa konflik redeclaration class |
+| **context/06-slims-common-errors.md** | Error & Solusi Cepat | Ringkasan pemecahan masalah error paling umum |
 
 ---
 
