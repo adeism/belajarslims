@@ -32,21 +32,15 @@ Plugin SLiMS adalah sistem modular yang diperkenalkan sejak **SLiMS Bulian 9.3.0
 ```
 
 **Kedalaman Scanning**: SLiMS memindai plugin hingga **2 tingkat subfolder** (`$deep = 2` di `lib/Plugins.php`):
-
 ```
 plugins/                        # Root folder plugin
 ├── plugin.plugin.php          # Tingkat 1 ✅ DETECTED
-└── my-plugin/                 # Tingkat 1
     ├── my-plugin.plugin.php   # Tingkat 2 ✅ DETECTED
     └── nested-folder/         # Tingkat 2
         └── deeper.plugin.php  # Tingkat 3 ❌ NOT DETECTED
 ```
 
 ---
-
-## 📝 **Plugin Registration - TWO VALID PATTERNS**
-
-### **Pattern 1: Official/Recommended** ⭐
 
 **File**: `my_plugin.plugin.php`
 
@@ -154,7 +148,6 @@ $dbs  // Global MySQLi object
 
 **Critical Rules**:
 - ✅ Use `SB` for PHP `require`/`include`
-- ✅ Use `SWB` for browser assets (CSS/JS/images)
 - ✅ Use `AWB` for admin redirects
 - ❌ NEVER mix server paths with web paths
 
@@ -231,13 +224,6 @@ From `working-plugin/psb-feb-ui-plugins/due-date-updater/`:
 
 ```php
 <?php
-/**
- * Plugin Name: Due Date Updater
- * Description: Hook-based plugin to modify loan list page
- */
-
-use SLiMS\Plugins;
-
 Plugins::hook(Plugins::ADMIN_SESSION_AFTER_START, function () {
     // Get call stack to detect current page
     $e = new Exception();
@@ -280,27 +266,18 @@ Plugins::hook(Plugins::CIRCULATION_AFTER_SUCCESSFUL_TRANSACTION, function ($data
 });
 ```
 
-### **When to Use Hooks vs Menu Registration**
-
-✅ **Use Hooks when**:
 - No user interface needed
 - Modifying existing SLiMS pages
 - Adding global styles/scripts
 - Event-driven logic
 - Background processing
-
-✅ **Use Menu Registration when**:
-- Need user interface/forms
 - Standalone feature
 - User needs to navigate to plugin
 - Custom reports/tools
 
-### **Hook Pattern vs Registration Pattern**
-
 ```php
 // Pattern A: Hook (no menu)
 Plugins::hook(Plugins::ADMIN_HEADER, function () {
-    // Executes automatically
 });
 
 // Pattern B: Menu Registration (with menu)
@@ -339,7 +316,6 @@ From `working-plugin/psb-feb-ui-plugins/bebas-pustaka/`:
 bebas-pustaka/
 ├── registrat.plugin.php          # Plugin registration
 ├── admin.routes.php               # Admin route handler
-├── opac.routes.php                # OPAC route handler
 ├── verify.routes.php              # Custom route handler
 ├── Controllers/                   # Controllers folder
 │   ├── BebasPustakaAdminController.php
@@ -412,7 +388,6 @@ switch ($action) {
     case 'delete':
         $controller->delete($_GET['id'] ?? null);
         break;
-    default:
         $controller->index();
         break;
 }
@@ -424,11 +399,9 @@ switch ($action) {
 
 ```php
 <?php
-namespace Controllers;
 
 use Models\BebasPustaka;
 
-class BebasPustakaAdminController
 {
     private $dbs;
     private $sysconf;
@@ -437,15 +410,12 @@ class BebasPustakaAdminController
     {
         $this->dbs = $dbs;
         $this->sysconf = $sysconf;
-    }
     
     // Display list
     public function index()
-    {
         $model = new BebasPustaka($this->dbs);
         $data = $model->getAll();
         
-        include __DIR__ . '/../Views/admin/index.php';
     }
     
     // Create new record
@@ -471,7 +441,6 @@ class BebasPustakaAdminController
             $model->update($id, $_POST);
             header('Location: ' . $_SERVER['PHP_SELF'] . '?' . http_build_query(array_diff_key($_GET, ['action' => '', 'id' => ''])));
             exit;
-        }
         
         $record = $model->getById($id);
         include __DIR__ . '/../Views/admin/form.php';
@@ -489,7 +458,6 @@ namespace Models;
 
 class BebasPustaka
 {
-    private $dbs;
     
     public function __construct($dbs)
     {
@@ -504,7 +472,6 @@ class BebasPustaka
         
         $data = [];
         while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
         }
         return $data;
     }
@@ -1020,8 +987,6 @@ if (!$can_read) {
 $query = $dbs->query("SELECT * FROM biblio WHERE biblio_id = 1");
 $data = $query->fetch_assoc();
 
-// Prepared statement (ALWAYS use for user input!)
-$sql = "SELECT * FROM biblio WHERE title LIKE ?";
 $stmt = $dbs->prepare($sql);
 $search = '%' . $_GET['search'] . '%';
 $stmt->bind_param('s', $search);
@@ -1048,9 +1013,6 @@ $data = $query->fetch(PDO::FETCH_ASSOC);
 $query = DB::getInstance()->prepare("SELECT * FROM biblio WHERE title LIKE ?");
 $query->execute(['%' . $_GET['search'] . '%']);
 
-while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-    // Process data
-}
 ```
 
 **Note**: No need for `global` keyword

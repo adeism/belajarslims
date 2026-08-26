@@ -76,6 +76,7 @@ class PluginValidator
         $this->checkMigrationIntegrity();
         $this->checkSqlSafety();
         $this->checkFormAndUrls();
+        $this->checkExportHandlers();
 
         $this->printSummary();
 
@@ -296,6 +297,87 @@ class PluginValidator
             if (preg_match('/<form[^>]+action=[\'"][^\'"]*\?mod=[^&\'"]+&id=[a-zA-Z0-9_]+[\'"]/i', $content, $matches)) {
                 $this->warn("Form action pada [{$rel}] tampaknya meng-hardcode nilai 'id='. Seharusnya gunakan \$_SERVER['PHP_SELF'] . '?' . http_build_query(\$_GET) karena 'id' adalah string hash MD5.");
             }
+        }
+    }
+
+    private function checkExportHandlers(): void
+    {
+        $exportDetected = false;
+
+        foreach ($this->phpFiles as $file) {
+            $rel = $this->relative($file);
+            $content = file_get_contents($file);
+
+            $isExportFile = false;
+            $exportTypes = [];
+
+            // Check CSV export
+            if (preg_match('/Content-Type:\s*text\/csv/i', $content) || preg_match('/fputcsv\s*\(/i', $content) || str_contains($content, 'SLiMS\\Csv\\Builder')) {
+                $isExportFile = true;
+                $exportTypes[] = 'CSV';
+            }
+
+            // Check Excel export
+            if (preg_match('/Content-Type:\s*application\/vnd\.(?:ms-excel|openxmlformats)/i', $content) || (preg_match('/Spreadsheet|xlsx|xls/i', $content) && str_contains($content, 'Content-Disposition'))) {
+                $isExportFile = true;
+                $exportTypes[] = 'Excel';
+            }
+
+            // Check PDF export
+            if (preg_match('/Content-Type:\s*application\/pdf/i', $content) || preg_match('/Dompdf|TCPDF|FPDF|Mpdf/i', $content) || str_contains($content, 'printed_page_tpl.php')) {
+                $isExportFile = true;
+                $exportTypes[] = 'PDF/Print';
+            }
+
+            // Check general Content-Disposition attachment
+            if (preg_match('/Content-Disposition:\s*attachment/i', $content)) {
+                $isExportFile = true;
+            }
+
+            if (!$isExportFile) {
+                continue;
+            }
+
+            $exportDetected = true;
+            $typeLabel = !empty($exportTypes) ? implode('/', array_unique($exportTypes)) : 'File Download';
+
+            // Check 1: Mandatory exit/die after file streaming
+            if (preg_match('/Content-Disposition:\s*attachment/i', $content) || preg_match('/Content-Type:\s*(?:text\/csv|application\/pdf|application\/vnd)/i', $content)) {
+                if (!preg_match('/(?:exit|die)\s*(?:\(.*\))?\s*;/i', $content)) {
+                    $this->error("Ekspor [{$typeLabel}] pada [{$rel}] tidak memiliki perintah 'exit;' atau 'die();'. Hal ini menyebabkan template HTML SLiMS bocor dan merusak berkas hasil unduhan.");
+                } else {
+                    $this->pass("Ekspor [{$typeLabel}]: Handler pada [{$rel}] memiliki terminasi 'exit;' yang tepat.");
+                }
+            }
+
+            // Check 2: Privilege check in export file
+            if (!str_contains($content, 'havePrivilege') && !str_contains($content, 'session_check')) {
+                $this->warn("Fitur ekspor [{$typeLabel}] pada [{$rel}] sebaiknya dilindungi dengan pengecekan hak akses 'utility::havePrivilege()'.");
+            } else {
+                $this->pass("Fitur ekspor [{$typeLabel}] pada [{$rel}] memiliki proteksi otorisasi sesi.");
+            }
+
+            // Check 3: Output buffer cleaning (ob_clean / ob_end_clean) before headers
+            if (preg_match('/Content-Disposition:\s*attachment/i', $content)) {
+                if (!preg_match('/ob_(?:end_)?clean\s*\(\s*\)/i', $content)) {
+                    $this->warn("Ekspor [{$typeLabel}] pada [{$rel}]: Disarankan menggunakan 'ob_clean();' sebelum mengirim header download untuk mencegah kontaminasi whitespace/BOM.");
+                } else {
+                    $this->pass("Ekspor [{$typeLabel}]: Output buffer dibersihkan dengan 'ob_clean()' sebelum pengiriman berkas pada [{$rel}].");
+                }
+            }
+
+            // Check 4: Printed template path verification
+            if (str_contains($content, 'printed_page_tpl.php')) {
+                if (preg_match('/admin_template\/default\/printed_page_tpl\.php/i', $content)) {
+                    $this->error("Path template cetak pada [{$rel}] salah ('admin_template/default/printed_page_tpl.php'). Berkas 'printed_page_tpl.php' terletak langsung di bawah 'admin/admin_template/printed_page_tpl.php'.");
+                } else {
+                    $this->pass("Template cetak laporan SLiMS dipanggil dengan path yang benar pada [{$rel}].");
+                }
+            }
+        }
+
+        if (!$exportDetected) {
+            $this->pass("Fitur Ekspor: Berkas plugin bersih atau tidak menggunakan handler ekspor kustom.");
         }
     }
 

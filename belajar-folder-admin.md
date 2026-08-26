@@ -30,17 +30,13 @@ Menyimpan file inisialisasi sesi dan keamanan backend:
 Berisi template tampilan area admin:
 - `default/index_template.inc.php`: Kerangka utama layout dashboard admin.
 - `printed_page_tpl.php`: Template standar untuk cetak laporan / printed view (terletak langsung di bawah `admin/admin_template/`).
-
 ---
 
 ### 4. File Entry Point & Utility Backend
 - **`index.php`** 🏁: Entry point utama area admin SLiMS.
-- **`plugin_container.php`** 🔌: Wrapper pemuat file menu plugin pihak ketiga di dalam iframe/layout admin.
 - **`logout.php`** 🚪: Handler logout sesi pengguna backend.
 - **`AJAX_lookup_handler.php`** 🔍: Handler permintaan AJAX autocomplete/lookup (pengarang, penerbit, subjek, member).
 - **`view.php`** 👁️: Viewer berkas/gambar dari database atau repository.
-
----
 
 ## 📌 Fungsi Utama Area `/admin`
 1. **Pengelolaan Koleksi & Otoritas**: Manajemen bibliografi, eksemplar, dan master file.

@@ -32,6 +32,7 @@ Panduan lengkap pengembangan plugin mandiri, aman, dan mematuhi standar SLiMS 9 
 - 🔒 **[Security Best Practices & CSRF](plugin/context/03-slims-security-best-practices.md)**: Prepared statement, CSRF token, XSS escaping, dan file upload safety.
 - 📊 **[Iframe Pattern untuk Laporan](plugin/context/04-slims-iframe-pattern.md)**: Mencegah menu admin hilang saat submit form filter laporan.
 - 🛠️ **[Operasi CRUD & Simbio Lazy Load](plugin/context/05-slims-crud-operations.md)**: Pola CRUD aman tanpa konflik redeclaration class.
+- 📑 **[Panduan Ekspor Data (CSV, Excel, PDF)](plugin/context/07-slims-export-guide.md)**: Teknik ekspor data aman tanpa kebocoran buffer HTML.
 - 🚨 **[Troubleshooting & Error Guide](plugin/PLUGIN-ERROR-TROUBLESHOOTING-GUIDE.md)**: Solusi 50+ error umum plugin SLiMS.
 - 🎨 **[CSS Loading & Mobile Responsive Guide](plugin/CSS-LOADING-GUIDE.md)**: Path constants (`SWB`, `SB`) dan responsive UI.
 - 📝 **[Template Prompt untuk AI Chatbot](plugin/context/USER-PROMPT-TEMPLATES.md)**: Template prompt untuk membuat plugin via AI Agent.
