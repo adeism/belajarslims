@@ -115,4 +115,5 @@ Body:
   "return_date": "2024-11-21"
 }
 
-> *Tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)*
+---
+Modul API SLiMS ini dapat diakses untuk integrasi mobile apps, sistem informasi akademik (SIAKAD), maupun otomasi perpustakaan lainnya.

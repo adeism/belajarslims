@@ -1,4 +1,6 @@
-Berikut adalah pemicu (trigger) yang akan membuat entri log di tabel `system_log`:
+# 📋 Pemicu (Triggers) Pencatatan Log pada Tabel `system_log` SLiMS 9
+
+Berikut adalah pemicu (*triggers*) yang akan mencatat entri log di tabel `system_log` SLiMS 9 Bulian:
 
 1.  **Login/Logout Pustakawan:**
     *   Ketika pustakawan berhasil login (`admin_logon.inc.php`).

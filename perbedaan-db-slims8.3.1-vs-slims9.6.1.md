@@ -1,14 +1,12 @@
-## Perbedaan Database SLiMS 9 dan SLiMS 8
+# 🗄️ Perbedaan Database SLiMS 8 (Akasia) vs SLiMS 9 (Bulian)
 
-Informasi berdasarkan
+Referensi Sumber:
+- **SLiMS 8.3.1 (Akasia)**: `install/senayan.sql.php`
+- **SLiMS 9.6.1 (Bulian)**: `install/install.sql.php`
 
-SLiMS 8.3.1 : https://github.com/slims/slims8_akasia/blob/master/install/senayan.sql.php
+---
 
-SLiMS 9.6.1 : https://github.com/slims/slims9_bulian/blob/master/install/install.sql.php
-
-## Perbedaan Database SLiMS 9 dan SLiMS 8
-
-Berikut adalah tabel yang merangkum perbedaan database antara SLiMS 9 dan SLiMS 8:
+Berikut adalah tabel perbandingan skema database antara SLiMS 8 dan SLiMS 9:
 
 | Fitur/Tabel/Kolom                       | SLiMS 8                       | SLiMS 9                                                                 | Perbedaan                                                                                                                                |
 | :-------------------------------------- | :---------------------------- | :---------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |

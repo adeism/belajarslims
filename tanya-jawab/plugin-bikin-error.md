@@ -22,9 +22,16 @@ Cara tercepat untuk menonaktifkan plugin tanpa menghapusnya adalah dengan mengub
 
 Langkah ini dilakukan jika *error* berlanjut setelah Langkah 2, atau jika Anda ingin benar-benar membersihkan jejak plugin di sistem. **Selalu lakukan *backup* database sebelum proses ini!**
 
-1.  **Akses Database**: Masuk ke *database* SLiMS menggunakan **phpMyAdmin** atau *tool* manajemen MySQL lainnya.
-2.  **Hapus Data**: Cari dan hapus entri/data plugin yang *error* dari tabel yang menyimpan daftar plugin aktif (lokasi tabel bisa bervariasi tergantung versi SLiMS).
-3.  **Peringatan**: **Backup database Anda terlebih dahulu!**
+1.  **Akses Database**: Masuk ke database SLiMS menggunakan phpMyAdmin, DBeaver, atau MySQL CLI.
+2.  **Nonaktifkan via SQL**: Pada SLiMS 9 Bulian, status plugin tersimpan di tabel `plugins`. Jalankan query:
+    ```sql
+    -- Nonaktifkan plugin tanpa menghapus datanya
+    UPDATE plugins SET is_active = 0 WHERE id = 'nama_plugin_anda';
+    
+    -- Atau hapus registrasi plugin dari database
+    DELETE FROM plugins WHERE id = 'nama_plugin_anda';
+    ```
+3.  **Peringatan**: Selalu backup database Anda terlebih dahulu!
 
 ### Langkah 4: Uji Coba
 

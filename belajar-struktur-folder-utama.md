@@ -20,11 +20,11 @@ Berisi file untuk keperluan web service atau integrasi API. Digunakan jika ingin
 ---
 
 ### 3. `/config` ⚙️
-Folder ini menyimpan file konfigurasi sistem SLiMS, termasuk pengaturan database dan pengaturan dasar aplikasi.
+Folder ini menyimpan file konfigurasi database sistem SLiMS hasil proses instalasi.
 
 - **File Penting**:
-  - `database.php`: Berisi pengaturan koneksi database. < dibuat ketika selesai installasi awal 
-  - `sysconfig.inc.php`: Konfigurasi sistem utama.
+  - `config/database.php`: Berisi kredensial koneksi database (Host, Port, User, Pass, DB Name) yang dibuat saat instalasi selesai.
+  - `sysconfig.inc.php` *(di direktori root)*: Konfigurasi sistem utama, inisialisasi konstanta path (`SB`, `SWB`, `AWB`), dan bootstrapping autoloader.
 
 ---
 
@@ -105,5 +105,4 @@ File utama untuk mengarahkan semua permintaan HTTP ke SLiMS. Ini adalah entry po
 Dengan memahami struktur folder ini, Anda dapat lebih mudah mengelola dan memodifikasi SLiMS sesuai kebutuhan Anda.
 
 ---
-
-> *tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)
+Pemahaman terhadap tata letak direktori ini memudahkan pemeliharaan, pencadangan (*backup*), serta penyesuaian (*customization*) sistem perpustakaan Anda.

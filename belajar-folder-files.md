@@ -105,4 +105,5 @@ Fungsi Folder /files
 2. Memberikan lokasi penyimpanan terpisah untuk file sementara (cache) dan file hasil cetakan.
 3. Mempermudah pengelolaan file terkait koleksi dan anggota perpustakaan.
 
-> *Tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)*
+---
+Pastikan permissions folder `/files/` dan seluruh sub-direktorinya dapat ditulis oleh web server (misal `755` atau `www-data` ownership).

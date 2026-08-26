@@ -2,34 +2,36 @@
 
 Framework Simbio adalah "kotak peralatan" yang berisi kode-kode siap pakai bisa juga digunakan untuk mempermudah pembuatan plugin SLiMS Senayan. Bayangkan ini seperti kumpulan alat dasar yang sudah disiapkan, jadi Anda tidak perlu membuat semuanya dari awal.  Di bawah ini adalah daftar file-file penting dalam Simbio, diibaratkan seperti bagian-bagian dari kotak peralatan tersebut:
 
-| Ikon  | Nama File                                     | Penjelasan Menarik untuk Pemula                                                                                                                               |
+| Ikon  | Nama File                                     | Penjelasan untuk Developer & Pemula                                                                                                                               |
 | :----: | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🏠    | **simbio.inc.php**                            | **Rumah Utama Simbio!** 🏡  File ini adalah inti dari Simbio, seperti "otak"-nya.  Di dalamnya ada aturan dasar dan fungsi penting yang dipakai bersama oleh semua file Simbio lainnya. Ini seperti fondasi bangunan! |
-| 🧰    | **simbio\_DB\\simbio\_dbop.inc.php**         | **Tukang Operasi Database!** 🧰  File ini seperti "tukang" yang membantu Anda melakukan pekerjaan dasar dengan database, seperti menyimpan data baru, mengubah data yang sudah ada, atau menghapus data. Jadi, Anda tidak perlu repot menulis perintah database yang rumit! |
-| 📊    | **simbio\_DB\\datagrid\\simbio\_dbgrid.inc.php** | **Pembuat Tabel Data Keren!** 📊  File ini seperti "pesulap" yang bisa mengubah data dari database menjadi tabel yang rapi dan interaktif di halaman admin plugin Anda. Ada fitur halaman-halaman, bisa diurutkan, dan bahkan bisa langsung diedit! Sangat berguna untuk menampilkan daftar koleksi buku atau anggota! |
-| 🏛️    | **simbio\_DB\\isis\\simbio\_isis.inc.php**       | **Penghubung Database ISIS (Khusus)!** 🏛️  File ini seperti "jembatan" khusus untuk menghubungkan plugin Anda dengan database ISIS. ISIS ini database *jadul* yang mungkin masih dipakai di beberapa tempat. Mungkin jarang Anda gunakan, tapi Simbio tetap menyediakannya! |
-| 📜    | **simbio\_DB\\isis\\simbio\_isis\_result.inc.php** | **Pembaca Hasil ISIS!** 📜  File ini seperti "penerjemah" hasil dari database ISIS. Setelah Anda bertanya ke database ISIS, file ini yang membantu Anda membaca dan mengerti jawabannya. |
-| 🗄️    | **simbio\_DB\\mysql\\simbio\_mysql.inc.php**     | **Konektor Database MySQL!** 🗄️  File ini adalah "kunci" untuk membuka pintu ke database MySQL (atau MariaDB), database yang paling umum dipakai SLiMS.  Dengan file ini, plugin Anda bisa "ngobrol" dengan database MySQL untuk menyimpan dan mengambil informasi. |
-| 📄    | **simbio\_DB\\mysql\\simbio\_mysql\_result.inc.php** | **Pembaca Hasil MySQL!** 📄  Sama seperti file ISIS\_result, file ini adalah "penerjemah" hasil dari database MySQL.  File ini membantu plugin Anda mengolah jawaban dari database MySQL setelah Anda bertanya. |
-| 🐘    | **simbio\_DB\\pgsql\\simbio\_pgsql.inc.php**     | **Konektor Database PostgreSQL!** 🐘  Mirip dengan MySQL, file ini adalah "kunci" untuk database PostgreSQL, database *powerful* lain yang juga didukung SLiMS. Kalau Anda pakai PostgreSQL, file ini yang Anda butuhkan. |
-| 📝    | **simbio\_DB\\pgsql\\simbio\_pgsql\_result.inc.php** | **Pembaca Hasil PostgreSQL!** 📝  "Penerjemah" hasil dari database PostgreSQL. File ini membantu plugin Anda memahami jawaban dari PostgreSQL. |
-| 🧳    | **simbio\_DB\\sqlite\\simbio\_sqlite.inc.php**   | **Konektor Database SQLite Ringkas!** 🧳  File ini "kunci" untuk database SQLite, database *ringan* yang cocok untuk plugin sederhana atau instalasi SLiMS *portable*.  SQLite ini seperti database "dalam file", jadi lebih mudah dipakai. |
-| 📑    | **simbio\_DB\\sqlite\\simbio\_sqlite\_result.inc.php** | **Pembaca Hasil SQLite!** 📑  "Penerjemah" hasil dari database SQLite. File ini membantu plugin Anda membaca data dari SQLite. |
-| 📂    | **simbio\_FILE\\simbio\_directory.inc.php**      | **Pengelola Folder!** 📂  File ini seperti "navigator" folder.  Plugin Anda bisa pakai file ini untuk melihat isi folder, membuat daftar folder, atau melakukan operasi lain terkait folder di server. |
-| 📤    | **simbio\_FILE\\simbio\_file\_upload.inc.php**   | **Juru *Upload* File!** 📤  File ini adalah "asisten" untuk menangani *upload* file dari pengguna.  File ini membantu plugin Anda menerima file yang di-*upload*, memeriksa jenis dan ukuran file, dan menyimpan file tersebut dengan aman. |
-| ⌨️    | **simbio\_GUI\\form\_maker\\simbio\_form\_element.inc.php** | **Koleksi Elemen *Form*!** ⌨️  File ini seperti "toko" yang berisi berbagai macam komponen *form* siap pakai, seperti kotak teks, *dropdown*, *checkbox*, tombol, kalender, dll.  Anda tinggal pilih komponen yang Anda butuhkan untuk membuat *form* input data di plugin Anda. |
-| 🗂️    | **simbio\_GUI\\paging\\simbio\_paging.inc.php**    | **Pembuat Halaman Otomatis!** 🗂️  File ini seperti "pembagi halaman buku". Kalau plugin Anda menampilkan daftar data yang panjang, file ini membantu memecah daftar tersebut menjadi halaman-halaman yang lebih pendek dan mudah dinavigasi. |
-| 🏓    | **simbio\_GUI\\table\\simbio\_table.inc.php**      | **Pembuat Tabel HTML Dasar!** 🏓  File ini seperti "kerangka" untuk membuat tabel HTML.  Anda bisa pakai file ini untuk membuat tabel sederhana dengan mudah, dan mengatur tampilan tabel sesuai kebutuhan plugin Anda. |
-| 🎭    | **simbio\_GUI\\template\_parser\\simbio\_template\_parser.inc.php** | **Perancang Tampilan Cepat!** 🎭  File ini seperti "perancang panggung". Anda bisa membuat *template* tampilan (HTML) terpisah, lalu file ini yang akan mengisi *template* tersebut dengan data dinamis dari plugin Anda. Jadi, tampilan dan kode plugin Anda jadi lebih rapi dan terpisah. |
-| 🖋️    | **simbio\_GUI\\form\_maker\\simbio\_form\_table.inc.php** | **Pembuat *Form* Tabel Praktis!** 🖋️  File ini menggabungkan elemen *form* dan tabel HTML menjadi satu.  Dengan file ini, Anda bisa membuat *form* input data yang tersusun rapi dalam bentuk tabel dengan cepat. |
-| 🖨️    | **simbio\_GUI\\form\_maker\\simbio\_form\_table\_AJAX.inc.php** | **Pembuat *Form* Tabel AJAX Canggih!** 🖨️  Mirip dengan *form* tabel biasa, tapi file ini lebih canggih karena menggunakan teknologi AJAX.  Jadi, saat Anda menyimpan data dari *form*, halaman tidak perlu *reload* penuh, lebih cepat dan keren! |
-| 🔍    | **simbio\_UTILS\\simbio\_qparser.inc.php**         | **Pencari Pintar!** 🔍  File ini seperti "detektif" pencarian.  Kalau plugin Anda punya fitur pencarian, file ini membantu menerjemahkan kata kunci pencarian dari pengguna menjadi perintah database yang efektif. |
-| 🗓️    | **simbio\_UTILS\\simbio\_date.inc.php**          | **Ahli Tanggal!** 🗓️  File ini seperti "kalender berjalan".  Berisi fungsi-fungsi untuk menghitung tanggal, mencari tanggal berikutnya, menghitung hari libur, membuat kalender, dan semua hal yang berhubungan dengan tanggal. Sangat berguna untuk plugin yang berhubungan dengan jadwal atau periode waktu. |
-| ✂️    | **simbio\_UTILS\\simbio\_tokenizecql.inc.php**    | **Pemotong Kalimat Pencarian!** ✂️  File ini seperti "pemotong kue" untuk kalimat pencarian.  Kalau plugin Anda punya fitur pencarian yang lebih rumit, file ini membantu memecah kalimat pencarian pengguna menjadi bagian-bagian kecil yang lebih mudah diolah. Versi pertama dari pemotong ini. |
-| 🔪    | **simbio\_UTILS\\simbio\_tokenizecql.v2.inc.php** | **Pemotong Kalimat Pencarian Versi 2!** 🔪  "Pemotong kue" kalimat pencarian yang lebih baru dan mungkin lebih tajam!  Ini adalah versi perbaikan dari file `simbio_tokenizecql.inc.php`. |
-| 🛡️    | **simbio\_UTILS\\simbio\_security.inc.php**       | **Penjaga Keamanan!** 🛡️  File ini seperti "satpam" untuk plugin Anda. Berisi fungsi-fungsi untuk menjaga keamanan plugin, seperti memeriksa apakah koneksi aman (HTTPS), menghapus *session* dengan benar, dan mencegah serangan *hacker* yang jahat. |
-| 🛠️    | **simbio\_GUI\\form\_maker\\simbio\_form\_maker.inc.php** | **Pencipta *Form* Dasar!** 🛠️  File ini adalah "bengkel" tempat semua *form* Simbio dibuat. File ini adalah kelas dasar untuk membuat *form*, dan file-file *form* tabel di atas adalah "anak"-nya. |
+| 🏠    | **simbio.inc.php**                            | **Rumah Utama Simbio!** 🏡 File inti dari Simbio yang memuat aturan dasar dan fungsi global. |
+| 🧰    | **simbio_DB/simbio_dbop.inc.php**            | **Tukang Operasi Database!** 🧰 Membantu abstraksi query CRUD database sederhana. |
+| 📊    | **simbio_DB/datagrid/simbio_dbgrid.inc.php**  | **Pembuat Tabel Data Otomatis!** 📊 Mengubah data database menjadi tabel admin interaktif lengkap dengan paging, sorting, dan filter pencarian. |
+| 🏛️    | **simbio_DB/isis/simbio_isis.inc.php**       | **Penghubung Database ISIS!** 🏛️ Jembatan integrasi khusus untuk database ISIS. |
+| 🗄️    | **simbio_DB/mysql/simbio_mysql.inc.php**     | **Konektor Database MySQL!** 🗄️ Driver koneksi dan eksekusi query MySQL/MariaDB. |
+| 🐘    | **simbio_DB/pgsql/simbio_pgsql.inc.php**     | **Konektor Database PostgreSQL!** 🐘 Driver koneksi untuk database PostgreSQL. |
+| 🧳    | **simbio_DB/sqlite/simbio_sqlite.inc.php**   | **Konektor Database SQLite!** 🧳 Driver database SQLite berbasis file. |
+| 📂    | **simbio_FILE/simbio_directory.inc.php**     | **Pengelola Folder!** 📂 Helper inspeksi direktori dan berkas server. |
+| 📤    | **simbio_FILE/simbio_file_upload.inc.php**   | **Juru Upload File!** 📤 Helper penanganan unggah berkas, validasi MIME type, dan ukuran. |
+| ⌨️    | **simbio_GUI/form_maker/simbio_form_element.inc.php** | **Koleksi Elemen Form!** ⌨️ Komponen form HTML (input teks, select, checkbox, radio, datepicker). |
+| 🗂️    | **simbio_GUI/paging/simbio_paging.inc.php**    | **Paging Otomatis!** 🗂️ Generator navigasi pagination halaman tabel data. |
+| 🏓    | **simbio_GUI/table/simbio_table.inc.php**     | **Generator Tabel HTML!** 🏓 Kelas dasar pembuat markup tabel HTML terstruktur. |
+| 🎭    | **simbio_GUI/template_parser/simbio_template_parser.inc.php** | **Parser Template!** 🎭 Penggabung template HTML dengan variabel data dinamis. |
+| 🖋️    | **simbio_GUI/form_maker/simbio_form_table.inc.php** | **Pembuat Form Berbasis Tabel!** 🖋️ Form builder yang tersusun dalam layout tabel admin. |
+| 🔍    | **simbio_UTILS/simbio_qparser.inc.php**        | **Parser Query Pencarian!** 🔍 Penerjemah keyword pencarian pengguna menjadi sintaks SQL. |
+| 🗓️    | **simbio_UTILS/simbio_date.inc.php**         | **Helper Tanggal & Waktu!** 🗓️ Fungsi manipulasi tanggal, penghitungan hari libur, dan selisih hari. |
+| 🛡️    | **simbio_UTILS/simbio_security.inc.php**      | **Helper Keamanan!** 🛡️ Fungsi sanitasi input, token, dan validasi keamanan sistem. |
 
-Semoga rangkuman ini membantu Anda memahami gambaran besar tentang *framework* Simbio!  Dengan memahami fungsi setiap file, Anda akan lebih mudah dan cepat dalam mengembangkan plugin SLiMS Senayan yang hebat! ✨
+---
 
-> *tutorial ini diolah gemini dari keseluruhan file dalam folder simbio2 di slims (ada kemungkinan salah/halusinasi)
+### 💡 Tips Penting: Lazy Loading Guard
+Ketika menggunakan komponen Simbio GUI di dalam plugin Anda, **selalu gunakan guard `class_exists()`** untuk mencegah error `Cannot declare class simbio_table_field, because the name is already in use`:
+
+```php
+if (!class_exists('simbio_table')) {
+    require_once SIMBIO . 'simbio_GUI/table/simbio_table.inc.php';
+}
+if (!class_exists('simbio_datagrid')) {
+    require_once SIMBIO . 'simbio_DB/datagrid/simbio_dbgrid.inc.php';
+}
+```

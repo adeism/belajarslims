@@ -50,6 +50,4 @@
 | Hal tidak ditemukan | Tidak ada kecocokan sama sekali → 404                       | Kelas `Opac` (pesan default “Hal tidak ditemukan”)                                                                 |
 | Selesai             | Konten + template dirender, respons dikirim                 | `Opac->parseToTemplate()`, file template di `template/<theme>/`                                                    |
 
-Diagram pada gambar merepresentasikan precisely rantai keputusan di atas bersama titik‑titik file yang terlibat. Dengan memahami pemetaan ini, developer dapat men‑debug atau menambahkan fungsi baru (mis. plugin) tanpa menyentuh core SLiMS.
-
--Generate by ChatGPT - O3-
+Diagram dan alur kerja di atas merepresentasikan secara presisi rantai keputusan routing OPAC SLiMS bersama berkas-berkas yang terlibat. Dengan memahami alur ini, developer dapat mengembangkan fitur dan plugin publik tanpa mengubah kode inti SLiMS.
