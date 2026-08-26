@@ -9,8 +9,8 @@ server {
 
     # ===== BLOK KEAMANAN - PERBAIKAN KRITIS =====
     
-    # Izinkan createthumb.php untuk membuat thumbnail sampul buku
-    location ~ ^/lib/minigalnano/createthumb.php$ {
+    # Izinkan file PHP legal di /lib yang perlu diakses langsung via web (thumbnail & barcode)
+    location ~ ^/lib/(minigalnano/createthumb|phpbarcode/barcode)\.php$ {
         try_files $uri =404;
         fastcgi_pass unix:/var/run/php/php-fpm.sock; # Sesuaikan dengan versi PHP Anda
         fastcgi_index index.php;
@@ -142,7 +142,7 @@ Konfigurasi ini menerapkan beberapa lapisan keamanan untuk melindungi SLiMS dari
 Ini adalah bagian terpenting. Malware sering kali bekerja dengan cara mengunggah file PHP (shell) ke direktori yang seharusnya hanya berisi gambar atau dokumen, lalu menjalankannya dari URL.
 
   * **`location ~ ^/(lib|vendor|files|images)/.+\.php$`**: Aturan ini **memblokir** semua upaya untuk mengakses file yang berakhiran `.php` di dalam direktori `/lib`, `/vendor`, `/files`, dan `/images`. Jika penyerang berhasil mengunggah `shell.php` ke direktori `/images`, mereka tidak akan bisa menjalankannya.
-  * **`location ~ ^/lib/minigalnano/createthumb.php$`**: Ini adalah **pengecualian**. Ada satu file PHP di dalam direktori `/lib` yang memang harus bisa dijalankan (`createthumb.php` untuk thumbnail). Aturan ini secara spesifik mengizinkan *hanya file itu saja* untuk dieksekusi, sementara file PHP lain di `/lib` tetap diblokir.
+  * **`location ~ ^/lib/(minigalnano/createthumb|phpbarcode/barcode)\.php$`**: Ini adalah **pengecualian**. Ada file PHP di dalam direktori `/lib` yang memang harus bisa diakses langsung oleh browser (`createthumb.php` untuk thumbnail dan `lib/phpbarcode/barcode.php` untuk barcode kartu anggota/eksemplar). Aturan ini secara spesifik mengizinkan *hanya file tersebut* untuk dieksekusi, sementara file PHP lain di `/lib` tetap diblokir.
 
 #### 2\. Membatasi Kemampuan PHP
 

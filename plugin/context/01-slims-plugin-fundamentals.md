@@ -31,17 +31,15 @@ Plugin SLiMS adalah sistem modular yang diperkenalkan sejak **SLiMS Bulian 9.3.0
     └── another-plugin/
 ```
 
-**Kedalaman Scanning**: SLiMS memindai plugin hingga **3 tingkat folder**
+**Kedalaman Scanning**: SLiMS memindai plugin hingga **2 tingkat subfolder** (`$deep = 2` di `lib/Plugins.php`):
 
 ```
-plugins/                        # Tingkat 0
+plugins/                        # Root folder plugin
 ├── plugin.plugin.php          # Tingkat 1 ✅ DETECTED
-└── folder1/                   # Tingkat 1
-    ├── plugin.plugin.php      # Tingkat 2 ✅ DETECTED
-    └── folder2/               # Tingkat 2
-        ├── plugin.plugin.php  # Tingkat 3 ✅ DETECTED
-        └── folder3/           # Tingkat 3
-            └── plugin.php     # Tingkat 4 ❌ NOT DETECTED
+└── my-plugin/                 # Tingkat 1
+    ├── my-plugin.plugin.php   # Tingkat 2 ✅ DETECTED
+    └── nested-folder/         # Tingkat 2
+        └── deeper.plugin.php  # Tingkat 3 ❌ NOT DETECTED
 ```
 
 ---
@@ -147,7 +145,7 @@ SWB   // Server Web Base: https://domain.com/slims/
 
 // Admin paths
 AWB   // Admin Web Base: https://domain.com/slims/admin/
-      // Usage: header('Location: ' . AWB . 'modules.php?mod=...');
+      // Usage: header('Location: ' . AWB . 'index.php?mod=...');
 
 // Database
 $dbs  // Global MySQLi object
@@ -219,11 +217,13 @@ Plugins::hook(Plugins::ADMIN_SESSION_AFTER_START, function () {
 
 | Hook Constant | When It Fires | Use Case |
 |--------------|---------------|----------|
-| `Plugins::ADMIN_SESSION_AFTER_START` | After admin login session starts | Modify admin pages, inject code |
-| `Plugins::ADMIN_HEADER` | In admin `<head>` section | Add global CSS/JS to admin |
-| `Plugins::OPAC_HEADER` | In OPAC `<head>` section | Add global CSS/JS to OPAC |
-| `Plugins::BEFORE_CIRCULATION` | Before loan/return process | Custom validation, logging |
-| `Plugins::AFTER_CIRCULATION` | After loan/return completed | Notifications, statistics |
+| `Plugins::ADMIN_SESSION_AFTER_START` | After admin login session starts | Modify admin pages, inject code / assets |
+| `Plugins::ADMIN_AFTER_MODULE_LOADED` | After admin module is loaded | Intercept admin module execution |
+| `Plugins::CONTENT_BEFORE_LOAD` | Before OPAC content is loaded | Inject custom logic / assets to OPAC |
+| `Plugins::CONTENT_AFTER_LOAD` | After OPAC content is rendered | Filter / modify OPAC rendered output |
+| `Plugins::CIRCULATION_AFTER_SUCCESSFUL_TRANSACTION` | After loan/return completed | Notifications, logging, receipt generation |
+| `Plugins::BIBLIOGRAPHY_BEFORE_SAVE` | Before saving catalog item | Validate / alter bibliographic record |
+| `Plugins::MEMBERSHIP_BEFORE_SAVE` | Before saving member data | Validate / enrich member attributes |
 
 ### **Real Production Example**
 
@@ -263,21 +263,20 @@ Plugins::hook(Plugins::ADMIN_SESSION_AFTER_START, function () {
 <?php
 use SLiMS\Plugins;
 
-// Hook 1: Add CSS to admin
-Plugins::hook(Plugins::ADMIN_HEADER, function () {
-    echo '<link rel="stylesheet" href="' . SWB . 'plugins/my-plugin/assets/admin.css">';
+// Hook 1: Run code after admin session starts
+Plugins::hook(Plugins::ADMIN_SESSION_AFTER_START, function () {
+    // Inject scripts or modify global environment
 });
 
-// Hook 2: Add CSS to OPAC
-Plugins::hook(Plugins::OPAC_HEADER, function () {
-    echo '<link rel="stylesheet" href="' . SWB . 'plugins/my-plugin/assets/opac.css">';
+// Hook 2: Intercept OPAC before content load
+Plugins::hook(Plugins::CONTENT_BEFORE_LOAD, function () {
+    // Custom OPAC initialization
 });
 
-// Hook 3: Log circulation events
-Plugins::hook(Plugins::AFTER_CIRCULATION, function () {
+// Hook 3: Run action after circulation transaction succeeds
+Plugins::hook(Plugins::CIRCULATION_AFTER_SUCCESSFUL_TRANSACTION, function ($data) {
     global $dbs;
-    // Log transaction
-    $dbs->query("INSERT INTO circulation_log ...");
+    // Log transaction or send notification
 });
 ```
 
@@ -315,7 +314,7 @@ $plugins->registerMenu('reporting', 'My Report', __DIR__ . '/index.php');
 | Plugin | Hook Usage | Purpose |
 |--------|------------|---------|
 | `due-date-updater` | `ADMIN_SESSION_AFTER_START` | Inject code to loan page |
-| `member-area` | `OPAC_HEADER` | Add OPAC styling |
+| `member-area` | `CONTENT_BEFORE_LOAD` | Custom OPAC logic |
 | `bebas-pustaka` | Multiple hooks | Various enhancements |
 
 **Full example**: See `working-plugin/psb-feb-ui-plugins/due-date-updater/registrat.plugin.php`
@@ -385,9 +384,7 @@ bebas-pustaka/
 
 ```php
 <?php
-if (!defined('INDEX_AUTH')) {
-    define('INDEX_AUTH', '1');
-}
+defined('INDEX_AUTH') || die('Direct access not allowed');
 
 global $dbs, $sysconf;
 require SB . 'admin/default/session.inc.php';
@@ -399,9 +396,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 # LOAD CONTROLLER
 use Controllers\BebasPustakaAdminController;
 
+# INSTANTIATE CONTROLLER
 $controller = new BebasPustakaAdminController($dbs, $sysconf);
 
-// Route based on action parameter
+# ROUTING
 $action = $_GET['action'] ?? 'index';
 
 switch ($action) {
@@ -409,13 +407,14 @@ switch ($action) {
         $controller->create();
         break;
     case 'edit':
-        $controller->edit($_GET['id']);
+        $controller->edit($_GET['id'] ?? null);
         break;
     case 'delete':
-        $controller->delete($_GET['id']);
+        $controller->delete($_GET['id'] ?? null);
         break;
     default:
         $controller->index();
+        break;
 }
 ```
 
@@ -440,13 +439,12 @@ class BebasPustakaAdminController
         $this->sysconf = $sysconf;
     }
     
-    // List all records
+    // Display list
     public function index()
     {
         $model = new BebasPustaka($this->dbs);
         $data = $model->getAll();
         
-        // Load view
         include __DIR__ . '/../Views/admin/index.php';
     }
     
@@ -457,7 +455,7 @@ class BebasPustakaAdminController
             $model = new BebasPustaka($this->dbs);
             $model->insert($_POST);
             
-            header('Location: ' . AWB . 'modules.php?mod=bebas-pustaka&id=admin');
+            header('Location: ' . $_SERVER['PHP_SELF'] . '?' . http_build_query($_GET));
             exit;
         }
         
@@ -471,7 +469,7 @@ class BebasPustakaAdminController
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $model->update($id, $_POST);
-            header('Location: ' . AWB . 'modules.php?mod=bebas-pustaka&id=admin');
+            header('Location: ' . $_SERVER['PHP_SELF'] . '?' . http_build_query(array_diff_key($_GET, ['action' => '', 'id' => ''])));
             exit;
         }
         
@@ -983,10 +981,8 @@ user
 
 ```php
 <?php
-// Step 1: Define authentication constant
-if (!defined('INDEX_AUTH')) {
-    define('INDEX_AUTH', '1');
-}
+// Step 1: Protect direct access
+defined('INDEX_AUTH') || die('Direct access not allowed');
 
 // Step 2: Access global objects
 global $dbs, $sysconf;
@@ -1009,10 +1005,9 @@ if (!$can_read) {
 // - Session variables
 ```
 
-**Privilege Levels**:
-- `'r'` - Read only
-- `'w'` - Read and Write
-- `'rw'` - Read and Write (sama dengan 'w')
+**Privilege Levels (`utility::havePrivilege`)**:
+- `'r'` - Read only (melihat data)
+- `'w'` - Write / Read-Write (menambah, mengubah, menghapus data)
 
 ---
 

@@ -73,9 +73,7 @@ plugins/my-report-plugin/
  */
 
 // ===== SECURITY LAYER =====
-if (!defined('INDEX_AUTH')) {
-    define('INDEX_AUTH', '1');
-}
+defined('INDEX_AUTH') || die('Direct access not allowed');
 global $dbs, $sysconf;
 require SB . 'admin/default/session.inc.php';
 require SB . 'admin/default/session_check.inc.php';
@@ -437,11 +435,11 @@ function printReport() {
     <select name="category" class="form-control">
         <option value="">-- <?php echo __('All Categories'); ?> --</option>
         <?php
-        $cat_query = $dbs->query("SELECT DISTINCT category FROM items");
+        $cat_query = $dbs->query("SELECT DISTINCT coll_type_name FROM mst_coll_type");
         while ($cat = $cat_query->fetch_assoc()) {
-            $selected = ($_GET['category'] ?? '') === $cat['category'] ? 'selected' : '';
-            echo '<option value="' . htmlspecialchars($cat['category']) . '" ' . $selected . '>';
-            echo htmlspecialchars($cat['category']);
+            $selected = ($_GET['category'] ?? '') === $cat['coll_type_name'] ? 'selected' : '';
+            echo '<option value="' . htmlspecialchars($cat['coll_type_name']) . '" ' . $selected . '>';
+            echo htmlspecialchars($cat['coll_type_name']);
             echo '</option>';
         }
         ?>

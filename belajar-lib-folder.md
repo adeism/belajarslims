@@ -13,7 +13,6 @@ Berikut adalah daftar file di folder `lib` (tanpa subfolder) beserta deskripsiny
 - `member_logon.inc.php`: Kelas untuk autentikasi anggota perpustakaan, juga mendukung LDAP dan BCRYPT.
 - `AdvancedLogging.php`: Logging tingkat lanjut menggunakan Monolog, mendukung logging ke file atau Elasticsearch.
 - `AlLibrarian.php`: Logging tindakan pustakawan (login, logout, akses modul), mendukung Elasticsearch.
-- `system_log.inc.php`: Logging global untuk sistem SLiMS.
 
 ### 📋 **Manajemen Bibliografi**
 - `biblio_list.inc.php`: Menampilkan daftar bibliografi, mendukung pencarian dengan CQL melalui berbagai mesin pencari (MySQL, Elasticsearch, Sphinx).
@@ -23,7 +22,6 @@ Berikut adalah daftar file di folder `lib` (tanpa subfolder) beserta deskripsiny
 - `biblio_list_sqlite.inc.php`: Menampilkan daftar bibliografi dari SQLite.
 - `biblio_list_mongodb.inc.php`: Menampilkan daftar bibliografi dari MongoDB.
 - `biblio_list_model.inc.php`: Model abstrak untuk daftar bibliografi.
-- `biblio_log.inc.php`: Logging modifikasi data bibliografi.
 - `detail.inc.php`: Menampilkan detail bibliografi dalam berbagai format (HTML, XML, JSON-LD, MARC).
 
 ### 🔄 **Transaksi dan Aktivitas**
@@ -45,7 +43,7 @@ Berikut adalah daftar file di folder `lib` (tanpa subfolder) beserta deskripsiny
 - `Mail.php`: Kelas untuk mengirim email menggunakan PHPMailer, mendukung antrian email.
 
 ### ⚙️ **Manajemen Modul dan Plugin**
-- `Plugins.php`: Manajemen plugin (registrasi hook dan menu).
+- `Plugins.php`: Manajemen plugin SLiMS 9 (`SLiMS\Plugins`, registrasi hook dan menu).
 - `module.inc.php`: Kelas untuk manajemen modul aplikasi, termasuk pembuatan menu berdasarkan modul.
 
 ### 📄 **Konten dan Artikel**
@@ -57,82 +55,51 @@ Berikut adalah daftar file di folder `lib` (tanpa subfolder) beserta deskripsiny
 - `Json.php`: Kelas untuk encoding dan decoding JSON.
 - `Number.php`: Kelas untuk manipulasi angka.
 - `Currency.php`: Kelas untuk format mata uang menggunakan NumberFormatter.
-- `helper.inc.php`: Kumpulan fungsi utilitas.
+- `helper.inc.php`: Kumpulan fungsi utilitas global (`pluginUrl`, `writeLog`, `dd`, dll.).
+- `utility.inc.php`: Kumpulan fungsi utilitas statis (`utility::havePrivilege`, `utility::writeLogs`).
 - `Sanitizer.php`: Kelas untuk membersihkan input data.
 
 ### 🔑 **Keamanan**
 - `ip_based_access.inc.php`: Membatasi akses modul berdasarkan alamat IP.
-- `csrf.inc.php`: Perlindungan terhadap Cross-Site Request Forgery (CSRF).
+- `csrf/csrf-magic.php`: Perlindungan terhadap Cross-Site Request Forgery (CSRF).
 
 ### 📀 **Manajemen Data**
-- `DB.php`: Kelas untuk manajemen database, mendukung PDO dan MySQLi. Termasuk fungsi backup database.
+- `DB.php`: Kelas untuk manajemen database SLiMS 9 (`SLiMS\DB`, PDO & MySQLi wrapper).
 - `marcxmlsenayan.inc.php`: Fungsi untuk memparsing file MARCXML.
 - `modsxmlsenayan.inc.php`: Fungsi untuk memparsing file MODS XML.
 - `modsxmlslims.inc.php`: Fungsi untuk memparsing file MODS XML lainnya.
 
 ### 🔍 **API dan Mesin Pencari**
 - `api.inc.php`: Utilitas API untuk fungsi seperti mengambil data bibliografi, logging, dan pembaruan indeks pencarian (Solr/Elasticsearch).
-- `search_biblio.inc.php`: Indeks untuk optimasi pencarian bibliografi.
 
 ### 📹 **Streaming dan Multimedia**
 - `VideoStream.php`: Kelas untuk streaming video.
 
 ---
 
-## 🗂️ Subfolder di Direktori `lib`
+## 🗂️ Subfolder Layanan Modern di Direktori `lib` (PSR-4 Namespace)
 
-### 1. **Zend**  
-Berisi pustaka Zend Framework yang mendukung berbagai fungsi di SLiMS.
+SLiMS 9 Bulian mengadopsi struktur class modular berbasis namespace `SLiMS\*`:
 
-### 2. **Cache**  
-Berisi kelas untuk implementasi mekanisme caching (File, Redis, Memcached, dll.).
-
-### 3. **Captcha**  
-Mengimplementasikan CAPTCHA untuk meningkatkan keamanan.
-
-### 4. **Cli**  
-Berisi skrip dan kelas untuk Command Line Interface (CLI) SLiMS.
-
-### 5. **collection**  
-Berisi kelas untuk manajemen koleksi bibliografi.
-
-### 6. **contents**  
-Menghasilkan HTML untuk berbagai halaman OPAC.
-
-### 7. **lang**  
-File bahasa untuk mendukung internasionalisasi.
-
-### 8. **Mail**  
-Berisi kelas untuk manajemen pengiriman email, menggunakan PHPMailer.
-
-### 9. **oaipmh**  
-Berisi kelas untuk protokol OAI-PMH (Open Archives Initiative Protocol for Metadata Harvesting).
-
-### 10. **SearchEngine**  
-Berisi kelas untuk manajemen mesin pencari seperti Elasticsearch, Sphinx, atau Solr.
-
-### 11. **Session**  
-Kelas untuk manajemen sesi pengguna, mendukung beberapa driver.
+1. **`Auth/`** (`SLiMS\Auth\*`): Driver autentikasi admin & member.
+2. **`Cli/`** (`SLiMS\Cli\*`): Antarmuka baris perintah CLI SLiMS (perintah migrasi, aktivasi plugin, cache clear).
+3. **`Csv/`** (`SLiMS\Csv\*`): Generator dan parser berkas CSV.
+4. **`Debug/`** (`SLiMS\Debug\*`): Penanganan error dan debugging log.
+5. **`Filesystems/`** (`SLiMS\Filesystems\*`): Abstraksi manajemen penyimpanan berkas.
+6. **`Form/`** (`SLiMS\Form\*`): Komponen pembangun form modern.
+7. **`Http/`** (`SLiMS\Http\*`): Abstraksi HTTP client dan response.
+8. **`Log/`** (`SLiMS\Log\*`): Factory logging sistem terintegrasi.
+9. **`Migration/`** (`SLiMS\Migration\*`): Engine migrasi database untuk core dan plugin (`Migration`, `Runner`).
+10. **`Parcel/`** (`SLiMS\Parcel\*`): Engine instalasi paket plugin dan template (`Package`, `Installer`).
+11. **`Polyglot/`** (`SLiMS\Polyglot\*`): Penanganan multi-bahasa dan lokalisasi.
+12. **`SearchEngine/`** (`SLiMS\SearchEngine\*`): Abstraksi mesin pencari (MySQL, Solr, Sphinx, Elasticsearch, TNT Search).
+13. **`Table/`** (`SLiMS\Table\*`): Skema manipulasi tabel database (`Schema`, `Blueprint`).
+14. **`contents/`**: Berkas view konten publik OPAC (`help.inc.php`, `librarian.inc.php`, `login.inc.php`, dll.).
+15. **`csrf/`**: Library proteksi CSRF token (`csrf-magic.php`).
 
 ---
 
 ## 💡 Tips Menggunakan File `lib`
-1. **Eksplorasi Modularitas**: Banyak file dan subfolder di `lib` yang dirancang modular, sehingga Anda dapat mengembangkan fungsionalitas tanpa memodifikasi inti sistem.
-2. **Pahami API**: File seperti `api.inc.php` menyediakan API yang kaya untuk berbagai operasi SLiMS.
-3. **Gunakan Framework**: Manfaatkan pustaka pihak ketiga seperti Zend, Guzzle, dan Symfony untuk pengembangan lanjutan.
-
----
-
-## 📚 Dokumentasi Tambahan
-
-Untuk informasi lebih lengkap, kunjungi:
-- **[Dokumentasi Resmi SLiMS](https://slims.web.id)**
-- **[Repositori SLiMS di GitHub](https://github.com/slims)**
-
----
-
-🚀 **Mulai eksplorasi direktori `lib` SLiMS dan kembangkan fitur sesuai kebutuhan perpustakaan Anda!** 🎉
-
----
-
-> *Tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)*
+1. **Gunakan SLiMS 9 Classes**: Manfaatkan class resmi seperti `\SLiMS\DB::getInstance()`, `\SLiMS\Plugins::getInstance()`, dan `\SLiMS\Migration\Migration`.
+2. **Gunakan Helper Bawaan**: Gunakan fungsi dari `lib/helper.inc.php` dan `lib/utility.inc.php` daripada membuat fungsi utilitas kustom dari awal.
+3. **Pemuatan Otomatis (Autoloading)**: Class di bawah namespace `SLiMS\` otomatis dimuat via `lib/autoload.php` tanpa perlu `require_once` manual.

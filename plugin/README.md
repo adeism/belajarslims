@@ -15,7 +15,6 @@ Dokumentasi lengkap untuk pengembangan plugin SLiMS 9.6.1 Bulian.
 | **CSS-LOADING-GUIDE.md** | Guide lengkap untuk loading CSS/JS | CSS tidak load atau 404 error |
 
 ### **📖 Panduan Inti & Modul Konteks**
-
 | File | Purpose | Description |
 |------|---------|-------------|
 | **QUICK-START.md** | Panduan Cepat 5 Menit | Langkah awal membuat plugin baru |
@@ -23,14 +22,6 @@ Dokumentasi lengkap untuk pengembangan plugin SLiMS 9.6.1 Bulian.
 | **context/01-slims-plugin-fundamentals.md** | Dasar Arsitektur Plugin | Registrasi plugin, menu scope, dan hook |
 | **context/02-slims-database-migration.md** | Migrasi Database Native | Standar migrasi SLiMS `SLiMS\Migration\Migration` |
 | **context/03-slims-security-best-practices.md** | Keamanan & CSRF | Prepared statements, token CSRF, dan validasi upload |
-| **context/04-slims-iframe-pattern.md** | Pola Iframe Laporan | Mencegah hilangnya menu navigasi admin saat submit |
-| **context/05-slims-crud-operations.md** | Operasi CRUD & Simbio Guard | Pola CRUD aman tanpa konflik redeclaration class |
-| **context/06-slims-common-errors.md** | Error & Solusi Cepat | Ringkasan pemecahan masalah error paling umum |
-
----
-
-## 🎯 **Quick Navigation**
-
 ### **Baru Mulai Development?**
 1. Baca: `PLUGIN-QUICK-REFERENCE.md` - Get started dengan checklist
 2. Study: Plugin reference (`rekap-plus-lokasi`) di direktori plugins

@@ -1,91 +1,109 @@
-# 🔗 Struktur & Dokumentasi API SLiMS 9 Bulian (`/api`)
+# Struktur Folder `/api` SLiMS 9 Bulian 🔗
 
-SLiMS 9 Bulian menyediakan layanan **RESTful Web Service API** resmi yang berlokasi di direktori `/api/v1/`. API ini dirancang dengan pola MVC Router (`AltoRouter`) untuk mempermudah integrasi sistem pihak ketiga seperti aplikasi mobile perpustakaan, dashboard monitor, Sistem Informasi Akademik (SIAKAD), maupun sistem RFID/otomasi perpustakaan.
+Folder `/api` pada SLiMS 9 Bulian menyediakan layanan **RESTful API v1** berbasis routing yang di-handle oleh AltoRouter (`lib/router.inc.php`). API ini dapat dimanfaatkan untuk integrasi dengan aplikasi mobile, SIAKAD, display informasi, dashboard perpustakaan, maupun otomasi lainnya.
+
+Entry point API dipanggil melalui OPAC (`index.php?p=api/...` atau melalui rewrite URL `/api/...`).
 
 ---
 
-## 📁 Struktur Asli Direktori `/api` di SLiMS 9
+## 📁 Struktur Direktori Asli `/api`
 
 ```plaintext
 /api
-└── v1/                          # Versi 1 RESTful API SLiMS
-    ├── routes.php               # Konfigurasi rute URL & pemetaan HTTP method
-    ├── controllers/             # Controller penangan logika data
-    │   ├── Controller.php       # Base controller API
-    │   ├── HomeController.php   # Endpoint informasi index API
-    │   ├── BiblioController.php # Endpoint bibliografi & katalog
-    │   ├── ItemController.php   # Endpoint eksemplar & ketersediaan buku
-    │   ├── MemberController.php # Endpoint anggota & top member
-    │   ├── LoanController.php   # Endpoint transaksi sirkulasi & statistik
-    │   └── SubjectController.php# Endpoint topik/subjek koleksi
-    └── helpers/                 # Helper pendukung
-        ├── Cache.php            # Cache response API
-        └── Image.php            # Helper pemrosesan cover gambar
+└── v1/
+    ├── controllers/
+    │   ├── Controller.php        🏛️ Base controller abstract class
+    │   ├── HomeController.php    🏠 Endpoint root API (status & info)
+    │   ├── BiblioController.php  📚 Endpoint data bibliografi & statistik
+    │   ├── ItemController.php    📙 Endpoint data eksemplar koleksi
+    │   ├── LoanController.php    🔄 Endpoint data sirkulasi & ringkasan peminjaman
+    │   ├── MemberController.php  👤 Endpoint data anggota teraktif
+    │   └── SubjectController.php 🏷️ Endpoint topik/subjek populer & terbaru
+    ├── helpers/
+    │   ├── Cache.php             ⚡ Helper manajemen HTTP cache response
+    │   └── Image.php             🖼️ Helper pemrosesan gambar/cover
+    └── routes.php                🚦 Registrasi rute URL API & plugin hook
 ```
 
----
-
-## 🛣️ Daftar Endpoint REST API Resmi SLiMS 9
-
-### 1. 📚 Endpoint Bibliografi & Koleksi
-| HTTP Method | Endpoint URI | Deskripsi | Controller Action |
-|:---:|---|---|---|
-| `GET` | `/api/biblio/popular` | Mendapatkan daftar buku terpopuler/paling banyak dipinjam | `BiblioController@getPopular` |
-| `GET` | `/api/biblio/latest` | Mendapatkan daftar koleksi terbaru | `BiblioController@getLatest` |
-| `GET` | `/api/biblio/gmd/[gmd_name]` | Filter bibliografi berdasarkan format GMD (Text, Art, CD, dll.) | `BiblioController@getByGmd` |
-| `GET` | `/api/biblio/coll_type/[type]` | Filter bibliografi berdasarkan tipe koleksi (Referensi, Tandon, dll.) | `BiblioController@getByCollType` |
-| `GET` | `/api/biblio/total/all` | Statistik total seluruh judul bibliografi | `BiblioController@getTotalAll` |
+> [!NOTE]
+> SLiMS 9 core **tidak menggunakan** folder modular seperti `/api/modules/biblio/` atau `/api/auth/`. Seluruh routing v1 dipusatkan di `api/v1/routes.php` dengan pola MVC Controller.
 
 ---
 
-### 2. 📦 Endpoint Eksemplar & Ketersediaan Item
-| HTTP Method | Endpoint URI | Deskripsi | Controller Action |
-|:---:|---|---|---|
-| `GET` | `/api/item/total/all` | Mendapatkan total seluruh jumlah eksemplar buku | `ItemController@getTotalAll` |
-| `GET` | `/api/item/total/lent` | Mendapatkan jumlah total buku yang sedang dipinjam | `ItemController@getTotalLent` |
-| `GET` | `/api/item/total/available` | Mendapatkan jumlah buku yang tersedia di rak | `ItemController@getTotalAvailable` |
+## 🚦 Daftar Endpoint REST API v1 Bawaan SLiMS
+
+Semua endpoint bawaan SLiMS 9 v1 menggunakan metode HTTP **`GET`**:
+
+### 1. Umum & Beranda
+| Method | Endpoint | Handler | Deskripsi |
+|---|---|---|---|
+| `GET` | `/api/` | `HomeController@index` | Menampilkan status dan informasi dasar API |
+
+### 2. Bibliografi (Koleksi)
+| Method | Endpoint | Handler | Deskripsi |
+|---|---|---|---|
+| `GET` | `/api/biblio/popular` | `BiblioController@getPopular` | Daftar koleksi paling sering dipinjam/populer |
+| `GET` | `/api/biblio/latest` | `BiblioController@getLatest` | Daftar koleksi terbaru yang ditambahkan |
+| `GET` | `/api/biblio/gmd/[gmd]` | `BiblioController@getByGmd` | Daftar koleksi berdasarkan jenis GMD tertentu |
+| `GET` | `/api/biblio/coll_type/[coll_type]` | `BiblioController@getByCollType` | Daftar koleksi berdasarkan tipe koleksi |
+| `GET` | `/api/biblio/total/all` | `BiblioController@getTotalAll` | Total seluruh judul bibliografi dalam katalog |
+
+### 3. Eksemplar (Item Koleksi)
+| Method | Endpoint | Handler | Deskripsi |
+|---|---|---|---|
+| `GET` | `/api/item/total/all` | `ItemController@getTotalAll` | Total seluruh eksemplar fisik |
+| `GET` | `/api/item/total/lent` | `ItemController@getTotalLent` | Total eksemplar yang sedang dipinjam |
+| `GET` | `/api/item/total/available` | `ItemController@getTotalAvailable` | Total eksemplar yang tersedia di rak |
+
+### 4. Subjek / Topik
+| Method | Endpoint | Handler | Deskripsi |
+|---|---|---|---|
+| `GET` | `/api/subject/popular` | `SubjectController@getPopular` | Daftar subjek paling populer |
+| `GET` | `/api/subject/latest` | `SubjectController@getLatest` | Daftar subjek terbaru |
+
+### 5. Anggota
+| Method | Endpoint | Handler | Deskripsi |
+|---|---|---|---|
+| `GET` | `/api/member/top` | `MemberController@getTopMember` | Daftar anggota teraktif / paling sering meminjam |
+
+### 6. Peminjaman & Statistik Sirkulasi
+| Method | Endpoint | Handler | Deskripsi |
+|---|---|---|---|
+| `GET` | `/api/loan/summary` | `LoanController@getSummary` | Ringkasan transaksi peminjaman |
+| `GET` | `/api/loan/getdate/[start_date]` | `LoanController@getDate` | Data peminjaman mulai tanggal tertentu |
+| `GET` | `/api/loan/summary/[date]` | `LoanController@getSummaryDate` | Ringkasan peminjaman pada tanggal spesifik |
 
 ---
 
-### 3. 👥 Endpoint Anggota & Subjek
-| HTTP Method | Endpoint URI | Deskripsi | Controller Action |
-|:---:|---|---|---|
-| `GET` | `/api/member/top` | Mendapatkan daftar anggota paling aktif meminjam | `MemberController@getTopMember` |
-| `GET` | `/api/subject/popular` | Mendapatkan daftar subjek/topik terpopuler | `SubjectController@getPopular` |
-| `GET` | `/api/subject/latest` | Mendapatkan daftar subjek/topik terbaru | `SubjectController@getLatest` |
+## ⚡ HTTP Caching
+
+SLiMS API mendukung HTTP caching. Jika request mengirimkan header `SLiMS-Http-Cache` atau `slims-http-cache`, response akan menyertakan header `Cache-Control: max-age=...` sesuai konfigurasi `$sysconf['http']['cache']['lifetime']`.
 
 ---
 
-### 4. 🔄 Endpoint Sirkulasi & Statistik Peminjaman
-| HTTP Method | Endpoint URI | Deskripsi | Controller Action |
-|:---:|---|---|---|
-| `GET` | `/api/loan/summary` | Ringkasan statistik transaksi peminjaman | `LoanController@getSummary` |
-| `GET` | `/api/loan/getdate/[start_date]` | Data peminjaman berdasarkan tanggal mulai | `LoanController@getDate` |
-| `GET` | `/api/loan/summary/[date]` | Ringkasan transaksi peminjaman pada tanggal tertentu | `LoanController@getSummaryDate` |
+## 🔌 Menambah Route API Baru via Plugin Hook
 
----
+SLiMS menyediakan hook `custom_api_route` di `api/v1/routes.php:L51` sehingga pengembang plugin dapat mendaftarkan endpoint API kustom tanpa mengubah file inti SLiMS:
 
-## 🔌 Ekstensibilitas API via Plugin Hook (`custom_api_route`)
-
-Salah satu fitur terbaik pada router API SLiMS 9 adalah dukungan penambahan rute API kustom melalui plugin tanpa mengubah file inti `/api/v1/routes.php`.
-
-Contoh implementasi hook pada file `my_plugin.plugin.php`:
 ```php
+<?php
+/**
+ * Contoh penambahan route API kustom di file plugin: nama_plugin.plugin.php
+ */
 use SLiMS\Plugins;
 
-$plugins = Plugins::getInstance();
+Plugins::getInstance()->register('custom_api_route', function($params) {
+    /** @var Router $router */
+    $router = $params['router'];
 
-$plugins->register('custom_api_route', function($args) {
-    $router = $args['router'];
-    
-    // Daftarkan endpoint custom API
-    $router->map('GET', '/custom/statistik-ruangan', function() {
+    // Menambahkan endpoint baru: GET /api/custom-data
+    $router->map('GET', '/custom-data', function() {
         header('Content-Type: application/json');
         echo json_encode([
             'status' => 'success',
             'data' => [
-                'ruangan_tersedia' => 5,
-                'ruangan_terpakai' => 2
+                'app' => 'My SLiMS Plugin API',
+                'timestamp' => time()
             ]
         ]);
         exit;
@@ -94,27 +112,4 @@ $plugins->register('custom_api_route', function($args) {
 ```
 
 ---
-
-## 💡 Contoh Permintaan & Respons API
-
-### Request:
-```bash
-curl -X GET "https://perpustakaan.kampus.ac.id/api/biblio/popular"
-```
-
-### Response (JSON):
-```json
-{
-  "status": 200,
-  "message": "success",
-  "data": [
-    {
-      "biblio_id": 104,
-      "title": "Dasar-Dasar Ilmu Perpustakaan dan Informasi",
-      "author": "Sulistyo-Basuki",
-      "image": "https://perpustakaan.kampus.ac.id/images/docs/cov_104.jpg",
-      "total_loan": 45
-    }
-  ]
-}
-```
+Modul API SLiMS ini dapat diakses untuk integrasi mobile apps, sistem informasi akademik (SIAKAD), maupun otomasi perpustakaan lainnya.

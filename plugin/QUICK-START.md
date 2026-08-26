@@ -84,6 +84,12 @@ if (!class_exists('simbio_datagrid')) {
 // 3. Handler Form POST dengan CSRF Protection
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['simpan']) && $can_write) {
+    // Validasi token CSRF
+    $token = $_POST['csrf_token'] ?? '';
+    if (empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
+        die('<div class="errorBox">Token CSRF tidak valid!</div>');
+    }
+
     $pesan = trim($_POST['pesan'] ?? '');
     if (!empty($pesan)) {
         $stmt = $dbs->prepare("INSERT INTO halo_dunia_data (pesan, created_at) VALUES (?, NOW())");
@@ -92,6 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['simpan']) && $can_wri
         $stmt->close();
         $msg = 'Pesan berhasil disimpan!';
     }
+}
+
+// Generate CSRF token jika belum ada
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 ?>
 
@@ -104,7 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['simpan']) && $can_wri
         <?php endif; ?>
 
         <!-- Form Input -->
-        <form method="POST" action="<?= $_SERVER['PHP_SELF'] ?>?mod=system&id=halo_dunia" style="margin-bottom:20px;">
+        <form method="POST" action="<?= $_SERVER['PHP_SELF'] . '?' . http_build_query($_GET) ?>" style="margin-bottom:20px;">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>" />
             <div style="margin-bottom:10px;">
                 <label><strong>Tulis Pesan:</strong></label><br />
                 <input type="text" name="pesan" class="form-control" placeholder="Ketik pesan..." required style="width:300px; padding:6px;" />
@@ -118,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['simpan']) && $can_wri
         $datagrid = new simbio_datagrid();
         $datagrid->setSQLColumn("id", "pesan AS 'Isi Pesan'", "created_at AS 'Waktu'");
         $datagrid->setSQLorder("id DESC");
-        echo $datagrid->createDataGrid($dbs, 'halo_dunia_data', 20, $can_read);
+        echo $datagrid->createDataGrid($dbs, 'halo_dunia_data', 20, $can_write);
         ?>
     </div>
 </div>
@@ -132,7 +144,7 @@ Buat file `plugins/halo_dunia/migration/1_CreateHaloTable.php`:
 
 ```php
 <?php
-defined('INDEX_AUTH') || defined('PINJAM_RUANG_CONTEXT') || die('Direct access not allowed');
+defined('INDEX_AUTH') || die('Direct access not allowed');
 
 use SLiMS\Migration\Migration;
 

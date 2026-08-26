@@ -8,16 +8,20 @@ Setiap plugin SLiMS memerlukan dua ($\text{2}$) parameter utama yang harus selal
 
 Plugin SLiMS harus membawa dua ($\text{2}$) parameter wajib:
 
-1.  **`mod`**: Ini adalah **ID Modul** tempat plugin tersebut berada atau diakses.
-2.  **`id`**: Ini adalah **ID Plugin** itu sendiri.
+1.  **`mod`**: Ini adalah **ID Modul** (kategori menu SLiMS) tempat plugin tersebut didaftarkan (misalnya `bibliography`, `circulation`, `membership`, `system`, dll.).
+2.  **`id`**: Ini adalah **ID Plugin** yang merupakan string hash MD5 dari `realpath` file menu plugin yang dihasilkan secara otomatis oleh sistem registrasi SLiMS.
 
 ## Dari Mana Mendapatkan Parameter `mod` dan `id`?
 
 Kedua ($\text{2}$) parameter ini didapatkan dari:
 
-1.  **Variabel Global `$_GET`**: Parameter ini akan terekam dalam *global variable* `$_GET` pada saat plugin pertama kali diakses. Ini berarti mereka adalah bagian dari *query string* (`?key=value&...`) di URL.
-2.  **Tautan Sub Menu**: Anda dapat memeriksa tautan (*link*) yang ter-generasi di sub-menu navigasi SLiMS, di mana plugin tersebut didaftarkan. Tautan tersebut akan menampilkan `.../index.php?mod=ID_MODUL&id=ID_PLUGIN`.
+1.  **Variabel Global `$_GET`**: Parameter ini dibaca oleh `admin/plugin_container.php` dari URL query string (`$_GET['mod']` dan `$_GET['id']`).
+2.  **Tautan Sub Menu**: Ketika plugin didaftarkan via `$plugins->registerMenu(...)`, SLiMS membuat tautan otomatis menuju wrapper `admin/plugin_container.php?mod=...&id=...`.
 
-> **Contoh di URL:**
-> `http://nama_domain/index.php?mod=pencatatan_buku&id=nama_plugin_saya`
+> **Contoh di URL Backend:**
+> `http://nama_domain/admin/plugin_container.php?mod=system&id=e4d909c290d0fb1ca068ffaddf22cbd0`
+
+> [!WARNING]
+> Jika Anda membuat form submission (`POST`/`GET`) di dalam plugin tanpa menyertakan `mod` dan `id` asli pada `action` URL, request akan ditolak oleh `plugin_container.php` dengan pesan **"Plugin not found / disabled!"**. Selalu gunakan `$_SERVER['PHP_SELF'] . '?' . http_build_query($_GET)` atau `pluginUrl(...)` sebagai action form.
+
 

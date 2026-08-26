@@ -39,17 +39,18 @@ my_plugin.plugin.php
 registrat.plugin.php
 ```
 
-#### **Cause 2: Wrong Variable Name**
+#### **Cause 2: Instance Not Initialized**
 
 ```php
-// ❌ WRONG - Undefined variable
-$plg = Plugins::getInstance();
+// ❌ WRONG - Using variable without initializing
+$plugins->registerMenu('system', 'My Plugin', __DIR__ . '/index.php');
 
-// ✅ CORRECT - Pattern 1
-$plugins = Plugins::getInstance();  // Plural
+// ✅ CORRECT - Initialize first via getInstance()
+$plugins = Plugins::getInstance();
+$plugins->registerMenu('system', 'My Plugin', __DIR__ . '/index.php');
 
-// ✅ CORRECT - Pattern 2
-$plugin = Plugins::getInstance();   // Singular
+// ✅ OR use static method
+Plugins::menu('system', 'My Plugin', __DIR__ . '/index.php');
 ```
 
 #### **Cause 3: Invalid Menu Category**
@@ -68,15 +69,13 @@ $plugins->registerMenu('reporting', 'My Plugin', __DIR__ . '/index.php');
 
 ```
 plugins/
-└── level1/
-    └── level2/
-        └── level3/
-            └── my_plugin.plugin.php  ✅ OK (depth 3)
-            └── level4/
-                └── plugin.php        ❌ TOO DEEP (depth 4)
+├── my_plugin/
+│   └── my_plugin.plugin.php  ✅ OK (depth 2)
+│   └── subfolder/
+│       └── deeper.plugin.php ❌ TOO DEEP (depth 3, not scanned)
 ```
 
-**SLiMS scans up to 3 levels deep!**
+**SLiMS memindai plugin hingga kedalaman maksimal 2 subfolder (`$deep = 2`)!**
 
 #### **Cause 5: File Permissions**
 
@@ -350,14 +349,14 @@ ls -la /path/to/slims/plugins/my-plugin/assets/
 chmod 644 /path/to/slims/plugins/my-plugin/assets/style.css
 ```
 
-#### **Cause 3: Wrong Hook for Global Loading**
+#### **Cause 3: Hook Usage for Script / Style Injection**
 
 ```php
-// ✅ CORRECT - Load CSS globally
+// ✅ CORRECT - Hook into admin session start to inject assets/logic
 // File: my_plugin.plugin.php
 
-$plugins->register(Plugins::ADMIN_HEADER, function() {
-    echo '<link rel="stylesheet" href="' . SWB . 'plugins/my-plugin/assets/style.css">';
+Plugins::hook(Plugins::ADMIN_SESSION_AFTER_START, function() {
+    // Inject scripts, styles, or session-level logic
 });
 ```
 
@@ -366,7 +365,7 @@ $plugins->register(Plugins::ADMIN_HEADER, function() {
 - [ ] Use `SWB` constant for CSS/JS URLs
 - [ ] File exists and has correct permissions (644)
 - [ ] Path is absolute, not relative
-- [ ] For global CSS, use `Plugins::ADMIN_HEADER` hook
+- [ ] For backend injection, use `Plugins::ADMIN_SESSION_AFTER_START` hook
 - [ ] Check browser console for actual error
 
 ---

@@ -25,8 +25,8 @@ Langkah ini dilakukan jika *error* berlanjut setelah Langkah 2, atau jika Anda i
 1.  **Akses Database**: Masuk ke database SLiMS menggunakan phpMyAdmin, DBeaver, atau MySQL CLI.
 2.  **Nonaktifkan via SQL**: Pada SLiMS 9 Bulian, status plugin tersimpan di tabel `plugins`. Jalankan query:
     ```sql
-    -- Nonaktifkan plugin tanpa menghapus datanya
-    UPDATE plugins SET is_active = 0 WHERE id = 'nama_plugin_anda';
+    -- Nonaktifkan plugin tanpa menghapus datanya (SLiMS 9 Bulian menggunakan soft delete deleted_at)
+    UPDATE plugins SET deleted_at = NOW() WHERE id = 'nama_plugin_anda';
     
     -- Atau hapus registrasi plugin dari database
     DELETE FROM plugins WHERE id = 'nama_plugin_anda';

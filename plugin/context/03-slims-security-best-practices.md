@@ -29,10 +29,8 @@
  * Ensures only logged-in users can access
  */
 
-// Step 1: Define authentication constant (if not defined)
-if (!defined('INDEX_AUTH')) {
-    define('INDEX_AUTH', '1');
-}
+// Step 1: Protect direct access
+defined('INDEX_AUTH') || die('Direct access not allowed');
 
 // Step 2: Access global objects
 global $dbs, $sysconf;
@@ -54,21 +52,14 @@ require SB . 'admin/default/session_check.inc.php';
 // ❌ WRONG - Using deprecated constant
 define('DB_ACCESS', '1');  // Old SLiMS 8 style
 
-// ✅ CORRECT - Modern SLiMS 9
-if (!defined('INDEX_AUTH')) {
-    define('INDEX_AUTH', '1');
-}
-global $dbs, $sysconf;
-
 // ❌ WRONG - No authentication check
 // File starts directly with HTML/PHP code
 
-// ✅ CORRECT - Authentication first
-if (!defined('INDEX_AUTH')) {
-    define('INDEX_AUTH', '1');
-}
+// ✅ CORRECT - SLiMS 9 Bulian
+defined('INDEX_AUTH') || die('Direct access not allowed');
 global $dbs, $sysconf;
 require SB . 'admin/default/session.inc.php';
+require SB . 'admin/default/session_check.inc.php';
 // ... then your code
 ```
 
@@ -109,8 +100,7 @@ if ($can_write) {
 | Level | Description | Can Do |
 |-------|-------------|--------|
 | `'r'` | Read only | View data, generate reports |
-| `'w'` | Write | Read + Add/Edit/Delete |
-| `'rw'` | Read-Write | Same as `'w'` |
+| `'w'` | Write / Read-Write | View + Add/Edit/Delete |
 
 ### **Module Categories**
 
@@ -266,86 +256,63 @@ json_encode($text)
 
 ### **Implementasi Standar CSRF Token di SLiMS**
 
-Gunakan token acak berbasis session untuk memvalidasi bahwa request berasal dari form yang sah:
-
 ```php
+<?php
 /**
- * 1. Helper Pembuatan Token CSRF
+ * 1. Helper Pembuatan dan Validasi Token CSRF
  */
-function prGetCsrfToken(): string 
+function getCsrfToken(): string 
 {
-    if (session_status() === PHP_SESSION_NONE && !headers_sent()) { 
-        @session_start(); 
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
-    if (empty($_SESSION['pr_csrf_token'])) {
-        $_SESSION['pr_csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['pr_csrf_token'];
+    return $_SESSION['csrf_token'];
 }
 
-/**
- * 2. Helper Hidden Field untuk Form HTML
- */
-function prCsrfField(): string 
+function csrfField(): string 
 {
-    return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(prGetCsrfToken(), ENT_QUOTES, 'UTF-8') . '" />';
+    return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars(getCsrfToken(), ENT_QUOTES, 'UTF-8') . '" />';
 }
 
-/**
- * 3. Helper Validasi Token pada Handler POST
- */
-function prValidateCsrf(): bool 
+function validateCsrf(): bool 
 {
-    if (session_status() === PHP_SESSION_NONE && !headers_sent()) { 
-        @session_start(); 
-    }
-    $token = $_POST['csrf_token'] ?? $_GET['csrf_token'] ?? '';
-    return !empty($token) && hash_equals($_SESSION['pr_csrf_token'] ?? '', $token);
+    $token = $_POST['csrf_token'] ?? '';
+    return !empty($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
-```
+?>
 
-### **Contoh Penggunaan pada Form & Handler POST**
-
-```php
-<!-- FORM VIEW -->
-<form method="POST" action="<?= prAdminRedirect('items') ?>">
-    <?= prCsrfField() ?>
-    <input type="hidden" name="action" value="delete_item" />
+<!-- FRONTEND FORM -->
+<form method="POST" action="<?= $_SERVER['PHP_SELF'] . '?' . http_build_query($_GET) ?>">
+    <?= csrfField() ?>
     <input type="hidden" name="item_id" value="<?= (int)$row['id'] ?>" />
-    <button type="submit" class="btn btn-danger">Hapus Data</button>
+    <button type="submit" name="delete_item" value="1" class="btn btn-danger">Hapus Data</button>
 </form>
 
 <!-- BACKEND CONTROLLER / HANDLER -->
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!prValidateCsrf()) {
+    if (!validateCsrf()) {
         die('<div class="errorBox">Token keamanan tidak valid (CSRF). Silakan refresh halaman dan coba lagi.</div>');
     }
-    
-    $action = $_POST['action'] ?? '';
-    if ($action === 'delete_item') {
-        // Lanjutkan operasi delete dengan aman...
-    }
+    // Lanjutkan proses form yang aman...
 }
-?>
 ```
 
 ---
 
 ## 🛡️ **6. File Upload Security**
 
-### **Validate File Uploads**
-
 ```php
-// Check if file was uploaded
-if (!isset($_FILES['attachment']) || $_FILES['attachment']['error'] !== UPLOAD_ERR_OK) {
-    die('File upload failed');
+<?php
+$file = $_FILES['userfile'] ?? null;
+$allowed_types = ['image/jpeg', 'image/png', 'application/pdf'];
+
+// Validate file error
+if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
+    die('Upload error occurred.');
 }
 
-$file = $_FILES['attachment'];
-
-// Validate file type
-$allowed_types = ['image/jpeg', 'image/png', 'application/pdf'];
+// Validate file type via MIME
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mime_type = finfo_file($finfo, $file['tmp_name']);
 finfo_close($finfo);
@@ -361,9 +328,9 @@ if ($file['size'] > $max_size) {
 }
 
 // Generate safe filename
-$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-$safe_name = uniqid() . '.' . $ext;
-$upload_path = SB . 'files/plugin_uploads/' . $safe_name;
+$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+$safe_name = uniqid('upload_', true) . '.' . $ext;
+$upload_path = SB . 'files/cache/' . $safe_name;
 
 // Move file
 move_uploaded_file($file['tmp_name'], $upload_path);
@@ -378,9 +345,7 @@ move_uploaded_file($file['tmp_name'], $upload_path);
 ```php
 <?php
 // ✅ 1. Authentication
-if (!defined('INDEX_AUTH')) {
-    define('INDEX_AUTH', '1');
-}
+defined('INDEX_AUTH') || die('Direct access not allowed');
 global $dbs, $sysconf;
 require SB . 'admin/default/session.inc.php';
 require SB . 'admin/default/session_check.inc.php';

@@ -10,94 +10,92 @@ Berikut adalah daftar tabel utama yang terdapat dalam database SLiMS, dikelompok
 
 ### 📋 Tabel Sistem dan Konfigurasi
 - **`backup_log`**: Mencatat riwayat backup database.
-- **`group_access`**: Mendefinisikan hak akses grup user terhadap modul.
+- **`group_access`**: Mendefinisikan hak akses grup user terhadap modul dan sub-menu.
 - **`mst_module`**: Tabel definisi modul aplikasi.
-- **`setting`**: Tabel untuk konfigurasi sistem.
-- **`system_log`**: Mencatat log sistem secara global.
+- **`plugins`**: Mencatat registrasi dan status aktivasi plugin SLiMS 9.
+- **`setting`**: Tabel untuk konfigurasi dan pengaturan sistem global.
+- **`system_log`**: Mencatat log sistem secara global (login, perubahan data, dsb.).
+- **`cache`**: Penyimpanan cache sistem berbasis database.
 
 ---
 
 ### 📚 Tabel Koleksi Perpustakaan
-- **`biblio`**: Tabel utama untuk data bibliografi koleksi perpustakaan.
-- **`biblio_attachment`**: Menyimpan lampiran file pada data bibliografi.
-- **`biblio_attachment_access`**: Mencatat akses lampiran file oleh anggota.
-- **`biblio_author`**: Hubungan antara data bibliografi dengan data pengarang.
-- **`biblio_custom`**: Data tambahan bibliografi yang spesifik.
-- **`biblio_log`**: Mencatat riwayat modifikasi data bibliografi.
-- **`biblio_relation`**: Hubungan/relasi antar data bibliografi.
-- **`biblio_topic`**: Hubungan data bibliografi dengan subjek/topik.
-- **`files`**: Menyimpan data file/berkas digital.
-- **`files_read`**: Statistik akses file.
-- **`files_read_guest`**: Identitas guest/tamu yang membaca file.
-- **`index_documents`**: Indeks pencarian lengkap/fulltext.
-- **`index_words`**: Indeks kata untuk pencarian lengkap/fulltext.
-- **`item`**: Data item/eksemplar koleksi perpustakaan.
-- **`read_counter`**: Statistik pembacaan koleksi.
-- **`reservations`**: Mencatat reservasi koleksi oleh anggota.
-- **`reserve`**: Mencatat pemesanan koleksi oleh anggota.
-- **`serial`**: Data majalah/jurnal yang berlangganan.
-- **`stock_take`**: Mencatat stok opname koleksi.
-- **`stock_take_item`**: Detail item pada stok opname.
+- **`biblio`**: Tabel utama untuk data bibliografi katalog perpustakaan.
+- **`biblio_attachment`**: Menyimpan metadata lampiran berkas pada data bibliografi.
+- **`biblio_author`**: Hubungan many-to-many antara bibliografi dengan data pengarang (`mst_author`).
+- **`biblio_custom`**: Data atribut tambahan kustom bibliografi.
+- **`biblio_log`**: Mencatat riwayat modifikasi entri katalog bibliografi.
+- **`biblio_mark`**: Bookmark / penanda koleksi favorit yang disimpan anggota.
+- **`biblio_relation`**: Hubungan/relasi antar rekaman bibliografi (koleksi terkait).
+- **`biblio_topic`**: Hubungan data bibliografi dengan subjek/topik otoritas (`mst_topic`).
+- **`files`**: Menyimpan data metadata berkas lampiran.
+- **`files_read`**: Statistik jumlah akses/unduhan berkas lampiran.
+- **`index_documents`**: Indeks dokumen untuk fitur pencarian katalog.
+- **`index_words`**: Indeks kosakata untuk optimasi pencarian katalog.
+- **`item`**: Data item fisik / eksemplar koleksi perpustakaan (barcode, lokasi, status).
+- **`item_custom`**: Data atribut tambahan kustom eksemplar.
+- **`serial`**: Data langganan terbitan berkala (majalah/jurnal).
+- **`kardex`**: Kartu kendali tracking penerimaan terbitan berkala (serial kardex).
+- **`stock_take`**: Sesi pelaksanaan inventarisasi / stok opname koleksi.
+- **`stock_take_item`**: Detail item eksemplar yang diperiksa pada sesi stok opname.
 
 ---
 
 ### 👥 Tabel Anggota dan Pengguna
 - **`member`**: Tabel utama untuk data anggota perpustakaan.
-- **`member_custom`**: Data tambahan anggota perpustakaan.
-- **`user`**: Tabel utama untuk data pengguna/user aplikasi.
-- **`user_group`**: Referensi grup pengguna.
+- **`member_custom`**: Data atribut tambahan kustom anggota perpustakaan.
+- **`user`**: Tabel akun pengguna backend (staf perpustakaan / administrator).
+- **`user_group`**: Referensi kelompok hak akses pengguna (*User Groups*).
+- **`user_tokens`**: Token autentikasi sesi dan *remember me* pengguna.
 
 ---
 
-### 🔄 Tabel Transaksi dan Log Aktivitas
-- **`loan`**: Mencatat transaksi peminjaman.
-- **`loan_history`**: Riwayat peminjaman.
-- **`fines`**: Mencatat data denda anggota perpustakaan.
-- **`bebas_pustaka`**: Mencatat pengajuan bebas pustaka mahasiswa.
-- **`bebas_pustaka_logs`**: Log perubahan status pengajuan bebas pustaka.
+### 🔄 Tabel Transaksi Sirkulasi
+- **`loan`**: Mencatat transaksi peminjaman aktif yang sedang berjalan.
+- **`loan_history`**: Riwayat arsip seluruh transaksi peminjaman yang telah selesai.
+- **`reserve`**: Mencatat pemesanan / reservasi koleksi oleh anggota.
+- **`fines`**: Mencatat data denda keterlambatan sirkulasi anggota perpustakaan.
+- **`holiday`**: Daftar hari libur perpustakaan untuk perhitungan jatuh tempo dan denda.
 
 ---
 
-### 🔧 Tabel Referensi dan Metadata
-- **`mst_author`**: Referensi data pengarang.
-- **`mst_carrier_type`**: Referensi jenis pembawa konten.
-- **`mst_coll_type`**: Referensi jenis koleksi.
-- **`mst_content_type`**: Referensi jenis konten.
-- **`mst_custom_field`**: Mendefinisikan custom field pada tabel tertentu.
+### 🔧 Tabel Master Referensi dan Metadata
+- **`mst_author`**: Referensi data otoritas pengarang / kreator.
+- **`mst_carrier_type`**: Referensi RDA tipe pembawa konten (carrier type).
+- **`mst_coll_type`**: Referensi jenis koleksi (Reference, Fiction, Text, dsb.).
+- **`mst_content_type`**: Referensi RDA tipe konten.
+- **`mst_custom_field`**: Definisi kolom kustom (custom fields) pada modul.
 - **`mst_frequency`**: Referensi frekuensi terbitan berseri.
-- **`mst_gmd`**: Referensi jenis bahan pustaka.
-- **`mst_item_status`**: Referensi status item/eksemplar.
-- **`mst_label`**: Referensi label/tanda untuk klasifikasi koleksi.
-- **`mst_language`**: Referensi bahasa.
-- **`mst_loan_rules`**: Aturan peminjaman berdasarkan kombinasi jenis anggota dan koleksi.
-- **`mst_location`**: Referensi lokasi item/eksemplar.
-- **`mst_media_type`**: Referensi jenis media konten.
-- **`mst_member_type`**: Referensi jenis keanggotaan.
-- **`mst_place`**: Referensi tempat terbit.
-- **`mst_publisher`**: Referensi penerbit.
-- **`mst_relation_term`**: Referensi istilah hubungan/relasi subjek.
-- **`mst_servers`**: Konfigurasi server P2P, Z39.50, dll.
-- **`mst_supplier`**: Referensi supplier/vendor.
-- **`mst_topic`**: Referensi subjek/topik.
-- **`mst_voc_ctrl`**: Referensi pengendalian vokabuler subjek.
+- **`mst_gmd`**: Referensi General Material Designation (GMD).
+- **`mst_item_status`**: Referensi status item/eksemplar (Available, Repair, Missing, dsb.).
+- **`mst_label`**: Referensi label/tanda klasifikasi warna koleksi.
+- **`mst_language`**: Referensi bahasa dokumen.
+- **`mst_loan_rules`**: Aturan peminjaman (loan rules) berdasarkan kombinasi tipe anggota, tipe koleksi, dan GMD.
+- **`mst_location`**: Referensi kode lokasi rak / gedung koleksi.
+- **`mst_media_type`**: Referensi RDA jenis media.
+- **`mst_member_type`**: Referensi tipe/kategori keanggotaan (Dosen, Mahasiswa, Umum).
+- **`mst_place`**: Referensi otoritas tempat terbit.
+- **`mst_publisher`**: Referensi otoritas penerbit.
+- **`mst_relation_term`**: Referensi istilah relasi bibliografi/subjek.
+- **`mst_servers`**: Konfigurasi server P2P, Z39.50, dan SRU.
+- **`mst_supplier`**: Referensi vendor / pemasok pengadaan buku.
+- **`mst_topic`**: Referensi otoritas subjek / tajuk subjek.
+- **`mst_visitor_room`**: Referensi ruangan buku tamu pengunjung perpustakaan.
+- **`mst_voc_ctrl`**: Referensi sistem pengendalian vokabuler subjek.
 
 ---
 
-### 📑 Tabel Lainnya
-- **`comment`**: Menyimpan komentar pada data bibliografi oleh anggota.
-- **`content`**: Konten/artikel statis.
-- **`group_access`**: Hak akses grup terhadap modul.
-- **`search_biblio`**: Indeks untuk optimasi pencarian data bibliografi.
-- **`visitor_count`**: Statistik pengunjung perpustakaan.
+### 📑 Tabel Interaksi & Pencarian
+- **`comment`**: Menyimpan ulasan dan komentar buku dari anggota via OPAC.
+- **`content`**: Konten artikel / halaman statis perpustakaan (profil, berita).
+- **`search_biblio`**: Tabel flat indeks terdenormalisasi untuk optimasi pencarian katalog.
+- **`visitor_count`**: Data presensi statistik buku tamu pengunjung perpustakaan.
 
 ---
 
-## 💡 Tips Memahami Tabel Database
-1. **Pahami Relasi Antar Tabel**: Banyak tabel SLiMS saling berhubungan. Contohnya, `biblio_author` menghubungkan tabel `biblio` dengan `mst_author`.
-2. **Gunakan Query SQL**: Untuk eksplorasi lebih lanjut, gunakan query SQL seperti `DESCRIBE` untuk memeriksa struktur tabel.
-3. **Gunakan Backup Data**: Sebelum melakukan perubahan besar pada database, selalu lakukan backup data untuk mencegah kehilangan informasi penting.
+## 💡 Tips Memahami Tabel Database SLiMS
+1. **Pahami Relasi Antar Tabel**: Banyak tabel SLiMS saling berelasi secara logis. Contohnya, relasi many-to-many `biblio_author` menghubungkan tabel `biblio` dengan `mst_author`.
+2. **Prioritas Loan Rules**: Aturan di `mst_loan_rules` akan menimpa (*override*) pengaturan baseline yang ada di `mst_member_type`.
+3. **Backup Sebelum Modifikasi**: Selalu buat backup database (`files/backup/` atau mysqldump) sebelum melakukan migrasi atau penambahan tabel kustom.
 
----
-
->*tutorial ini dibuat dengan CustomGPT SLiMS Plugin Maker (ChatGPT) dengan fitur pengetahuan yang ada dalam folder rag (belum di review developer)
 

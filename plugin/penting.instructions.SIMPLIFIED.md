@@ -188,7 +188,7 @@ SLiMS memiliki sistem migrasi native berbasis class turunan `SLiMS\Migration\Mig
 File: `migration/1_CreateMyPluginTable.php`
 ```php
 <?php
-defined('INDEX_AUTH') || defined('PINJAM_RUANG_CONTEXT') || die('Direct access not allowed');
+defined('INDEX_AUTH') || die('Direct access not allowed');
 
 use SLiMS\Migration\Migration;
 

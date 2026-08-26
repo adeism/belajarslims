@@ -23,29 +23,29 @@
      * `registrat.plugin.php` (UI‑ana)&#x20;
    * Bila nilai `p` cocok dengan salah‑satu menu plugin, `Opac` men‑***include*** berkas endpoint yang didaftarkan (mis. `digital.routes.php`, `opac.routes.php`, dll.). Tampilan yang dihasilkan menjadi **Hal pada plugin**.
 
-5. **File statis di `/lib/contents/`?**
-   Jika bukan plugin, `Opac` mencari file PHP/HTML bernama persis nilai `p` di folder `lib/contents/`. Contoh: akses `index.php?p=help` akan mem‑include `lib/contents/help.php`. Konten yang dijalankan inilah “**Tampilkan file di /lib/contents/**”.
+5. **File statis di `/lib/contents/`?**
+   Jika bukan plugin, `Opac` mencari file bernama persis nilai `p` dengan ekstensi `.inc.php` di folder `lib/contents/`. Contoh: akses `index.php?p=help` akan mem-include `lib/contents/help.inc.php`. Konten yang dijalankan inilah “**Tampilkan file di /lib/contents/**”.
 
 6. **Konten berita di DB?**
-   Apabila file statis tidak ditemukan, `Opac` melakukan query ke tabel `content` (lihat skema pada dump database) untuk baris `content_path = p`. Jika ada, data (title, desc, dll.) dirender sebagai halaman berita/halaman statis yang tersimpan di database . Ini menjadi “**Tampilkan berita yg ada di DB**”.
+   Apabila file statis tidak ditemukan, `Opac` melakukan query ke tabel `content` (lihat skema pada dump database) untuk baris `content_path = p`. Jika ada, data (title, desc, dll.) dirender sebagai halaman berita/halaman statis yang tersimpan di database . Ini menjadi “**Tampilkan berita yg ada di DB**”.
 
 7. **Hal tidak ditemukan**
-   Bila ketiga pencarian di atas gagal, `Opac` mengirim respons 404 sederhana – **“Hal tidak ditemukan”** – lalu berhenti.
+   Bila ketiga pencarian di atas gagal, `Opac` mengirim respons 404 sederhana – **“Hal tidak ditemukan”** – lalu berhenti.
 
 8. **Selesai**
-   Setelah salah‑satu cabang di atas menghasilkan konten, eksekusi dilanjutkan ke `parseToTemplate()` milik `Opac` untuk digabungkan dengan theme, kemudian HTML dikirim ke browser dan proses berakhir.
+   Setelah salah-satu cabang di atas menghasilkan konten, eksekusi dilanjutkan ke `parseToTemplate()` milik `Opac` untuk digabungkan dengan theme, kemudian HTML dikirim ke browser dan proses berakhir.
 
 ---
 
 ### Tabel ringkas keterkaitan langkah & berkas
 
-| Langkah (flowchart) | Penjelasan singkat                                          | Berkas/kode utama yang bekerja                                                                                     |
+| Langkah (flowchart) | Penjelasan singkat                                          | Berkas/kode utama yang bekerja                                                                                     |
 | ------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Akses OPAC          | Browser memanggil root `index.php` → bootstrapping aplikasi | `index.php`, `sysconfig.inc.php`                                                                                   |
-| Halaman Utama       | `p` kosong → `$Opac->orWelcome()` merender welcome page     | `index.php`, kelas `Opac`                                                                                          |
-| Cek permintaan      | `handle('p')` menentukan jenis permintaan                   | `index.php` (baris `$Opac->handle(...)`)                                                                           |
-| Hal pada plugin     | `p` cocok dengan menu yang diregistrasi plugin              | File `.plugin.php` (mis. `member_self_registration.plugin.php`, `registrat.plugin.php`) & endpoint yg didaftarkan  |
-| File statis         | `p` cocok dengan file di `lib/contents/` → di‑include       | Berkas dalam `lib/contents/<p>.php`                                                                                |
+| Akses OPAC          | Browser memanggil root `index.php` → bootstrapping aplikasi | `index.php`, `sysconfig.inc.php`                                                                                   |
+| Halaman Utama       | `p` kosong → `$Opac->orWelcome()` merender welcome page     | `index.php`, kelas `Opac`                                                                                          |
+| Cek permintaan      | `handle('p')` menentukan jenis permintaan                   | `index.php` (baris `$Opac->handle(...)`)                                                                           |
+| Hal pada plugin     | `p` cocok dengan menu yang diregistrasi plugin              | File `.plugin.php` (mis. `member_self_registration.plugin.php`, `registrat.plugin.php`) & endpoint yg didaftarkan  |
+| File statis         | `p` cocok dengan file di `lib/contents/` → di-include       | Berkas dalam `lib/contents/<p>.inc.php` (mis. `help.inc.php`, `librarian.inc.php`)                                 |
 | Berita DB           | `p` cocok dengan `content_path` pada tabel `content`        | Tabel `content` & query di kelas `Opac`                                                                            |
 | Hal tidak ditemukan | Tidak ada kecocokan sama sekali → 404                       | Kelas `Opac` (pesan default “Hal tidak ditemukan”)                                                                 |
 | Selesai             | Konten + template dirender, respons dikirim                 | `Opac->parseToTemplate()`, file template di `template/<theme>/`                                                    |

@@ -104,9 +104,7 @@ class CreateEquipmentTable extends Migration
  */
 
 // ===== SECURITY LAYER =====
-if (!defined('INDEX_AUTH')) {
-    define('INDEX_AUTH', '1');
-}
+defined('INDEX_AUTH') || die('Direct access not allowed');
 global $dbs, $sysconf;
 require SB . 'admin/default/session.inc.php';
 require SB . 'admin/default/session_check.inc.php';
@@ -655,16 +653,17 @@ $datagrid->setSQLorder("equipment_name ASC");
 // 2. Callback untuk Tombol Aksi
 function prActionCallback($obj_db, $data, $field_num) {
     $id = (int)$data[$field_num];
-    $editUrl = prAdminRedirect('items', ['action' => 'edit', 'id' => $id]);
-    $deleteUrl = prAdminRedirect('items', ['action' => 'delete', 'id' => $id]);
+    $baseUrl = $_SERVER['PHP_SELF'] . '?' . http_build_query($_GET);
+    $editUrl   = $baseUrl . '&action=edit&id=' . $id;
+    $deleteUrl = $baseUrl . '&action=delete&id=' . $id;
     
-    return '<a href="' . $editUrl . '" class="btn btn-sm btn-primary">Sunting</a> ' .
-           '<a href="' . $deleteUrl . '" class="btn btn-sm btn-danger" onclick="return confirm(\'Yakin hapus data ini?\')">Hapus</a>';
+    return '<a href="' . htmlspecialchars($editUrl) . '" class="btn btn-sm btn-primary">Sunting</a> ' .
+           '<a href="' . htmlspecialchars($deleteUrl) . '" class="btn btn-sm btn-danger" onclick="return confirm(\'Yakin hapus data ini?\')">Hapus</a>';
 }
 $datagrid->modifyColumnContent(5, 'callback{prActionCallback}');
 
 // 3. Render Tabel
-echo $datagrid->createDataGrid($dbs, 'library_equipment', 20, $can_read);
+echo $datagrid->createDataGrid($dbs, 'library_equipment', 20, $can_write);
 ```
 
 ---

@@ -26,14 +26,14 @@ if (!class_exists('simbio_datagrid')) {
 
 ## ⚙️ 2. Metode Utama `simbio_datagrid`
 
-| Method | Fungsi | Contoh Penggunaan |
+| Method / Property | Fungsi | Contoh Penggunaan |
 |---|---|---|
 | `setSQLColumn(...)` | Menentukan kolom yang dipilih dan alias judul header tabel | `$grid->setSQLColumn("id", "title AS 'Judul'", "author AS 'Pengarang'");` |
 | `setSQLorder(...)` | Mengatur default pengurutan data | `$grid->setSQLorder("id DESC");` |
 | `setSQLCriteria(...)` | Menambahkan filter kondisi query `WHERE` | `$grid->setSQLCriteria("is_active = 1");` |
-| `invisibleFields` | Menyembunyikan kolom tertentu dari tampilan namun datanya tetap bisa diakses di callback | `$grid->invisibleFields = '0,4';` |
+| `invisible_fields` (array) | Menyembunyikan index kolom tertentu dari tampilan tapi tetap dapat diakses di callback | `$grid->invisible_fields = array(0, 4);` |
 | `modifyColumnContent($colIndex, $callback)` | Memodifikasi output sel tabel menggunakan fungsi PHP callback | `$grid->modifyColumnContent(3, 'callback{formatStatus}');` |
-| `createDataGrid($dbs, $table, $perPage, $canRead)` | Merender dan menghasilkan output markup HTML tabel lengkap | `echo $grid->createDataGrid($dbs, 'biblio', 20, $can_read);` |
+| `createDataGrid($dbs, $table, $perPage, $canWrite)` | Merender dan menghasilkan output markup HTML tabel lengkap (parameter 4 adalah izin tulis/edit) | `echo $grid->createDataGrid($dbs, 'biblio', 20, $can_write);` |
 
 ---
 
@@ -75,11 +75,12 @@ function formatStatusBadge($obj_db, $data, $field_num) {
 
 function renderActionButtons($obj_db, $data, $field_num) {
     $id = (int)$data[$field_num];
-    $editUrl   = prAdminRedirect('my_plugin', ['action' => 'edit', 'id' => $id]);
-    $deleteUrl = prAdminRedirect('my_plugin', ['action' => 'delete', 'id' => $id]);
+    $baseUrl = $_SERVER['PHP_SELF'] . '?' . http_build_query($_GET);
+    $editUrl   = $baseUrl . '&action=edit&item_id=' . $id;
+    $deleteUrl = $baseUrl . '&action=delete&item_id=' . $id;
     
-    return '<a href="' . $editUrl . '" class="btn btn-sm btn-primary">Sunting</a> ' .
-           '<a href="' . $deleteUrl . '" class="btn btn-sm btn-danger" onclick="return confirm(\'Yakin ingin menghapus data ini?\')">Hapus</a>';
+    return '<a href="' . htmlspecialchars($editUrl) . '" class="btn btn-sm btn-primary">Sunting</a> ' .
+           '<a href="' . htmlspecialchars($deleteUrl) . '" class="btn btn-sm btn-danger" onclick="return confirm(\'Yakin ingin menghapus data ini?\')">Hapus</a>';
 }
 
 // 4. Inisialisasi dan Konfigurasi Datagrid
@@ -101,14 +102,14 @@ $grid->setSQLorder("id DESC");
 $grid->modifyColumnContent(3, 'callback{formatStatusBadge}');
 $grid->modifyColumnContent(4, 'callback{renderActionButtons}');
 
-// Sembunyikan kolom ID murni (kolom ke-0) jika tidak ingin ditampilkan
-$grid->invisibleFields = '0';
+// Sembunyikan kolom ID murni (kolom index ke-0) dari tampilan tabel
+$grid->invisible_fields = array(0);
 
 // 5. Cetak Tabel Datagrid
 echo '<div class="menuBox">';
 echo '<div class="menuBoxInner">';
 echo '<h3 style="margin-top:0;">📋 Daftar Data Master</h3>';
-echo $grid->createDataGrid($dbs, 'my_custom_table', 20, $can_read);
+echo $grid->createDataGrid($dbs, 'my_custom_table', 20, $can_write);
 echo '</div>';
 echo '</div>';
 ```
