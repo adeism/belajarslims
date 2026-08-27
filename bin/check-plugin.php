@@ -291,10 +291,10 @@ class PluginValidator
             }
 
             // Check up() and down() methods
-            if (!preg_match('/public\s+function\s+up\s*\(/i', $content)) {
+            if (!preg_match('/(?:public\s+)?function\s+up\s*\(/i', $content)) {
                 $this->error("Metode 'public function up()' tidak ditemukan pada migrasi [{$rel}].");
             }
-            if (!preg_match('/public\s+function\s+down\s*\(/i', $content)) {
+            if (!preg_match('/(?:public\s+)?function\s+down\s*\(/i', $content)) {
                 $this->error("Metode 'public function down()' tidak ditemukan pada migrasi [{$rel}].");
             }
         }
@@ -472,22 +472,28 @@ class PluginValidator
         foreach ($this->phpFiles as $file) {
             $rel = $this->relative($file);
             $content = file_get_contents($file);
+            $isOpacFile = str_contains($file, 'opac') || str_contains($content, "do_checkIP('opac')") || str_contains($content, "do_checkIP(\"opac\")");
 
             // 1. PHP header('Location: ...') redirects breaking out of plugin
             if (preg_match_all('/header\s*\(\s*[\'"]Location:\s*([^\'"]+)[\'"]\s*\)/i', $content, $matches)) {
                 foreach ($matches[1] as $redirectTarget) {
                     $target = trim($redirectTarget);
 
-                    // Case A: Redirect to index.php directly
+                    // Skip OPAC p= routing for OPAC files
+                    if ($isOpacFile && (str_starts_with($target, '?p=') || str_starts_with($target, 'index.php?p='))) {
+                        continue;
+                    }
+
+                    // Case A: Redirect to index.php directly in admin
                     if ($target === 'index.php' || str_starts_with($target, 'index.php?')) {
-                        if (!str_contains($target, 'mod=') && !str_contains($target, 'id=')) {
+                        if (!str_contains($target, 'mod=') && !str_contains($target, 'id=') && !str_contains($target, 'p=')) {
                             $this->error("Redirect bahaya pada [{$rel}]: 'header(\"Location: {$target}\")' akan mengeluarkan user dari plugin dan melempar ke dashboard utama admin. Gunakan '\$_SERVER[\'PHP_SELF\'] . \\'?\\' . http_build_query(array_merge(\$_GET, [...]))'.");
                         }
                     }
 
-                    // Case B: Redirect to relative query string without mod and id
+                    // Case B: Redirect to relative query string without mod and id in admin
                     if (str_starts_with($target, '?')) {
-                        if (!str_contains($target, 'mod=') && !str_contains($target, 'id=')) {
+                        if (!str_contains($target, 'mod=') && !str_contains($target, 'id=') && !str_contains($target, 'p=')) {
                             $this->error("Redirect bahaya pada [{$rel}]: 'header(\"Location: {$target}\")' menghapus parameter mod/id plugin. Gunakan http_build_query(\$_GET).");
                         }
                     }
@@ -503,13 +509,18 @@ class PluginValidator
                         continue;
                     }
 
+                    // In OPAC context, ?p= or index.php?p= is native SLiMS OPAC routing
+                    if ($isOpacFile && (str_starts_with($h, '?p=') || str_starts_with($h, 'index.php?p='))) {
+                        continue;
+                    }
+
                     // Link starting with ? but missing mod or id
-                    if (str_starts_with($h, '?') && !str_contains($h, 'mod=') && !str_contains($h, 'id=')) {
+                    if (str_starts_with($h, '?') && !str_contains($h, 'mod=') && !str_contains($h, 'id=') && !str_contains($h, 'p=')) {
                         $this->error("Link keluar halaman pada [{$rel}]: Tag '<a href=\"{$h}\">' menggunakan query string statis tanpa 'mod' & 'id'. Ini akan menyebabkan halaman kembali ke menu awal/error. Gunakan \$_SERVER['PHP_SELF'] . '?' . http_build_query(array_merge(\$_GET, [...])).");
                     }
 
-                    // Link to index.php without mod
-                    if ((str_starts_with($h, 'index.php?') || $h === 'index.php') && !str_contains($h, 'mod=')) {
+                    // Link to index.php without mod in admin
+                    if ((str_starts_with($h, 'index.php?') || $h === 'index.php') && !str_contains($h, 'mod=') && !str_contains($h, 'p=')) {
                         $this->warn("Link pada [{$rel}]: '<a href=\"{$h}\">' mengarah langsung ke 'index.php' tanpa menyertakan modul plugin.");
                     }
                 }
