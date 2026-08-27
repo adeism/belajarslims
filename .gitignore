@@ -1,0 +1,10 @@
+# Binary and CLI tools directory
+bin/
+
+# OS and Temporary files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.env
+.env.*
