@@ -71,11 +71,11 @@ class PluginValidator
     public function __construct(string $pluginPath)
     {
         $realPath = realpath($pluginPath);
-        if (!$realPath || !is_dir($realPath)) {
-            echo COLOR_RED . "✖ Error: Direktori plugin tidak ditemukan: {$pluginPath}\n" . COLOR_RESET;
+        if (!$realPath || (!is_dir($realPath) && !is_file($realPath))) {
+            echo COLOR_RED . "✖ Error: Berkas/Direktori plugin tidak ditemukan: {$pluginPath}\n" . COLOR_RESET;
             exit(1);
         }
-        $this->pluginPath = rtrim($realPath, DIRECTORY_SEPARATOR);
+        $this->pluginPath = is_dir($realPath) ? rtrim($realPath, DIRECTORY_SEPARATOR) : $realPath;
     }
 
     public function run(): int
@@ -104,6 +104,14 @@ class PluginValidator
 
     private function scanFiles(): void
     {
+        if (is_file($this->pluginPath)) {
+            $this->phpFiles[] = $this->pluginPath;
+            if (strpos(basename($this->pluginPath), '.plugin.php') !== false) {
+                $this->pluginEntryFiles[] = $this->pluginPath;
+            }
+            return;
+        }
+
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($this->pluginPath, RecursiveDirectoryIterator::SKIP_DOTS)
         );
