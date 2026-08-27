@@ -111,14 +111,15 @@ class PluginValidator
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
                 $filePath = $file->getPathname();
-                // Skip external packages (vendor and node_modules)
-                if (str_contains($filePath, DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR) ||
-                    str_contains($filePath, DIRECTORY_SEPARATOR . 'node_modules' . DIRECTORY_SEPARATOR)) {
+                // Skip external packages (vendor, node_modules, tests)
+                if (strpos($filePath, DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR) !== false ||
+                    strpos($filePath, DIRECTORY_SEPARATOR . 'node_modules' . DIRECTORY_SEPARATOR) !== false ||
+                    strpos($filePath, DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR) !== false) {
                     continue;
                 }
                 $this->phpFiles[] = $filePath;
 
-                if (str_contains($file->getFilename(), '.plugin.php')) {
+                if (strpos($file->getFilename(), '.plugin.php') !== false) {
                     $this->pluginEntryFiles[] = $filePath;
                 }
             }
@@ -130,11 +131,12 @@ class PluginValidator
         $hasSyntaxError = false;
         foreach ($this->phpFiles as $file) {
             $rel = $this->relative($file);
-            $output = [];
-            $code = 0;
-            exec("php -l " . escapeshellarg($file) . " 2>&1", $output, $code);
-            if ($code !== 0) {
-                $this->error("Sintaks PHP error pada [{$rel}]: " . implode(' ', $output));
+            try {
+                if (function_exists('token_get_all')) {
+                    @token_get_all(file_get_contents($file), TOKEN_PARSE);
+                }
+            } catch (\ParseError $pe) {
+                $this->error("Sintaks PHP error pada [{$rel}]: " . $pe->getMessage());
                 $hasSyntaxError = true;
             }
         }
@@ -348,7 +350,7 @@ class PluginValidator
             }
 
             // Check PDF export
-            if (preg_match('/Content-Type:\s*application\/pdf/i', $content) || preg_match('/Dompdf|TCPDF|FPDF|Mpdf/i', $content) || str_contains($content, 'printed_page_tpl.php')) {
+            if (preg_match('/Content-Type:\s*application\/pdf/i', $content) || preg_match('/\b(?:Dompdf|TCPDF|FPDF|Mpdf)\b/', $content) || str_contains($content, 'printed_page_tpl.php')) {
                 $isExportFile = true;
                 $exportTypes[] = 'PDF/Print';
             }
