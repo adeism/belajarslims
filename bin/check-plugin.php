@@ -48,6 +48,10 @@ class PluginValidator
     private array $passes = [];
     private array $phpFiles = [];
     private array $pluginEntryFiles = [];
+    private array $php74Incompatibilities = [];
+    private array $php80Incompatibilities = [];
+    private array $php81Incompatibilities = [];
+    private array $php82Incompatibilities = [];
 
     private const VALID_MENU_CATEGORIES = [
         'bibliography',
@@ -100,8 +104,10 @@ class PluginValidator
         $this->checkExportHandlers();
         $this->checkFilterAndPagination();
         $this->checkNavigationAndRedirects();
+        $this->checkPhpCompatibility();
 
         $this->printSummary();
+        $this->printPhpCompatibilityReport();
 
         return count($this->errors) > 0 ? 1 : 0;
     }
@@ -583,6 +589,105 @@ class PluginValidator
         return $rel !== '' ? $rel : basename($absolute);
     }
 
+    private function checkPhpCompatibility(): void
+    {
+        $hasGlobalStrContainsPolyfill = false;
+        $hasGlobalStrStartsPolyfill = false;
+        $hasGlobalStrEndsPolyfill = false;
+
+        // First pass: detect global polyfills in helper or plugin entry
+        foreach ($this->phpFiles as $file) {
+            $content = file_get_contents($file);
+            if (strpos($content, "function_exists('str_contains')") !== false || strpos($content, 'function_exists("str_contains")') !== false) {
+                $hasGlobalStrContainsPolyfill = true;
+            }
+            if (strpos($content, "function_exists('str_starts_with')") !== false || strpos($content, 'function_exists("str_starts_with")') !== false) {
+                $hasGlobalStrStartsPolyfill = true;
+            }
+            if (strpos($content, "function_exists('str_ends_with')") !== false || strpos($content, 'function_exists("str_ends_with")') !== false) {
+                $hasGlobalStrEndsPolyfill = true;
+            }
+        }
+
+        foreach ($this->phpFiles as $file) {
+            $rel = $this->relative($file);
+            $content = file_get_contents($file);
+            $lines = explode("\n", $content);
+
+            foreach ($lines as $lineNum => $line) {
+                $trimmed = trim($line);
+                $lineNo = $lineNum + 1;
+
+                // Skip comments
+                if (str_starts_with($trimmed, '//') || str_starts_with($trimmed, '*') || str_starts_with($trimmed, '/*')) {
+                    continue;
+                }
+
+                // 1. PHP 8.0+ Attributes (#[...])
+                if (preg_match('/^#\[[A-Za-z0-9_\\\\]+/', $trimmed)) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] PHP 8.0 Attribute sintaks '#[...]'";
+                }
+
+                // 2. PHP 8.0+ Nullsafe Operator ($obj?->prop)
+                if (preg_match('/\$[a-zA-Z0-9_]+\s*\?\->/', $line)) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] PHP 8.0 Nullsafe operator '?->'";
+                }
+
+                // 3. PHP 8.0+ Match Expression (match ($x) {)
+                if (preg_match('/\bmatch\s*\([^)]*\)\s*\{/', $line)) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] PHP 8.0 Match expression 'match (...) {'";
+                }
+
+                // 4. PHP 8.0+ Constructor Property Promotion (__construct(public string $x))
+                if (preg_match('/__construct\s*\([^)]*\b(?:public|protected|private)\s+(?:readonly\s+)?(?:\??[a-zA-Z0-9_\\\\]+\s+)?\$[a-zA-Z0-9_]+/', $line)) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] PHP 8.0 Constructor property promotion";
+                }
+
+                // 5. PHP 8.0+ Union Types in properties/params/return (e.g. string|int $x or : string|null)
+                if (preg_match('/(?:public|protected|private)\s+(?:static\s+)?(?:[a-zA-Z0-9_\\\\]+\s*\|\s*[a-zA-Z0-9_\\\\]+)\s+\$[a-zA-Z0-9_]+/', $line) ||
+                    preg_match('/function\s+[a-zA-Z0-9_]+\s*\([^)]*([a-zA-Z0-9_\\\\]+\s*\|\s*[a-zA-Z0-9_\\\\]+)\s+\$[a-zA-Z0-9_]+/', $line) ||
+                    preg_match('/\)\s*:\s*(?:[a-zA-Z0-9_\\\\]+\s*\|\s*[a-zA-Z0-9_\\\\]+)/', $line)) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] PHP 8.0 Union Type 'TypeA|TypeB'";
+                }
+
+                // 6. PHP 8.1+ Enums (enum Status: string)
+                if (preg_match('/^\s*(?:final\s+)?enum\s+[a-zA-Z0-9_]+/i', $line)) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] PHP 8.1 Enum 'enum Name'";
+                    $this->php80Incompatibilities[] = "[{$rel}:{$lineNo}] PHP 8.1 Enum 'enum Name'";
+                }
+
+                // 7. PHP 8.1+ Readonly Properties (public readonly string $x)
+                if (preg_match('/\b(?:readonly\s+class\s+[a-zA-Z0-9_]+|(?:public|protected|private)\s+readonly\s+)/i', $line)) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] PHP 8.1/8.2 Readonly modifier";
+                    $this->php80Incompatibilities[] = "[{$rel}:{$lineNo}] PHP 8.1/8.2 Readonly modifier";
+                }
+
+                // 8. PHP 8.0+ Native String Functions without polyfill
+                if (!$hasGlobalStrContainsPolyfill && preg_match('/\bstr_contains\s*\(/i', $line) && !str_contains($line, 'function_exists')) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] Pemanggilan 'str_contains()' tanpa polyfill PHP 7.4";
+                }
+                if (!$hasGlobalStrStartsPolyfill && preg_match('/\bstr_starts_with\s*\(/i', $line) && !str_contains($line, 'function_exists')) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] Pemanggilan 'str_starts_with()' tanpa polyfill PHP 7.4";
+                }
+                if (!$hasGlobalStrEndsPolyfill && preg_match('/\bstr_ends_with\s*\(/i', $line) && !str_contains($line, 'function_exists')) {
+                    $this->php74Incompatibilities[] = "[{$rel}:{$lineNo}] Pemanggilan 'str_ends_with()' tanpa polyfill PHP 7.4";
+                }
+
+                // 9. PHP 8.0 Removed Functions (from PHP 7.4)
+                if (preg_match('/\b(create_function|each|money_format|ezmlm_hash|restore_include_path)\s*\(/i', $line, $badFn)) {
+                    $this->php80Incompatibilities[] = "[{$rel}:{$lineNo}] Fungsi '{$badFn[1]}()' telah DIHAPUS pada PHP 8.0+";
+                    $this->php81Incompatibilities[] = "[{$rel}:{$lineNo}] Fungsi '{$badFn[1]}()' telah DIHAPUS pada PHP 8.0+";
+                    $this->php82Incompatibilities[] = "[{$rel}:{$lineNo}] Fungsi '{$badFn[1]}()' telah DIHAPUS pada PHP 8.0+";
+                }
+
+                // 10. PHP 8.2 Deprecated Functions (utf8_encode / utf8_decode)
+                if (preg_match('/\b(utf8_encode|utf8_decode)\s*\(/i', $line, $depFn)) {
+                    $this->php82Incompatibilities[] = "[{$rel}:{$lineNo}] Fungsi '{$depFn[1]}()' deprecated pada PHP 8.2+ (Gunakan mb_convert_encoding)";
+                }
+            }
+        }
+    }
+
     private function printSummary(): void
     {
         echo "\n" . COLOR_BOLD . "----------------- HASIL AUDIT PLUGIN -----------------" . COLOR_RESET . "\n";
@@ -592,9 +697,78 @@ class PluginValidator
         echo "------------------------------------------------------\n";
 
         if (count($this->errors) === 0) {
-            echo COLOR_BOLD . COLOR_GREEN . " 🎉 SELAMAT! Plugin lolos seluruh validasi standar SLiMS 9 Bulian.\n\n" . COLOR_RESET;
+            echo COLOR_BOLD . COLOR_GREEN . " 🎉 SELAMAT! Plugin lolos seluruh validasi standar SLiMS 9 Bulian.\n" . COLOR_RESET;
         } else {
-            echo COLOR_BOLD . COLOR_RED . " ❌ GAGAL: Harap perbaiki seluruh error di atas sebelum mendistribusikan plugin.\n\n" . COLOR_RESET;
+            echo COLOR_BOLD . COLOR_RED . " ❌ GAGAL: Harap perbaiki seluruh error di atas sebelum mendistribusikan plugin.\n" . COLOR_RESET;
+        }
+    }
+
+    private function printPhpCompatibilityReport(): void
+    {
+        $is74Supported = count($this->php74Incompatibilities) === 0;
+        $is80Supported = count($this->php80Incompatibilities) === 0;
+        $is81Supported = count($this->php81Incompatibilities) === 0;
+        $is82Supported = count($this->php82Incompatibilities) === 0;
+
+        echo "\n" . COLOR_BOLD . COLOR_BLUE . "======================================================\n";
+        echo " 🐘 LAPORAN KOMPATIBILITAS RUNTIME PHP\n";
+        echo "======================================================\n" . COLOR_RESET;
+
+        // PHP 7.4
+        if ($is74Supported) {
+            echo COLOR_GREEN . "  ✔ [PHP 7.4]  : KOMPATIBEL" . COLOR_RESET . " (Bersih dari sintaks PHP 8.0+ yang breaking)\n";
+        } else {
+            echo COLOR_RED . "  ✖ [PHP 7.4]  : TIDAK DIDUKUNG" . COLOR_RESET . " (" . count($this->php74Incompatibilities) . " sintaks PHP 8.0+ terdeteksi)\n";
+            foreach (array_slice($this->php74Incompatibilities, 0, 3) as $issue) {
+                echo COLOR_RED . "        └─ {$issue}\n" . COLOR_RESET;
+            }
+            if (count($this->php74Incompatibilities) > 3) {
+                echo COLOR_RED . "        └─ ... dan " . (count($this->php74Incompatibilities) - 3) . " issue lainnya\n" . COLOR_RESET;
+            }
+        }
+
+        // PHP 8.0
+        if ($is80Supported) {
+            echo COLOR_GREEN . "  ✔ [PHP 8.0]  : KOMPATIBEL" . COLOR_RESET . " (Bebas dari fungsi usang/dihapus PHP 8.0)\n";
+        } else {
+            echo COLOR_RED . "  ✖ [PHP 8.0]  : TIDAK DIDUKUNG" . COLOR_RESET . " (" . count($this->php80Incompatibilities) . " fungsi incompatible)\n";
+            foreach (array_slice($this->php80Incompatibilities, 0, 3) as $issue) {
+                echo COLOR_RED . "        └─ {$issue}\n" . COLOR_RESET;
+            }
+        }
+
+        // PHP 8.1
+        if ($is81Supported) {
+            echo COLOR_GREEN . "  ✔ [PHP 8.1]  : KOMPATIBEL" . COLOR_RESET . " (Bebas dari breaking changes PHP 8.1)\n";
+        } else {
+            echo COLOR_RED . "  ✖ [PHP 8.1]  : TIDAK DIDUKUNG" . COLOR_RESET . " (" . count($this->php81Incompatibilities) . " fungsi incompatible)\n";
+        }
+
+        // PHP 8.2 - 8.3+
+        if ($is82Supported) {
+            echo COLOR_GREEN . "  ✔ [PHP 8.2+] : KOMPATIBEL" . COLOR_RESET . " (Modern runtime & PHP 8.3+ ready)\n";
+        } else {
+            echo COLOR_YELLOW . "  ⚠ [PHP 8.2+] : PERINGATAN DEPRECATED" . COLOR_RESET . " (" . count($this->php82Incompatibilities) . " deprecation notice)\n";
+            foreach (array_slice($this->php82Incompatibilities, 0, 3) as $issue) {
+                echo COLOR_YELLOW . "        └─ {$issue}\n" . COLOR_RESET;
+            }
+        }
+
+        echo "------------------------------------------------------\n";
+        echo COLOR_BOLD . " 📌 KESIMPULAN DUKUNGAN VERSI:\n" . COLOR_RESET;
+
+        if ($is74Supported && $is80Supported && $is81Supported && $is82Supported) {
+            echo COLOR_GREEN . "  🎯 Kategori    : UNIVERSAL SLiMS 9 PLUGIN (Dual Support PHP 7.4 & PHP 8.x)\n";
+            echo "  💡 Rekomendasi : Plugin aman dipasang di semua instalasi SLiMS 9 (PHP 7.4 s/d PHP 8.3+).\n\n" . COLOR_RESET;
+        } elseif (!$is74Supported && $is80Supported) {
+            echo COLOR_YELLOW . "  🎯 Kategori    : PHP 8+ ONLY PLUGIN (Minimum PHP 8.0+)\n";
+            echo "  💡 Rekomendasi : Plugin hanya berjalan di PHP 8.0+. Tambahkan polyfill atau hapus sintaks PHP 8 jika ingin mendukung PHP 7.4.\n\n" . COLOR_RESET;
+        } elseif ($is74Supported && !$is80Supported) {
+            echo COLOR_YELLOW . "  🎯 Kategori    : LEGACY PHP 7.4 ONLY PLUGIN\n";
+            echo "  💡 Rekomendasi : Segera perbaiki fungsi usang/dihapus agar kompatibel dengan PHP 8+.\n\n" . COLOR_RESET;
+        } else {
+            echo COLOR_RED . "  🎯 Kategori    : MULTI-VERSION CONFLICT\n";
+            echo "  💡 Rekomendasi : Periksa kembali error kompatibilitas di atas.\n\n" . COLOR_RESET;
         }
     }
 }
