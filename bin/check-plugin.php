@@ -97,13 +97,17 @@ class PluginValidator
         $this->checkSyntax();
         $this->checkPluginEntryFile();
         $this->checkSecurityGuardrails();
+        $this->checkSecurityHardening();
         $this->checkSimbioUsage();
         $this->checkMigrationIntegrity();
         $this->checkSqlSafety();
+        $this->checkDbDriverConsistency();
         $this->checkFormAndUrls();
+        $this->checkAssetPathsAndUrls();
         $this->checkExportHandlers();
         $this->checkFilterAndPagination();
         $this->checkNavigationAndRedirects();
+        $this->checkDistributionReadiness();
         $this->checkPhpCompatibility();
 
         $this->printSummary();
@@ -242,6 +246,53 @@ class PluginValidator
         }
     }
 
+    private function checkSecurityHardening(): void
+    {
+        $hasSecurityIssue = false;
+
+        foreach ($this->phpFiles as $file) {
+            $rel = $this->relative($file);
+            $content = file_get_contents($file);
+
+            // 1. Dangerous code execution functions
+            if (preg_match('/\beval\s*\(/i', $content)) {
+                $this->error("Kerentanan RCE Kritis: Penggunaan 'eval()' terlarang terdeteksi pada [{$rel}].");
+                $hasSecurityIssue = true;
+            } elseif (preg_match('/\b(passthru|shell_exec|popen|proc_open|system)\s*\(/i', $content, $badExec)) {
+                $this->warn("Peringatan Eksekusi Shell: Penggunaan '{$badExec[1]}()' pada [{$rel}]. Pastikan perintah diisolasi dan parameter di-sanitize dengan escapeshellarg().");
+            }
+
+            // 2. Reflected XSS: direct echo of unsanitized GET/POST/REQUEST
+            if (preg_match_all('/(?:echo\s+|\<\?=\s*)\$_(?:GET|POST|REQUEST)\[[\'"][^\'"]+[\'"]\]\s*(?:;|\?\>)/i', $content, $xssMatches)) {
+                foreach ($xssMatches[0] as $match) {
+                    $this->error("Potensi Reflected XSS pada [{$rel}]: Pencetakan langsung '{$match}' tanpa sanitasi. Bungkus dengan htmlspecialchars() atau simbio_security::xssFree().");
+                    $hasSecurityIssue = true;
+                }
+            }
+
+            // 3. CSRF Protection for mutating POST operations
+            if (preg_match('/\b(?:INSERT\s+INTO|UPDATE\s+|DELETE\s+FROM)\b/i', $content) &&
+                (preg_match('/\$_(?:POST|REQUEST)/i', $content) || str_contains($content, 'REQUEST_METHOD') || str_contains($content, 'saveData') || str_contains($content, 'itemAction'))) {
+                $hasCsrf = str_contains($content, 'verifyCsrfToken') ||
+                           str_contains($content, 'isTokenValid') ||
+                           str_contains($content, 'getTokenField') ||
+                           str_contains($content, 'validateCsrf') ||
+                           str_contains($content, 'ValidateCsrf') ||
+                           str_contains($content, 'CSRF::') ||
+                           str_contains($content, 'csrf_token') ||
+                           str_contains($content, 'csrfToken') ||
+                           str_contains($content, 'check_csrf');
+                if (!$hasCsrf) {
+                    $this->warn("Proteksi CSRF pada [{$rel}]: Berkas ini memproses mutasi basis data berdasarkan input form POST tanpa verifikasi token CSRF.");
+                }
+            }
+        }
+
+        if (!$hasSecurityIssue) {
+            $this->pass("Security Hardening: Bebas dari fungsi eksekusi berbahaya (eval/shell_exec) dan Reflected XSS langsung.");
+        }
+    }
+
     private function checkSimbioUsage(): void
     {
         foreach ($this->phpFiles as $file) {
@@ -331,6 +382,31 @@ class PluginValidator
         }
     }
 
+    private function checkDbDriverConsistency(): void
+    {
+        $hasDriverIssue = false;
+
+        foreach ($this->phpFiles as $file) {
+            $rel = $this->relative($file);
+            $content = file_get_contents($file);
+
+            // 1. Calling PDO methods on mysqli $dbs object
+            if (preg_match('/\$dbs\s*->\s*(?:rowCount|lastInsertId)\s*\(/i', $content, $m)) {
+                $this->error("Inkonsistensi Driver DB pada [{$rel}]: '\$dbs' adalah objek MySQLi, method '{$m[0]}' adalah method PDO.");
+                $hasDriverIssue = true;
+            }
+
+            // 2. Hardcoded Database Name in SQL query
+            if (preg_match('/(?:FROM|JOIN|INTO|UPDATE)\s+`?([a-zA-Z0-9_]+)`?\s*\.\s*`?(?:biblio|member|item|mst_|user|setting)`?/i', $content, $m)) {
+                $this->warn("Kueri SQL pada [{$rel}] tampaknya meng-hardcode nama basis data '{$m[1]}'. Hapus nama database agar portabel ke instalasi SLiMS lainnya.");
+            }
+        }
+
+        if (!$hasDriverIssue) {
+            $this->pass("Konsistensi Driver Basis Data: Penggunaan objek MySQLi (\$dbs) dan PDO (DB::getInstance) konsisten.");
+        }
+    }
+
     private function checkFormAndUrls(): void
     {
         foreach ($this->phpFiles as $file) {
@@ -341,6 +417,28 @@ class PluginValidator
             if (preg_match('/<form[^>]+action=[\'"][^\'"]*\?mod=[^&\'"]+&id=[a-zA-Z0-9_]+[\'"]/i', $content, $matches)) {
                 $this->warn("Form action pada [{$rel}] tampaknya meng-hardcode nilai 'id='. Seharusnya gunakan \$_SERVER['PHP_SELF'] . '?' . http_build_query(\$_GET) karena 'id' adalah string hash MD5.");
             }
+        }
+    }
+
+    private function checkAssetPathsAndUrls(): void
+    {
+        $hasAssetIssue = false;
+
+        foreach ($this->phpFiles as $file) {
+            $rel = $this->relative($file);
+            $content = file_get_contents($file);
+
+            // Check hardcoded root-slash assets like src="/plugins/... or href="/css/...
+            if (preg_match_all('/(?:src|href)\s*=\s*[\'"]\/(?:plugins|css|js|images|assets)\/[^\'"]*[\'"]/i', $content, $assetMatches)) {
+                foreach ($assetMatches[0] as $match) {
+                    $this->warn("Path Aset Statis pada [{$rel}]: Tag '{$match}' menggunakan absolute root path ('/'). Path akan 404 jika SLiMS berada di sub-folder. Gunakan SWB . 'plugins/...' atau helper URL dinamis.");
+                    $hasAssetIssue = true;
+                }
+            }
+        }
+
+        if (!$hasAssetIssue) {
+            $this->pass("Integritas Path Aset: Tidak ditemukan hardcoded absolute root path ('/plugins/...') yang berpotensi 404 pada sub-folder.");
         }
     }
 
@@ -587,6 +685,20 @@ class PluginValidator
         }
         $rel = ltrim(str_replace($this->pluginPath, '', $absolute), DIRECTORY_SEPARATOR);
         return $rel !== '' ? $rel : basename($absolute);
+    }
+
+    private function checkDistributionReadiness(): void
+    {
+        if (is_dir($this->pluginPath)) {
+            // Check for stray temporary/sensitive files
+            $junkFiles = ['.DS_Store', 'Thumbs.db', '.env', '.env.local', '.env.production'];
+            foreach ($junkFiles as $junk) {
+                $junkPath = $this->pluginPath . DIRECTORY_SEPARATOR . $junk;
+                if (file_exists($junkPath)) {
+                    $this->warn("Kesiapan Distribusi: Berkas sampah '[{$junk}]' terdeteksi di dalam folder plugin. Hapus berkas ini sebelum distribusi.");
+                }
+            }
+        }
     }
 
     private function checkPhpCompatibility(): void
