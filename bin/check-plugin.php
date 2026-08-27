@@ -111,6 +111,11 @@ class PluginValidator
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
                 $filePath = $file->getPathname();
+                // Skip external packages (vendor and node_modules)
+                if (str_contains($filePath, DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR) ||
+                    str_contains($filePath, DIRECTORY_SEPARATOR . 'node_modules' . DIRECTORY_SEPARATOR)) {
+                    continue;
+                }
                 $this->phpFiles[] = $filePath;
 
                 if (str_contains($file->getFilename(), '.plugin.php')) {
