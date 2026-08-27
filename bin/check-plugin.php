@@ -572,7 +572,11 @@ class PluginValidator
 
     private function relative(string $absolute): string
     {
-        return ltrim(str_replace($this->pluginPath, '', $absolute), DIRECTORY_SEPARATOR);
+        if (is_file($this->pluginPath) && $absolute === $this->pluginPath) {
+            return basename($absolute);
+        }
+        $rel = ltrim(str_replace($this->pluginPath, '', $absolute), DIRECTORY_SEPARATOR);
+        return $rel !== '' ? $rel : basename($absolute);
     }
 
     private function printSummary(): void
