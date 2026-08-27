@@ -75,6 +75,10 @@ class PluginValidator
             echo COLOR_RED . "✖ Error: Berkas/Direktori plugin tidak ditemukan: {$pluginPath}\n" . COLOR_RESET;
             exit(1);
         }
+        if (is_file($realPath) && !strpos($realPath, '.php')) {
+            echo COLOR_RED . "✖ Error: Target berkas harus berupa berkas PHP (*.php): {$pluginPath}\n" . COLOR_RESET;
+            exit(1);
+        }
         $this->pluginPath = is_dir($realPath) ? rtrim($realPath, DIRECTORY_SEPARATOR) : $realPath;
     }
 
